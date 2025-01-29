@@ -10,7 +10,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import { SignInForm } from "../components/SignInForm";
 import { SignUpForm } from "../components/SignUpForm";
 
@@ -20,7 +19,6 @@ const AuthPage = () => {
   const [mode, setMode] = useState<AuthMode>("signin");
   const { error } = useAuth();
   const theme = useTheme();
-  const navigate = useNavigate();
 
   const handleModeChange = (
     _: React.MouseEvent<HTMLElement>,

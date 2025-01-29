@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import { useTypedNavigate } from "@/hooks/useTypedNavigate";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
@@ -8,7 +9,6 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router";
 
 export const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ export const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const { register, isLoading } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useTypedNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,10 +49,12 @@ export const SignUpForm = () => {
 
     try {
       const { passwordConfirmation, ...registerData } = formData;
+      console.log("before register");
       await register(registerData);
-      navigate("signup/success");
+      console.log("after register");
+      navigate.navigateTo("auth/signup-success");
     } catch (err) {
-      // Error is handled by useAuth hook
+      console.error(err);
     }
   };
 

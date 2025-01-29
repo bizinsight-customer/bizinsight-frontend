@@ -50,7 +50,7 @@ export const SignUpForm = () => {
     try {
       const { passwordConfirmation, ...registerData } = formData;
       await register(registerData);
-      navigate("/dashboard");
+      navigate("signup/success");
     } catch (err) {
       // Error is handled by useAuth hook
     }

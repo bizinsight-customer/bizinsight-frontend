@@ -1,1 +1,0 @@
-// Export store configuration

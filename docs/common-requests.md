@@ -1,2 +1,2 @@
-- Modify our project according to this code.
+- Modify this project according to this code.
 

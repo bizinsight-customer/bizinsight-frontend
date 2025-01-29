@@ -18,20 +18,32 @@ export const SignUpForm = () => {
     passwordConfirmation: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const { register, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
+
+    // Clear password error when either password field changes
+    if (name === "password" || name === "passwordConfirmation") {
+      setPasswordError(false);
+    }
+  };
+
+  const validatePasswords = () => {
+    const isMatch = formData.password === formData.passwordConfirmation;
+    setPasswordError(!isMatch);
+    return isMatch;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password !== formData.passwordConfirmation) {
-      // Handle password mismatch
+    if (!validatePasswords()) {
       return;
     }
 
@@ -80,6 +92,7 @@ export const SignUpForm = () => {
         autoComplete="new-password"
         value={formData.password}
         onChange={handleChange}
+        error={passwordError}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -105,6 +118,8 @@ export const SignUpForm = () => {
         autoComplete="new-password"
         value={formData.passwordConfirmation}
         onChange={handleChange}
+        error={passwordError}
+        helperText={passwordError ? "Passwords do not match" : ""}
       />
       <Button
         type="submit"

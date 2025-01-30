@@ -51,7 +51,7 @@ export const SignUpForm = () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { passwordConfirmation: _, ...registerData } = formData;
       await register.execute(registerData);
-      navigate.navigateTo("auth/signup-success");
+      navigate.navigateTo("/auth/signup-success");
     } catch (err) {
       console.error(err);
     }

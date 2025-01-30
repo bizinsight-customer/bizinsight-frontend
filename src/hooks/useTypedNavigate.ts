@@ -1,18 +1,25 @@
+import { AuthRouteParams } from "@/features/auth/routes";
 import { useLocation, useNavigate } from "react-router";
-import { createPath } from "../config/routes";
-import { RouteParams } from "../types/routes.types";
+
+// Combine all feature route params
+type AppRouteParams = AuthRouteParams;
 
 export function useTypedNavigate() {
   const navigate = useNavigate();
   const location = useLocation();
 
   return {
-    navigateTo: <T extends keyof RouteParams>(
+    navigateTo: <T extends keyof AppRouteParams>(
       route: T,
-      params?: RouteParams[T],
+      params?: AppRouteParams[T],
       options?: { replace?: boolean }
     ) => {
-      const path = createPath(route, params);
+      let path = route as string;
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          path = path.replace(`:${key}`, value.toString());
+        });
+      }
       navigate(path, { replace: options?.replace });
     },
 

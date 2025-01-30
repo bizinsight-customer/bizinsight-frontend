@@ -1,7 +1,10 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, RouteObject } from "react-router";
 import { authRoutes } from "./features/auth/routes";
+import { AppRouteConfig } from "./types/routes.types";
 
-export const router = createBrowserRouter([
+const routes: AppRouteConfig[] = [
   ...authRoutes,
-  // ...existing code...
-]);
+  // Add more routes here
+];
+
+export const router = createBrowserRouter(routes as RouteObject[]);

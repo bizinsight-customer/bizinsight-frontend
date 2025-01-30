@@ -1,6 +1,31 @@
+import { AuthTokens } from "@/features/auth/types/auth.types";
 import { AxiosError, AxiosInstance } from "axios";
-import { refreshTokens } from "../auth/authService";
-import { clearTokens, getAccessToken, setTokens } from "../auth/tokenService";
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+} from "../core/tokenService";
+
+const refreshTokens = async (): Promise<AuthTokens> => {
+  const refreshToken = getRefreshToken();
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to refresh tokens");
+  }
+
+  return response.json();
+};
 
 export const setupInterceptors = (api: AxiosInstance) => {
   api.interceptors.request.use(

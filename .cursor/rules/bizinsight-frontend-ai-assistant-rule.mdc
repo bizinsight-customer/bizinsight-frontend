@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+---
+1. You must use the following technologies and tools in this project:
+	•	Vite: The project was created using the Vite creation script with the React TypeScript template preset. Vite is used for bundling and development.
+	•	React: Build the application using React with TypeScript support.
+	•	Material UI (MUI): Use the Material UI library for designing UI components.
+	•	React Router 7: Use React Router 7 for managing routing in the app.
+	•	Since React Router DOM is deprecated, import routing components from react-router instead of react-router-dom.
+	•	Zustand: Use Zustand for global state management across the application.
+	•	API Communication: The project will communicate with a backend API for data exchange and authentication. Ensure that requests are handled properly, and state is managed effectively.
+	•	JWT Authentication: Use JWT tokens for securing communication with the backend.
+
+2. Development Best Practices
+	•	TypeScript First:
+	•	Use TypeScript types everywhere to ensure type safety in the codebase.
+	•	Avoid using any, and prefer explicit types for function arguments and return values.
+	•	JSON API Specification:
+	•	Follow the JSON API specification for API communication.
+	•	Ensure proper handling of data, errors, meta, and pagination.

@@ -1,4 +1,4 @@
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useTypedNavigate } from "@/hooks/useTypedNavigate";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -19,7 +19,7 @@ export const SignUpForm = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const { register, isLoading } = useAuth();
+  const { register } = useAuth();
   const navigate = useTypedNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,10 +48,9 @@ export const SignUpForm = () => {
     }
 
     try {
-      const { passwordConfirmation, ...registerData } = formData;
-      console.log("before register");
-      await register(registerData);
-      console.log("after register");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { passwordConfirmation: _, ...registerData } = formData;
+      await register.execute(registerData);
       navigate.navigateTo("auth/signup-success");
     } catch (err) {
       console.error(err);
@@ -128,9 +127,9 @@ export const SignUpForm = () => {
         fullWidth
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
-        disabled={isLoading}
+        disabled={register.isLoading}
       >
-        {isLoading ? "Creating Account..." : "Sign Up"}
+        {register.isLoading ? "Creating Account..." : "Sign Up"}
       </Button>
     </Box>
   );

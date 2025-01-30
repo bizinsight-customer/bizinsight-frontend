@@ -11,6 +11,10 @@ For this project, you should use the following technologies and tools:
 6. **API Communication**: The project will communicate with a backend API for data exchange and authentication. Ensure that you handle requests properly and manage state effectively.
 7. **JWT Authentication**: For authentication, use JWT tokens to secure communication with the backend.
 
+You should use typescript types everywhere to ensure that the code is type-safe.
+
+Follow JSON API specification for the API communication ( data, errors, meta, pagination, etc. ).
+
 ## Project Structure
 The project follows a modular structure to organize code efficiently. Below is the current structure:
 

@@ -14,18 +14,26 @@ interface AuthTokens {
 }
 
 interface LoginResponse {
-  user?: User;
-  tokens?: AuthTokens;
-  message?: string;
+  data?: {
+    user: User;
+    tokens: AuthTokens;
+  };
+  errors?: {
+    message: string;
+  }[];
 }
 
 interface RegisterResponse {
-  user: User;
-  tokens: AuthTokens;
+  data: {
+    user: User;
+    tokens: AuthTokens;
+  };
 }
 
 interface RefreshResponse {
-  tokens: AuthTokens;
+  data: {
+    tokens: AuthTokens;
+  };
 }
 
 // Mock data
@@ -45,14 +53,18 @@ export const handlers = [
       const user = users.find((u) => u.email === email);
       if (!user || password !== "password") {
         return HttpResponse.json(
-          { message: "Invalid credentials" },
+          {
+            errors: [{ message: "Invalid credentials" }],
+          },
           { status: 401 }
         );
       }
 
       return HttpResponse.json({
-        user,
-        tokens: authTokens,
+        data: {
+          user,
+          tokens: authTokens,
+        },
       });
     }
   ),
@@ -69,8 +81,10 @@ export const handlers = [
 
       return HttpResponse.json(
         {
-          user: newUser,
-          tokens: authTokens,
+          data: {
+            user: newUser,
+            tokens: authTokens,
+          },
         },
         { status: 201 }
       );
@@ -81,15 +95,19 @@ export const handlers = [
     `${ENV.VITE_API_URL}/auth/refresh`,
     async () => {
       return HttpResponse.json({
-        tokens: {
-          access: "new-mock-jwt-token",
-          refresh: "new-mock-refresh-token",
+        data: {
+          tokens: {
+            access: "new-mock-jwt-token",
+            refresh: "new-mock-refresh-token",
+          },
         },
       });
     }
   ),
 
-  http.get<never, never, User>(`${ENV.VITE_API_URL}/users/me`, () => {
-    return HttpResponse.json(users[0]);
+  http.get<never, never, { data: User }>(`${ENV.VITE_API_URL}/users/me`, () => {
+    return HttpResponse.json({
+      data: users[0],
+    });
   }),
 ];

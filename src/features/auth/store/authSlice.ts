@@ -1,5 +1,5 @@
-import { AuthTokens, User } from "@/services/auth/authService";
-import { clearTokens, setTokens } from "@/services/auth/tokenService";
+import { AuthTokens, User } from "@/features/auth/services/authService";
+import { clearTokens, setTokens } from "@/services/core/tokenService";
 import { create } from "zustand";
 
 interface AuthState {

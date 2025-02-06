@@ -1,6 +1,6 @@
 import api from "@/services/api/axios";
 import { ApiError, ApiResponse } from "@/types/api.types";
-import { AxiosError, AxiosRequestConfig } from "axios";
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { useCallback, useState } from "react";
 
 interface UseApiOptions<T> {
@@ -8,18 +8,24 @@ interface UseApiOptions<T> {
   onError?: (error: ApiError) => void;
 }
 
+type RequestConfig<T> = AxiosRequestConfig | (() => Promise<AxiosResponse<T>>);
+
 export function useApi<T>(options: UseApiOptions<T> = {}) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const request = useCallback(
-    async (config: AxiosRequestConfig) => {
+    async (configOrPromise: RequestConfig<ApiResponse<T>>) => {
       try {
         setIsLoading(true);
         setError(null);
 
-        const response = await api.request<ApiResponse<T>>(config);
+        const response =
+          typeof configOrPromise === "function"
+            ? await configOrPromise()
+            : await api.request<ApiResponse<T>>(configOrPromise);
+
         setData(response.data.data);
         options.onSuccess?.(response.data.data);
         return response.data.data;

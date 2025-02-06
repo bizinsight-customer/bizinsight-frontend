@@ -1,5 +1,6 @@
 import { useApi } from "@/hooks/useApi";
 import { getRefreshToken } from "@/services/core/tokenService";
+import { authService } from "../services/authService";
 import {
   AuthResponse,
   AuthTokens,
@@ -13,28 +14,19 @@ export const useAuth = () => {
   const refreshApi = useApi<AuthTokens>();
 
   const loginUser = async (credentials: LoginCredentials) => {
-    return loginApi.request({
-      method: "POST",
-      url: "/auth/login",
-      data: credentials,
-    });
+    return loginApi.request(() => authService.login(credentials));
   };
 
   const registerUser = async (data: RegisterData) => {
-    return registerApi.request({
-      method: "POST",
-      url: "/auth/register",
-      data,
-    });
+    return registerApi.request(() => authService.register(data));
   };
 
   const refreshUserTokens = async () => {
     const refreshToken = getRefreshToken();
-    return refreshApi.request({
-      method: "POST",
-      url: "/auth/refresh",
-      data: { refresh_token: refreshToken },
-    });
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
+    }
+    return refreshApi.request(() => authService.refresh(refreshToken));
   };
 
   return {

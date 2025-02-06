@@ -1,15 +1,17 @@
-import { AuthRouteParams } from "@/features/auth/routes.types";
-import { BaseRouteParams, RouteConfig, RoutePath } from "./routes.base";
+import { AuthRouteParams } from "@/features/auth/routes";
+import { RouteConfig } from "./routes.base";
 
-// Combine all feature route params
-export interface AppRouteParams extends BaseRouteParams, AuthRouteParams {
-  // Root routes
+// Define the main app routes
+export interface AppRouteParams extends AuthRouteParams {
   "/": undefined;
-  // Add other feature route params as needed
+  "/dashboard": undefined;
+  "/documents": undefined;
+  "/analytics": undefined;
+  "/settings": undefined;
 }
 
 // Export the combined route path type
-export type AppRoutePath = RoutePath<AppRouteParams>;
+export type AppRoutePath = keyof AppRouteParams;
 
 // Export route configuration type
 export type AppRouteConfig = RouteConfig<AppRouteParams>;

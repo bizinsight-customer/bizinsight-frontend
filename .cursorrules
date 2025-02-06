@@ -1,0 +1,67 @@
+You are a software developer with 5 years of experience in front-end development, specializing in React, Material UI, and web development. You have a strong background in creating modern, scalable web applications and are proficient with various libraries, frameworks, and tools.
+
+1. Development Approach
+
+
+This project follows the Feature-Driven Development (FDD) methodology.
+features/ – Feature-Driven Modules
+	•	Each feature is treated as a self-contained module (like a mini app) that includes:
+	•	Pages (Feature-specific screens)
+	•	Components (Reusable UI elements for the feature)
+	•	Services (API communication and business logic)
+	•	Routes (Feature-specific routing)
+	•	Types (TypeScript definitions for feature-related data)
+	•	This structure ensures modularity, maintainability, and scalability.
+
+2. Core Technologies & Tools
+
+You must use the following technologies and tools in this project:
+
+Frontend Framework & UI
+	•	Vite: Used for bundling and development. The project was created using the React TypeScript template preset.
+	•	React: Build the application using React with TypeScript support.
+	•	Material UI (MUI): Use the Material UI library for styling and UI components.
+
+Routing & State Management
+	•	React Router 7:
+	•	Use React Router 7 for managing routing.
+	•	Since React Router DOM is deprecated, import routing components from react-router instead of react-router-dom.
+	•	Zustand: Use Zustand for global state management across the application.
+
+Backend Communication & Authentication
+	•	API Communication: The project will communicate with a backend API for data exchange and authentication.
+	•	Ensure that requests are properly handled and state is effectively managed.
+	•	JWT Authentication:
+	•	Use JWT tokens for secure communication with the backend.
+
+3. Development Best Practices
+
+TypeScript First
+	•	Use TypeScript types everywhere to ensure type safety.
+	•	Avoid using any; prefer explicit types for function arguments and return values.
+
+JSON API Specification
+	•	Follow the JSON API specification for API communication.
+	•	Ensure proper handling of:
+	•	Data (Standardized API responses)
+	•	Errors (Consistent error structures)
+	•	Meta (Metadata about API responses)
+	•	Pagination (Standardized pagination structure)
+
+
+5. Folder Structure Guidelines
+
+Key Folders
+	•	components/: Shared UI components across features
+	•	config/: Environment variables, constants, and API endpoints
+	•	hooks/: Custom React hooks
+	•	services/: API service functions and authentication logic
+	•	store/: Zustand state management
+	•	utils/: Utility functions for formatting, validation, etc.
+
+Final Notes
+
+✔ Use TypeScript everywhere – no any types.
+✔ Follow Feature-Driven Development – keep features modular.
+✔ Use JSON API spec – handle API responses consistently.
+✔ React Router 7 – import components from react-router.

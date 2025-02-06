@@ -1,0 +1,50 @@
+import {
+  Document,
+  DocumentStatus,
+  DocumentType,
+} from "../types/document.types";
+
+export const mockDocuments: Document[] = [
+  {
+    id: "1",
+    title: "Q4 2023 Financial Report",
+    type: DocumentType.REPORT,
+    createdAt: "2024-01-15T10:00:00Z",
+    updatedAt: "2024-01-15T10:00:00Z",
+    status: DocumentStatus.COMPLETED,
+    description: "Quarterly financial report for Q4 2023",
+    fileSize: 2500000,
+    fileType: "pdf",
+  },
+  {
+    id: "2",
+    title: "Office Lease Agreement",
+    type: DocumentType.CONTRACT,
+    createdAt: "2024-01-10T15:30:00Z",
+    updatedAt: "2024-01-10T15:30:00Z",
+    status: DocumentStatus.COMPLETED,
+    description: "Annual office lease agreement",
+    fileSize: 1500000,
+    fileType: "pdf",
+  },
+  {
+    id: "3",
+    title: "Marketing Campaign Invoice",
+    type: DocumentType.INVOICE,
+    createdAt: "2024-01-20T09:15:00Z",
+    updatedAt: "2024-01-20T09:15:00Z",
+    status: DocumentStatus.PROCESSING,
+    fileSize: 500000,
+    fileType: "pdf",
+  },
+  {
+    id: "4",
+    title: "Office Supplies Receipt",
+    type: DocumentType.RECEIPT,
+    createdAt: "2024-01-22T14:20:00Z",
+    updatedAt: "2024-01-22T14:20:00Z",
+    status: DocumentStatus.COMPLETED,
+    fileSize: 300000,
+    fileType: "jpg",
+  },
+];

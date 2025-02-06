@@ -1,5 +1,0 @@
----
-description: 
-globs: 
----
-Always use react-router insted of react-router-dom ( react-router-dom is deprecated )

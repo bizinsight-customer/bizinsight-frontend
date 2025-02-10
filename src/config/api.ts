@@ -21,9 +21,9 @@ export const apiConfig: ApiConfig = {
 // API endpoints with type safety
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN: "/auth/auth/jwt/login",
-    REGISTER: "/auth/auth/register",
-    LOGOUT: "/auth/auth/jwt/logout",
+    LOGIN: "/auth/jwt/login",
+    REGISTER: "/auth/register",
+    LOGOUT: "/auth/jwt/logout",
     ME: "/auth/users/me",
     USERS: {
       DETAIL: (id: string) => `/auth/users/${id}`,

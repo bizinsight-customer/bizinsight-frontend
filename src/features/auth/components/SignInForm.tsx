@@ -6,9 +6,10 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
+import { useAuthStore } from "../store/authSlice";
 
 export const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -16,8 +17,9 @@ export const SignInForm = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn, signInLoading, signInError } = useAuth();
+  const { signIn, user } = useAuth();
   const navigate = useNavigate();
+  const setToken = useAuthStore((state) => state.setToken);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -26,14 +28,14 @@ export const SignInForm = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      await signIn(formData.email, formData.password);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Sign in error", error);
+    await signIn(formData.email, formData.password);
+    if (user) {
+      const token = await user.getIdToken();
+      setToken(token);
     }
+    navigate("/dashboard");
   };
 
   return (
@@ -75,17 +77,8 @@ export const SignInForm = () => {
           ),
         }}
       />
-      {signInError && (
-        <Box sx={{ color: "error.main", mt: 2 }}>{signInError.message}</Box>
-      )}
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}
-        disabled={signInLoading}
-      >
-        {signInLoading ? "Signing in..." : "Sign In"}
+      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+        Sign In
       </Button>
     </Box>
   );

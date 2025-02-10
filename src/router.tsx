@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouteObject } from "react-router";
 import App from "./App";
 import MainLayout from "./components/layouts/MainLayout/MainLayout";
+import { UserProfile } from "./features/auth/components/UserProfile";
 import { authRoutes } from "./features/auth/routes";
 import { documentsRoutes } from "./features/documents/routes";
 import { AppRouteConfig } from "./types/routes.types";
@@ -25,6 +26,10 @@ const routes: AppRouteConfig[] = [
           {
             path: "/settings",
             element: <div>Settings Page</div>,
+          },
+          {
+            path: "/profile",
+            element: <UserProfile />,
           },
         ],
       },

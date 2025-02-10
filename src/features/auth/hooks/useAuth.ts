@@ -6,8 +6,12 @@ import {
 } from "react-firebase-hooks/auth";
 
 export const useAuth = () => {
-  const [signInWithEmailAndPassword, signInUser, signInLoading, signInError] =
-    useSignInWithEmailAndPassword(auth);
+  const [
+    signInWithEmailAndPassword,
+    userCredential,
+    signInLoading,
+    signInError,
+  ] = useSignInWithEmailAndPassword(auth);
   const [
     createUserWithEmailAndPassword,
     signUpUser,
@@ -18,7 +22,7 @@ export const useAuth = () => {
 
   return {
     signIn: signInWithEmailAndPassword,
-    signInUser,
+    user: userCredential?.user ?? null,
     signInLoading,
     signInError,
     signUp: createUserWithEmailAndPassword,

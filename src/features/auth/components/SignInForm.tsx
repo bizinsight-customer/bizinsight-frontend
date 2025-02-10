@@ -1,4 +1,3 @@
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
@@ -9,6 +8,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../hooks/useAuth";
 
 export const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ export const SignInForm = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading } = useAuth();
+  const { signIn, signInLoading, signInError } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,10 +29,10 @@ export const SignInForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(formData);
+      await signIn(formData.email, formData.password);
       navigate("/dashboard");
-    } catch (err) {
-      // Error is handled by useAuth hook
+    } catch (error) {
+      console.error("Sign in error", error);
     }
   };
 
@@ -75,14 +75,17 @@ export const SignInForm = () => {
           ),
         }}
       />
+      {signInError && (
+        <Box sx={{ color: "error.main", mt: 2 }}>{signInError.message}</Box>
+      )}
       <Button
         type="submit"
         fullWidth
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
-        disabled={isLoading}
+        disabled={signInLoading}
       >
-        {isLoading ? "Signing in..." : "Sign In"}
+        {signInLoading ? "Signing in..." : "Sign In"}
       </Button>
     </Box>
   );

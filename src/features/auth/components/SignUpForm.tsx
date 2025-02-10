@@ -1,4 +1,3 @@
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useTypedNavigate } from "@/hooks/useTypedNavigate";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -9,6 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 export const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ export const SignUpForm = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const { register } = useAuth();
+  const { signUp, signUpLoading, signUpError } = useAuth();
   const navigate = useTypedNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,12 +48,10 @@ export const SignUpForm = () => {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { passwordConfirmation: _, ...registerData } = formData;
-      await register.execute(registerData);
+      await signUp(formData.email, formData.password);
       navigate.navigateTo("/auth/signup-success");
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error("Sign up error", error);
     }
   };
 
@@ -122,14 +120,17 @@ export const SignUpForm = () => {
         error={passwordError}
         helperText={passwordError ? "Passwords do not match" : ""}
       />
+      {signUpError && (
+        <Box sx={{ color: "error.main", mt: 2 }}>{signUpError.message}</Box>
+      )}
       <Button
         type="submit"
         fullWidth
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
-        disabled={register.isLoading}
+        disabled={signUpLoading}
       >
-        {register.isLoading ? "Creating Account..." : "Sign Up"}
+        {signUpLoading ? "Creating Account..." : "Sign Up"}
       </Button>
     </Box>
   );

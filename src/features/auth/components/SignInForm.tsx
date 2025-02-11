@@ -1,3 +1,4 @@
+import { useStore } from "@/store";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
@@ -9,7 +10,6 @@ import {
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
-import { useAuthStore } from "../store/authSlice";
 
 export const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -17,9 +17,9 @@ export const SignInForm = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn, user } = useAuth();
+  const { signIn: firebaseSignIn, user: firebaseUser } = useAuth();
+  const { setUser } = useStore();
   const navigate = useNavigate();
-  const setToken = useAuthStore((state) => state.setToken);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -30,12 +30,19 @@ export const SignInForm = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await signIn(formData.email, formData.password);
-    if (user) {
-      const token = await user.getIdToken();
-      setToken(token);
+
+    try {
+      // Authenticate with Firebase
+      await firebaseSignIn(formData.email, formData.password);
+
+      if (firebaseUser) {
+        // Store user data in Zustand
+        setUser(firebaseUser);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Sign in failed:", error);
     }
-    navigate("/dashboard");
   };
 
   return (

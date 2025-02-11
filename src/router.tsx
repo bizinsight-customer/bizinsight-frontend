@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouteObject } from "react-router";
 import App from "./App";
 import MainLayout from "./components/layouts/MainLayout/MainLayout";
-import { UserProfile } from "./features/auth/components/UserProfile";
 import { authRoutes } from "./features/auth/routes";
-import { documentsRoutes } from "./features/documents/routes";
+// import { documentsRoutes } from "./features/documents/routes";
+import { UserProfile } from "./features/profile/pages/UserProfile";
 import { AppRouteConfig } from "./types/routes.types";
 
 const routes: AppRouteConfig[] = [
@@ -18,7 +18,7 @@ const routes: AppRouteConfig[] = [
             path: "/dashboard",
             element: <div>Dashboard Page</div>,
           },
-          ...documentsRoutes,
+          // ...documentsRoutes,
           {
             path: "/analytics",
             element: <div>Analytics Page</div>,

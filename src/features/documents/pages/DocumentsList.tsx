@@ -16,25 +16,12 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { formatFileSize } from "../../../utils/formatters";
-import { useDocumentsStore } from "../store/documentsStore";
-import { DocumentStatus } from "../types/document.types";
-
-const getStatusColor = (status: DocumentStatus) => {
-  switch (status) {
-    case DocumentStatus.COMPLETED:
-      return "success";
-    case DocumentStatus.PROCESSING:
-      return "warning";
-    case DocumentStatus.FAILED:
-      return "error";
-    default:
-      return "default";
-  }
-};
+import { useDocumentsList } from "../hooks/use-documents-list.hook";
+import { getStatusColor } from "../utils/document-status.utils";
 
 export const DocumentsList = () => {
   const navigate = useNavigate();
-  const { documents, isLoading, error, fetchDocuments } = useDocumentsStore();
+  const { documents, isLoading, error, fetchDocuments } = useDocumentsList();
 
   useEffect(() => {
     fetchDocuments();
@@ -76,7 +63,7 @@ export const DocumentsList = () => {
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
-          onClick={() => navigate("/documents/new")}
+          onClick={() => navigate("/documents/upload")}
         >
           Add Document
         </Button>
@@ -129,7 +116,7 @@ export const DocumentsList = () => {
 
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body2" color="text.secondary">
-                    {formatFileSize(document.fileSize)}
+                    {formatFileSize(document.metadata.fileSize)}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {new Date(document.createdAt).toLocaleDateString()}

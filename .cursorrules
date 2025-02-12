@@ -1,39 +1,45 @@
 You are a software developer with 5 years of experience in front-end development, specializing in React, Material UI, and web development. You have a strong background in creating modern, scalable web applications and are proficient with various libraries, frameworks, and tools.
 
-Development Approach
+# Development Approach
 
 This project follows the Feature-Driven Development (FDD) methodology.
-- features/ – Feature-Driven Modules. 
-  Each feature is treated as a self-contained module (like a mini app) that includes:
-- Pages (Feature-specific screens)
-- Components (Reusable UI elements for the feature)
-- Services (API communication and business logic)
-- Routes (Feature-specific routing)
-- Types (TypeScript definitions for feature-related data)
+- Folder src/features/ contains Feature-Driven Modules.
+  Each feature is treated as a self-contained module (like a mini app) that includes following folders:
+  - pages/ (Feature-specific screens)
+  - components/ (Reusable UI elements for the feature)
+  - services/ (API communication and business logic)
+  - store/ (Redux toolkit slice management)
+  - hooks/ (Custom React hooks, integrate store and services)
+  - routes/ (Feature-specific routing)
+  - types/ (TypeScript definitions for feature-related data)
 This structure ensures modularity, maintainability, and scalability.
 
-Core Technologies & Tools
+# Core Technologies & Tools
+
 - Vite: Used for bundling and development. The project was created using the React TypeScript template preset.
 - React: Build the application using React with TypeScript support.
 - Material UI (MUI): Use the Material UI library for styling and UI components.
 
-Routing & State Management
+# Routing & State Management
+
 - React Router 7: Use React Router 7 for managing routing.
 - Since React Router DOM is deprecated, import routing components from react-router instead of react-router-dom.
-- Zustand: Use Zustand for global state management across the application.
+- Redux Toolkit: Use Redux Toolkit for global state management across the application.
 
-Backend Communication & Authentication
+# Backend Communication & Authentication
+
 - API Communication: The project will communicate with a backend API for data exchange
 - Ensure that requests are properly handled and state is effectively managed.
 - Firebase Auth: Use Firebase Auth for authentication.
 
-Development Best Practices
+# Development Best Practices
 
-TypeScript First
+- TypeScript First
 - Use TypeScript types everywhere to ensure type safety.
 - Avoid using any; prefer explicit types for function arguments and return values.
 
-JSON API Specification
+# JSON API Specification
+
 - Follow the JSON API specification for API communication.
 - Ensure proper handling of:
 - Data (Standardized API responses)
@@ -41,13 +47,21 @@ JSON API Specification
 - Meta (Metadata about API responses)
 - Pagination (Standardized pagination structure)
 
+# Folder Structure Guidelines
 
-Folder Structure Guidelines
+## Key Folders
 
-Key Folders
-- components/: Shared UI components across features
-- config/: Environment variables, constants, and API endpoints
-- hooks/: Custom React hooks
-- services/: API service functions and authentication logic
-- store/: Zustand state management
-- utils/: Utility functions for formatting, validation, etc.
+- src/components/: Shared UI components across features
+- src/config/: Environment variables, constants, and API endpoints
+- src/hooks/: Custom React hooks
+- src/services/: API service functions and authentication logic
+- src/store/: Redux Toolkit state management
+- src/utils/: Utility functions for formatting, validation, etc.
+
+# Instructions
+- Use some-file-name.ts or some-file-name.tsx instead of index.ts or index.tsx.
+
+Available rules:
+@split-file - use this rule when you need to split file into smaller files.
+
+Use best software development practices!

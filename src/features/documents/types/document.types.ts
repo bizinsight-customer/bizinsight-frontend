@@ -1,27 +1,26 @@
 export interface Document {
   id: string;
   title: string;
+  url: string;
   type: DocumentType;
+  description?: string;
+  status: DocumentStatus;
+  userId: string;
   createdAt: string;
   updatedAt: string;
-  status: DocumentStatus;
-  description?: string;
-  fileSize: number;
-  fileType: string;
+  metadata: {
+    fileSize: number;
+    fileType: string;
+    pageCount?: number;
+  };
 }
 
 export enum DocumentType {
   INVOICE = "INVOICE",
-  PAYMENT_CONFIRMATION = "PAYMENT_CONFIRMATION",
-  SALARY = "SALARY",
-  TAX = "TAX",
-  UTILITIES_RENT = "UTILITIES_RENT",
-  MARKETING = "MARKETING",
-  OPERATIONAL_EXPENSE = "OPERATIONAL_EXPENSE",
-  LOGISTICS = "LOGISTICS",
-  REFUND = "REFUND",
-  CUSTOMS = "CUSTOMS",
-  UNFORESEEN_EXPENSE = "UNFORESEEN_EXPENSE",
+  CONTRACT = "CONTRACT",
+  REPORT = "REPORT",
+  RECEIPT = "RECEIPT",
+  OTHER = "OTHER",
 }
 
 export enum DocumentStatus {
@@ -169,4 +168,18 @@ export interface DocumentRecognitionResponse {
   document_type: DocumentType;
   extracted_data: ExtractedDocumentData;
   metadata?: Record<string, unknown>;
+}
+
+export interface DocumentField {
+  name: string;
+  type: string;
+  value: string;
+}
+
+export interface DocumentCreationPayload {
+  file: File;
+  type: DocumentType;
+  title: string;
+  description?: string;
+  fields: DocumentField[];
 }

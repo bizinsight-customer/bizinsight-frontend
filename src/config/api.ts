@@ -31,6 +31,7 @@ export const API_ENDPOINTS = {
   },
   DOCUMENTS: {
     RECOGNIZE: "/documents/recognize",
+    CREATE: "/documents",
   },
 } as const;
 

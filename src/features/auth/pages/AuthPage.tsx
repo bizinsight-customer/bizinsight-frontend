@@ -7,7 +7,6 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 import { SignInForm } from "../components/SignInForm";
@@ -17,8 +16,10 @@ type AuthMode = "signin" | "signup";
 
 const AuthPage = () => {
   const [mode, setMode] = useState<AuthMode>("signin");
-  const { error } = useAuth();
-  const theme = useTheme();
+  const { error, isLoading } = useAuth();
+  const currentError = mode === "signin" ? error.signIn : error.signUp;
+  const isCurrentLoading =
+    mode === "signin" ? isLoading.signIn : isLoading.signUp;
 
   const handleModeChange = (
     _: React.MouseEvent<HTMLElement>,
@@ -65,13 +66,17 @@ const AuthPage = () => {
             {mode === "signin" ? "Sign In" : "Create Account"}
           </Typography>
 
-          {error && (
+          {currentError && (
             <Alert severity="error" sx={{ mb: 2, width: "100%" }}>
-              {error.message}
+              {currentError.message}
             </Alert>
           )}
 
-          {mode === "signin" ? <SignInForm /> : <SignUpForm />}
+          {mode === "signin" ? (
+            <SignInForm isLoading={isCurrentLoading} />
+          ) : (
+            <SignUpForm isLoading={isCurrentLoading} />
+          )}
         </Paper>
       </Box>
     </Container>

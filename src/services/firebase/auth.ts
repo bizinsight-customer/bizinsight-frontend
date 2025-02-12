@@ -10,4 +10,17 @@ export const getUserData = async (user: User) => {
   return claims;
 };
 
+export const getCurrentUserToken = async (): Promise<string | null> => {
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return null;
+    }
+    return await currentUser.getIdToken();
+  } catch (error) {
+    console.error("Error getting user token:", error);
+    return null;
+  }
+};
+
 export { auth };

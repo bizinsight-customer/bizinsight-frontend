@@ -1,4 +1,4 @@
-import { useStore } from "@/store";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
@@ -9,40 +9,38 @@ import {
 } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "../hooks/useAuth";
 
-export const SignInForm = () => {
+interface SignInFormProps {
+  isLoading: boolean;
+}
+
+export const SignInForm = ({ isLoading }: SignInFormProps) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn: firebaseSignIn, user: firebaseUser } = useAuth();
-  const { setUser } = useStore();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
 
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const success = await signIn(formData.email, formData.password);
+    if (success) {
+      navigate("/dashboard");
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      // Authenticate with Firebase
-      await firebaseSignIn(formData.email, formData.password);
-
-      if (firebaseUser) {
-        // Store user data in Zustand
-        setUser(firebaseUser);
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Sign in failed:", error);
-    }
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -75,7 +73,7 @@ export const SignInForm = () => {
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={handleClickShowPassword}
                 edge="end"
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -84,7 +82,14 @@ export const SignInForm = () => {
           ),
         }}
       />
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}
+        disabled={isLoading}
+        loading={isLoading}
+      >
         Sign In
       </Button>
     </Box>

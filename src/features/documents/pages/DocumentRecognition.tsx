@@ -21,39 +21,43 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router";
-import { useDocumentsStore } from "../store/documentsStore";
-import { DocumentType } from "../types/document.types";
+import { useDocumentsUpload } from "../hooks/use-documents-upload.hook";
+import { DocumentCreationPayload, DocumentType } from "../types/document.types";
 
 const steps = ["Upload File", "Processing", "Review & Confirm"];
 
-export const DocumentUpload = () => {
+export const DocumentRecognition = () => {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const {
     file,
+    isUploading,
+    isRecognizing,
+    isCreating,
+    error,
+    recognitionData,
     uploadProgress,
-    extractedData,
-    isProcessing,
-    uploadError,
-    uploadDocument,
-    confirmUpload,
-    resetUpload,
-    updateExtractedData,
-  } = useDocumentsStore();
+    handleFileSelect,
+    recognizeDocument,
+    updateFieldValue,
+    createDocument,
+    reset,
+  } = useDocumentsUpload();
 
   useEffect(() => {
     // Reset upload state when component mounts
-    resetUpload();
-  }, [resetUpload]);
+    reset();
+  }, [reset]);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
-        await uploadDocument(acceptedFiles[0]);
+        handleFileSelect(acceptedFiles[0]);
         setActiveStep(1);
+        await recognizeDocument();
       }
     },
-    [uploadDocument]
+    [handleFileSelect, recognizeDocument]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -67,17 +71,30 @@ export const DocumentUpload = () => {
   });
 
   useEffect(() => {
-    if (uploadProgress === 100 && !isProcessing) {
+    if (recognitionData.documentType && !isRecognizing) {
       setActiveStep(2);
     }
-  }, [uploadProgress, isProcessing]);
+  }, [recognitionData.documentType, isRecognizing]);
 
   const handleConfirm = async () => {
+    if (!file || !recognitionData.documentType) return;
+
+    const payload: DocumentCreationPayload = {
+      file,
+      type: recognitionData.documentType,
+      title:
+        recognitionData.fields.find((f) => f.name === "title")?.value ||
+        file.name,
+      description: recognitionData.fields.find((f) => f.name === "description")
+        ?.value,
+      fields: recognitionData.fields,
+    };
+
     try {
-      await confirmUpload();
+      await createDocument(payload);
       navigate("/documents");
     } catch (error) {
-      // Error is handled by the store
+      // Error is handled by the hook
     }
   };
 
@@ -111,13 +128,19 @@ export const DocumentUpload = () => {
   const renderProcessingStep = () => (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Processing your document...
+        {isUploading
+          ? "Uploading your document..."
+          : "Processing your document..."}
       </Typography>
-      <LinearProgress
-        variant="determinate"
-        value={uploadProgress}
-        sx={{ my: 2 }}
-      />
+      {isUploading ? (
+        <LinearProgress
+          variant="determinate"
+          value={uploadProgress}
+          sx={{ my: 2 }}
+        />
+      ) : (
+        <LinearProgress sx={{ my: 2 }} />
+      )}
       <Typography variant="body2" color="textSecondary">
         {file?.name}
       </Typography>
@@ -129,9 +152,9 @@ export const DocumentUpload = () => {
       <Typography variant="h6" gutterBottom>
         Review Document Information
       </Typography>
-      {uploadError && (
+      {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {uploadError}
+          {error}
         </Alert>
       )}
       <Card sx={{ mb: 2 }}>
@@ -139,21 +162,31 @@ export const DocumentUpload = () => {
           <FormControl fullWidth sx={{ mb: 2 }}>
             <TextField
               label="Document Title"
-              value={extractedData?.title || ""}
-              onChange={(e) => updateExtractedData({ title: e.target.value })}
+              value={
+                recognitionData.fields.find((f) => f.name === "title")?.value ||
+                ""
+              }
+              onChange={(e) =>
+                updateFieldValue(
+                  recognitionData.fields.findIndex((f) => f.name === "title"),
+                  { name: "title", type: "string", value: e.target.value }
+                )
+              }
               fullWidth
             />
           </FormControl>
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>Document Type</InputLabel>
             <Select
-              value={extractedData?.type || ""}
+              value={recognitionData.documentType || ""}
               label="Document Type"
-              onChange={(e) =>
-                updateExtractedData({
-                  type: e.target.value as DocumentType,
-                })
-              }
+              onChange={(e) => {
+                const type = e.target.value as DocumentType;
+                updateFieldValue(
+                  recognitionData.fields.findIndex((f) => f.name === "type"),
+                  { name: "type", type: "string", value: type }
+                );
+              }}
             >
               {Object.values(DocumentType).map((type) => (
                 <MenuItem key={type} value={type}>
@@ -167,11 +200,17 @@ export const DocumentUpload = () => {
               label="Description"
               multiline
               rows={3}
-              value={extractedData?.description || ""}
+              value={
+                recognitionData.fields.find((f) => f.name === "description")
+                  ?.value || ""
+              }
               onChange={(e) =>
-                updateExtractedData({
-                  description: e.target.value,
-                })
+                updateFieldValue(
+                  recognitionData.fields.findIndex(
+                    (f) => f.name === "description"
+                  ),
+                  { name: "description", type: "string", value: e.target.value }
+                )
               }
             />
           </FormControl>
@@ -181,7 +220,7 @@ export const DocumentUpload = () => {
         <Button
           variant="outlined"
           onClick={() => {
-            resetUpload();
+            reset();
             setActiveStep(0);
           }}
         >
@@ -190,7 +229,7 @@ export const DocumentUpload = () => {
         <Button
           variant="contained"
           onClick={handleConfirm}
-          disabled={!extractedData?.title || !extractedData?.type}
+          disabled={!recognitionData.documentType || isCreating}
         >
           Confirm & Save
         </Button>

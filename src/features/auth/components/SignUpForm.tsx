@@ -1,4 +1,4 @@
-import { useTypedNavigate } from "@/hooks/useTypedNavigate";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
@@ -7,20 +7,34 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router";
 
-export const SignUpForm = () => {
+interface SignUpFormProps {
+  isLoading: boolean;
+}
+
+export const SignUpForm = ({ isLoading }: SignUpFormProps) => {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
-    passwordConfirmation: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const { signUp, signUpLoading, signUpError } = useAuth();
-  const navigate = useTypedNavigate();
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      return;
+    }
+    const success = await signUp(formData.email, formData.password);
+    if (success) {
+      navigate("/auth/success");
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,30 +42,13 @@ export const SignUpForm = () => {
       ...prev,
       [name]: value,
     }));
-
-    // Clear password error when either password field changes
-    if (name === "password" || name === "passwordConfirmation") {
-      setPasswordError(false);
-    }
   };
 
-  const validatePasswords = () => {
-    const isMatch = formData.password === formData.passwordConfirmation;
-    setPasswordError(!isMatch);
-    return isMatch;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validatePasswords()) {
-      return;
-    }
-
-    try {
-      await signUp(formData.email, formData.password);
-      navigate.navigateTo("/auth/signup-success");
-    } catch (error) {
-      console.error("Sign up error", error);
+  const handleClickShowPassword = (field: "password" | "confirmPassword") => {
+    if (field === "password") {
+      setShowPassword(!showPassword);
+    } else {
+      setShowConfirmPassword(!showConfirmPassword);
     }
   };
 
@@ -61,22 +58,11 @@ export const SignUpForm = () => {
         margin="normal"
         required
         fullWidth
-        id="name"
-        label="Full Name"
-        name="name"
-        autoComplete="name"
-        autoFocus
-        value={formData.name}
-        onChange={handleChange}
-      />
-      <TextField
-        margin="normal"
-        required
-        fullWidth
         id="email"
         label="Email Address"
         name="email"
         autoComplete="email"
+        autoFocus
         value={formData.email}
         onChange={handleChange}
       />
@@ -91,13 +77,12 @@ export const SignUpForm = () => {
         autoComplete="new-password"
         value={formData.password}
         onChange={handleChange}
-        error={passwordError}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => handleClickShowPassword("password")}
                 edge="end"
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -110,27 +95,46 @@ export const SignUpForm = () => {
         margin="normal"
         required
         fullWidth
-        name="passwordConfirmation"
+        name="confirmPassword"
         label="Confirm Password"
-        type={showPassword ? "text" : "password"}
-        id="passwordConfirmation"
+        type={showConfirmPassword ? "text" : "password"}
+        id="confirmPassword"
         autoComplete="new-password"
-        value={formData.passwordConfirmation}
+        value={formData.confirmPassword}
         onChange={handleChange}
-        error={passwordError}
-        helperText={passwordError ? "Passwords do not match" : ""}
+        error={
+          formData.confirmPassword !== "" &&
+          formData.password !== formData.confirmPassword
+        }
+        helperText={
+          formData.confirmPassword !== "" &&
+          formData.password !== formData.confirmPassword
+            ? "Passwords do not match"
+            : ""
+        }
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle confirm password visibility"
+                onClick={() => handleClickShowPassword("confirmPassword")}
+                edge="end"
+              >
+                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
-      {signUpError && (
-        <Box sx={{ color: "error.main", mt: 2 }}>{signUpError.message}</Box>
-      )}
       <Button
         type="submit"
         fullWidth
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
-        disabled={signUpLoading}
+        disabled={isLoading}
+        loading={isLoading}
       >
-        {signUpLoading ? "Creating Account..." : "Sign Up"}
+        Sign Up
       </Button>
     </Box>
   );

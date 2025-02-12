@@ -12,54 +12,35 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router";
 import { formatFileSize } from "../../../utils/formatters";
-import { useDocumentsStore } from "../store/documentsStore";
-import { Document, DocumentStatus } from "../types/document.types";
-
-const getStatusColor = (status: DocumentStatus) => {
-  switch (status) {
-    case DocumentStatus.COMPLETED:
-      return "success";
-    case DocumentStatus.PROCESSING:
-      return "warning";
-    case DocumentStatus.FAILED:
-      return "error";
-    default:
-      return "default";
-  }
-};
-
-const MetadataField = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number | React.ReactNode;
-}) => (
-  <Box mb={2}>
-    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-      {label}
-    </Typography>
-    <Typography variant="body1">{value}</Typography>
-  </Box>
-);
+import { MetadataField } from "../components/MetadataField";
+import { useDocumentsList } from "../hooks/use-documents-list.hook";
+import { getStatusColor } from "../utils/document-status.utils";
 
 export const DocumentDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { documents } = useDocumentsStore();
-  const [document, setDocument] = useState<Document | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    selectedDocument: document,
+    isLoading,
+    error,
+    fetchDocumentById,
+  } = useDocumentsList();
 
   useEffect(() => {
-    const doc = documents.find((d) => d.id === id);
-    if (doc) {
-      setDocument(doc);
-    } else {
-      setError("Document not found");
+    if (id) {
+      fetchDocumentById(id);
     }
-  }, [id, documents]);
+  }, [id, fetchDocumentById]);
+
+  if (isLoading) {
+    return (
+      <Box m={3}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   if (error) {
     return (
@@ -145,11 +126,11 @@ export const DocumentDetail = () => {
               />
               <MetadataField
                 label="File Type"
-                value={document.fileType.toUpperCase()}
+                value={document.metadata.fileType.toUpperCase()}
               />
               <MetadataField
                 label="File Size"
-                value={formatFileSize(document.fileSize)}
+                value={formatFileSize(document.metadata.fileSize)}
               />
             </CardContent>
           </Card>

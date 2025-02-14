@@ -31,11 +31,6 @@ export enum DocumentStatus {
 
 export interface DocumentsResponse {
   data: Document[];
-  meta: {
-    total: number;
-    page: number;
-    perPage: number;
-  };
 }
 
 // Company Information

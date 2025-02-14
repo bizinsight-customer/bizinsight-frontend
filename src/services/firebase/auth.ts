@@ -1,12 +1,13 @@
-import { getAuth, User } from "firebase/auth";
-import firebaseApp from "./firebase";
-
-const auth = getAuth(firebaseApp);
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  User,
+} from "firebase/auth";
+import { auth } from "./firebase";
 
 export const getUserData = async (user: User) => {
   const idTokenResult = await user.getIdTokenResult();
   const { claims } = idTokenResult;
-
   return claims;
 };
 
@@ -23,4 +24,21 @@ export const getCurrentUserToken = async (): Promise<string | null> => {
   }
 };
 
-export { auth };
+export const reauthenticateUser = async (
+  email: string,
+  password: string
+): Promise<boolean> => {
+  try {
+    const user = auth.currentUser;
+    if (!user || !email) {
+      return false;
+    }
+
+    const credential = EmailAuthProvider.credential(email, password);
+    await reauthenticateWithCredential(user, credential);
+    return true;
+  } catch (error) {
+    console.error("Re-authentication failed:", error);
+    return false;
+  }
+};

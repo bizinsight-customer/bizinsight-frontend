@@ -17,7 +17,7 @@ type AuthMode = "signin" | "signup";
 const AuthPage = () => {
   const [mode, setMode] = useState<AuthMode>("signin");
   const { error, isLoading } = useAuth();
-  const currentError = mode === "signin" ? error.signIn : error.signUp;
+  const currentError = mode === "signin" ? error?.signIn : error?.signUp;
   const isCurrentLoading =
     mode === "signin" ? isLoading.signIn : isLoading.signUp;
 

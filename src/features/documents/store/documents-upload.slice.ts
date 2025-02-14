@@ -5,8 +5,15 @@ import {
   DocumentType,
 } from "../types/document.types";
 
+interface SerializableFileInfo {
+  name: string;
+  size: number;
+  type: string;
+  lastModified: number;
+}
+
 interface DocumentUploadState {
-  file: File | null;
+  fileInfo: SerializableFileInfo | null;
   isUploading: boolean;
   isRecognizing: boolean;
   isCreating: boolean;
@@ -19,7 +26,7 @@ interface DocumentUploadState {
 }
 
 const initialState: DocumentUploadState = {
-  file: null,
+  fileInfo: null,
   isUploading: false,
   isRecognizing: false,
   isCreating: false,
@@ -36,7 +43,16 @@ export const documentsUploadSlice = createSlice({
   initialState,
   reducers: {
     setFile: (state, action: PayloadAction<File | null>) => {
-      state.file = action.payload;
+      if (action.payload) {
+        state.fileInfo = {
+          name: action.payload.name,
+          size: action.payload.size,
+          type: action.payload.type,
+          lastModified: action.payload.lastModified,
+        };
+      } else {
+        state.fileInfo = null;
+      }
       // Reset states when new file is set
       state.recognitionData = initialState.recognitionData;
       state.error = null;
@@ -78,9 +94,7 @@ export const documentsUploadSlice = createSlice({
     ) => {
       state.recognitionData.fields[action.payload.index] = action.payload.field;
     },
-    resetState: (state) => {
-      return initialState;
-    },
+    resetState: () => initialState,
   },
 });
 

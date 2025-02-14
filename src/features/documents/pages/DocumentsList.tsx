@@ -43,6 +43,9 @@ export const DocumentsList = () => {
   if (error) {
     return (
       <Box m={2}>
+        <Typography variant="h4" component="h1">
+          Error
+        </Typography>
         <Alert severity="error">{error}</Alert>
       </Box>
     );
@@ -63,7 +66,7 @@ export const DocumentsList = () => {
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
-          onClick={() => navigate("/documents/upload")}
+          onClick={() => navigate("/documents/new")}
         >
           Add Document
         </Button>

@@ -6,31 +6,27 @@ import {
   setDocuments,
   setError,
   setLoading,
-  setPage,
   setSelectedDocument,
 } from "../store/documents-list.slice";
 
 export const useDocumentsList = () => {
   const dispatch = useDispatch();
-  const { documents, selectedDocument, isLoading, error, pagination } =
-    useSelector((state: RootState) => state.documentsList);
-
-  const fetchDocuments = useCallback(
-    async (page: number = 1) => {
-      try {
-        dispatch(setLoading(true));
-        dispatch(setError(null));
-        const response = await documentService.getDocuments();
-        dispatch(setDocuments(response.data));
-        dispatch(setPage(page));
-      } catch (error) {
-        dispatch(setError((error as Error).message));
-      } finally {
-        dispatch(setLoading(false));
-      }
-    },
-    [dispatch]
+  const { documents, selectedDocument, isLoading, error } = useSelector(
+    (state: RootState) => state.documentsList
   );
+
+  const fetchDocuments = useCallback(async () => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+      const response = await documentService.getDocuments();
+      dispatch(setDocuments(response.data));
+    } catch (error) {
+      dispatch(setError((error as Error).message));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch]);
 
   const fetchDocumentById = useCallback(
     async (id: string) => {
@@ -58,7 +54,6 @@ export const useDocumentsList = () => {
     selectedDocument,
     isLoading,
     error,
-    pagination,
     // Actions
     fetchDocuments,
     fetchDocumentById,

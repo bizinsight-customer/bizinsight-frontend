@@ -1,11 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { documentService } from "../services/document.service";
 import {
   resetState,
   setError,
-  setFile,
   setIsCreating,
   setIsRecognizing,
   setRecognitionData,
@@ -18,8 +17,9 @@ import {
 
 export const useDocumentsUpload = () => {
   const dispatch = useDispatch();
+  const [fileObject, setFileObject] = useState<File | null>(null);
   const {
-    file,
+    fileInfo,
     isUploading,
     isRecognizing,
     isCreating,
@@ -28,27 +28,24 @@ export const useDocumentsUpload = () => {
     uploadProgress,
   } = useSelector((state: RootState) => state.documentsUpload);
 
-  const handleFileSelect = useCallback(
-    (file: File | null) => {
-      dispatch(setFile(file));
-    },
-    [dispatch]
-  );
+  const handleFileSelect = useCallback((file: File | null) => {
+    setFileObject(file);
+  }, []);
 
   const recognizeDocument = useCallback(async () => {
-    if (!file) return;
+    if (!fileObject) return;
 
     try {
       dispatch(setIsRecognizing(true));
       dispatch(setError(null));
-      const response = await documentService.recognizeDocument(file);
+      const response = await documentService.recognizeDocument(fileObject);
       dispatch(setRecognitionData(response.data));
     } catch (error) {
       dispatch(setError((error as Error).message));
     } finally {
       dispatch(setIsRecognizing(false));
     }
-  }, [dispatch, file]);
+  }, [dispatch, fileObject]);
 
   const updateFieldValue = useCallback(
     (index: number, field: DocumentField) => {
@@ -64,6 +61,7 @@ export const useDocumentsUpload = () => {
         dispatch(setError(null));
         await documentService.createDocument(payload);
         dispatch(resetState());
+        setFileObject(null);
       } catch (error) {
         dispatch(setError((error as Error).message));
       } finally {
@@ -74,12 +72,14 @@ export const useDocumentsUpload = () => {
   );
 
   const reset = useCallback(() => {
+    setFileObject(null);
     dispatch(resetState());
   }, [dispatch]);
 
   return {
     // State
-    file,
+    file: fileObject,
+    fileInfo,
     isUploading,
     isRecognizing,
     isCreating,

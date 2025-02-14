@@ -6,11 +6,6 @@ interface DocumentsListState {
   selectedDocument: Document | null;
   isLoading: boolean;
   error: string | null;
-  pagination: {
-    total: number;
-    page: number;
-    perPage: number;
-  };
 }
 
 const initialState: DocumentsListState = {
@@ -18,11 +13,6 @@ const initialState: DocumentsListState = {
   selectedDocument: null,
   isLoading: false,
   error: null,
-  pagination: {
-    total: 0,
-    page: 1,
-    perPage: 10,
-  },
 };
 
 export const documentsListSlice = createSlice({
@@ -31,7 +21,6 @@ export const documentsListSlice = createSlice({
   reducers: {
     setDocuments: (state, action: PayloadAction<DocumentsResponse>) => {
       state.documents = action.payload.data;
-      state.pagination = action.payload.meta;
     },
     setSelectedDocument: (state, action: PayloadAction<Document | null>) => {
       state.selectedDocument = action.payload;
@@ -42,18 +31,10 @@ export const documentsListSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    setPage: (state, action: PayloadAction<number>) => {
-      state.pagination.page = action.payload;
-    },
   },
 });
 
-export const {
-  setDocuments,
-  setSelectedDocument,
-  setLoading,
-  setError,
-  setPage,
-} = documentsListSlice.actions;
+export const { setDocuments, setSelectedDocument, setLoading, setError } =
+  documentsListSlice.actions;
 
 export default documentsListSlice.reducer;

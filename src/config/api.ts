@@ -15,6 +15,7 @@ export const apiConfig: ApiConfig = {
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
+    HUI: "HUI",
   },
 };
 
@@ -30,8 +31,13 @@ export const API_ENDPOINTS = {
     },
   },
   DOCUMENTS: {
-    RECOGNIZE: "/documents/recognize",
+    LIST: "/documents",
+    GET: (id: string) => `/documents/${id}`,
     CREATE: "/documents",
+    UPLOAD: "/documents/upload",
+    DELETE: (id: string) => `/documents/${id}`,
+    RECOGNIZE: "/documents/recognize",
+    GET_TYPES: "/documents/types",
   },
 } as const;
 

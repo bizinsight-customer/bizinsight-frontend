@@ -1,9 +1,13 @@
 import {
   EmailAuthProvider,
+  getAuth,
   reauthenticateWithCredential,
   User,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import app from "./firebase";
+
+// Initialize Firebase services
+export const auth = getAuth(app);
 
 export const getUserData = async (user: User) => {
   const idTokenResult = await user.getIdTokenResult();

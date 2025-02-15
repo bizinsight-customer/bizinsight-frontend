@@ -1,0 +1,5 @@
+---
+description: 
+globs: 
+---
+Use useTypedNavigate from [useTypedNavigate.ts](mdc:src/hooks/useTypedNavigate.ts) instead of useNavigate from react-router.

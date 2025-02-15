@@ -63,5 +63,6 @@ This structure ensures modularity, maintainability, and scalability.
 
 Available rules:
 @split-file - use this rule when you need to split file into smaller files.
+@typed-navigate - use this rule when you need to navigate to a route
 
 Use best software development practices!

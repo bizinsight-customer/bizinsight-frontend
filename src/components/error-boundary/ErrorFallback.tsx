@@ -10,6 +10,7 @@ export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
 
   useEffect(() => {
     if (isAuthError(error.message)) {
+      console.log("NAVIGATING TO SIGN IN");
       // Reset the error boundary before navigating
       resetErrorBoundary();
       // Navigate to sign in page

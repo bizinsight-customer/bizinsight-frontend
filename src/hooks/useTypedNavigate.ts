@@ -1,8 +1,5 @@
-import { AuthRouteParams } from "@/features/auth/routes";
+import { AppRouteParams } from "@/types/routes.types";
 import { useLocation, useNavigate } from "react-router";
-
-// Combine all feature route params
-type AppRouteParams = AuthRouteParams;
 
 export function useTypedNavigate() {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import {
+  auth,
   getCurrentUserToken,
   getUserData,
   reauthenticateUser,
 } from "@/services/firebase/auth";
-import { auth } from "@/services/firebase/firebase";
 import { User } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import {

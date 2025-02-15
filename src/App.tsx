@@ -1,9 +1,10 @@
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
-import { ApiProvider } from "@/services/api/ApiProvider";
 import { ErrorInfo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router";
 import "./App.css";
+import AuthStateChangeHandler from "./components/auth/AuthStateChangeHandler";
+import { GlobalErrorHandler } from "./components/error-boundary/GlobalErrorHandler";
 
 const logError = (error: Error, info: ErrorInfo) => {
   // Log to your error reporting service
@@ -13,9 +14,9 @@ const logError = (error: Error, info: ErrorInfo) => {
 function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} onError={logError}>
-      <ApiProvider>
-        <Outlet />
-      </ApiProvider>
+      <GlobalErrorHandler />
+      <AuthStateChangeHandler />
+      <Outlet />
     </ErrorBoundary>
   );
 }

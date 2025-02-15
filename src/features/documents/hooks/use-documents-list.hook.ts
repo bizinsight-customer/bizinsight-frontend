@@ -23,6 +23,7 @@ export const useDocumentsList = () => {
       dispatch(setDocuments(response.data));
     } catch (error) {
       dispatch(setError((error as Error).message));
+      console.error("Error fetching documents:", error);
     } finally {
       dispatch(setLoading(false));
     }

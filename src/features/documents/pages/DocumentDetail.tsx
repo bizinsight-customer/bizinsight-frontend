@@ -12,27 +12,15 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
 import { useParams } from "react-router";
 import { formatFileSize } from "../../../utils/formatters";
 import { MetadataField } from "../components/MetadataField";
-import { useDocumentsList } from "../hooks/use-documents-list.hook";
+import { useGetDocumentQuery } from "../store/documents-api.slice";
 import { getStatusColor } from "../utils/document-status.utils";
 
 export const DocumentDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const {
-    selectedDocument: document,
-    isLoading,
-    error,
-    fetchDocumentById,
-  } = useDocumentsList();
-
-  useEffect(() => {
-    if (id) {
-      fetchDocumentById(id);
-    }
-  }, [id, fetchDocumentById]);
+  const { data: document, isLoading, error } = useGetDocumentQuery(id);
 
   if (isLoading) {
     return (

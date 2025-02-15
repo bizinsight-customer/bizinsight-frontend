@@ -28,7 +28,10 @@ export interface CompanyBase {
 
 // Base Document Interface
 export interface Document {
+  id: string;
+  title: string;
   type: DocumentType;
+  status: DocumentStatus;
   amount: number;
   currency: string;
   description?: string;
@@ -36,6 +39,9 @@ export interface Document {
   document_date: string;
   issuer_company: CompanyBase;
   recipient_company: CompanyBase;
+  size: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface DocumentRecognitionResponse {

@@ -1,12 +1,21 @@
 import { useErrorBoundary } from "react-error-boundary";
 
-// @ts-expect-error - This is a global variable that will be set by the useSetGlobalErrorHandler hook
-export let globalHandleError: (error: Error) => void = null;
+let handleError: ((error: Error) => void) | null = null;
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const globalHandleError = (error: Error) => {
+  if (handleError) {
+    handleError(error);
+  } else {
+    console.error("No error handler set");
+    console.error(error);
+  }
+};
 
 export const GlobalErrorHandler = () => {
   const { showBoundary } = useErrorBoundary();
 
-  globalHandleError = showBoundary;
+  handleError = showBoundary;
 
   return null;
 };

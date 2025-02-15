@@ -11,7 +11,6 @@ import {
 import { useState } from "react";
 import { SignInForm } from "../components/SignInForm";
 import { SignUpForm } from "../components/SignUpForm";
-
 type AuthMode = "signin" | "signup";
 
 const AuthPage = () => {

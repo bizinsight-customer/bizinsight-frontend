@@ -1,16 +1,18 @@
 import { AppRouteParams } from "@/types/routes.types";
+import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 export function useTypedNavigate() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  return {
-    navigateTo: <T extends keyof AppRouteParams>(
+  const navigateTo = useCallback(
+    <T extends keyof AppRouteParams>(
       route: T,
       params?: AppRouteParams[T],
       options?: { replace?: boolean }
     ) => {
+      console.log("NAVIGATE TO", route, params, options);
       let path = route as string;
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
@@ -19,11 +21,16 @@ export function useTypedNavigate() {
       }
       navigate(path, { replace: options?.replace });
     },
+    [navigate]
+  );
 
-    goBack: () => {
-      navigate(-1);
-    },
+  const goBack = useCallback(() => {
+    navigate(-1);
+  }, [navigate]);
 
+  return {
+    navigateTo,
+    goBack,
     currentPath: location.pathname,
   };
 }

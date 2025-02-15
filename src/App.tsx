@@ -5,6 +5,7 @@ import { Outlet } from "react-router";
 import "./App.css";
 import AuthStateChangeHandler from "./components/auth/AuthStateChangeHandler";
 import { GlobalErrorHandler } from "./components/error-boundary/GlobalErrorHandler";
+import { ErrorPopup } from "./components/error-popup/ErrorPopup";
 
 const logError = (error: Error, info: ErrorInfo) => {
   // Log to your error reporting service
@@ -16,6 +17,7 @@ function App() {
     <ErrorBoundary FallbackComponent={ErrorFallback} onError={logError}>
       <GlobalErrorHandler />
       <AuthStateChangeHandler />
+      <ErrorPopup />
       <Outlet />
     </ErrorBoundary>
   );

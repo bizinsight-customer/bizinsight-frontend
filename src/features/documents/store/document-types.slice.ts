@@ -1,12 +1,11 @@
 import { API_ENDPOINTS } from "@/config/api";
-import { axiosBaseQuery } from "@/services/api/axios-base-query";
+import { createApiSlice } from "@/store/create-api-slice";
 import { JsonApiCollectionResponse } from "@/types/json-api.types";
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { DocumentType } from "../types/document.types";
 
-export const documentTypesApi = createApi({
+export const documentTypesApi = createApiSlice({
   reducerPath: "documentTypesApi",
-  baseQuery: axiosBaseQuery(),
+}).injectEndpoints({
   endpoints: (builder) => ({
     getDocumentTypes: builder.query<DocumentType[], void>({
       query: () => ({
@@ -15,6 +14,7 @@ export const documentTypesApi = createApi({
       transformResponse: (
         response: JsonApiCollectionResponse<DocumentType>
       ) => {
+        console.log("RESPONSE", response);
         return response.data;
       },
     }),

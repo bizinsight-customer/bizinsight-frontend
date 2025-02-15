@@ -12,16 +12,8 @@ export const setupAuthInterceptor = (
 ) => {
   console.log("SETTING UP AUTH INTERCEPTOR");
 
-  let safeHandleError = handleError;
-  if (!safeHandleError) {
-    console.error("Handle error is not set");
-    safeHandleError = (error: Error) => {
-      console.error("Error in auth interceptor:", error);
-    };
-  }
-
   const handleAuthError = (error: Error) => {
-    safeHandleError(error);
+    handleError(error);
     // Navigate to sign in page
     globalNavigate(AUTH_ROUTES.SIGN_IN);
   };

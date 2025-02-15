@@ -7,7 +7,7 @@ import {
 import app from "./firebase";
 
 // Initialize Firebase services
-export const auth = getAuth(app);
+export let auth = getAuth(app);
 
 export const getUserData = async (user: User) => {
   const idTokenResult = await user.getIdTokenResult();
@@ -17,9 +17,13 @@ export const getUserData = async (user: User) => {
 
 export const getCurrentUserToken = async (): Promise<string | null> => {
   try {
-    const currentUser = auth.currentUser;
+    let currentUser = auth.currentUser;
     if (!currentUser) {
-      return null;
+      auth = getAuth(app);
+      currentUser = auth.currentUser;
+      if (!currentUser) {
+        return null;
+      }
     }
     return await currentUser.getIdToken();
   } catch (error) {

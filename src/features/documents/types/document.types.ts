@@ -4,7 +4,18 @@ export enum DocumentStatus {
   FAILED = "FAILED",
 }
 
-export type DocumentType = string;
+export interface DocumentTypeAttributes {
+  name: string;
+  value: string;
+}
+
+export interface DocumentType {
+  id: string;
+  type: "document_type";
+  attributes: DocumentTypeAttributes;
+  relationships: null;
+  meta: null;
+}
 
 export interface DocumentsResponse {
   data: Document[];
@@ -30,7 +41,7 @@ export interface CompanyBase {
 export interface Document {
   id: string;
   title: string;
-  type: DocumentType;
+  type: DocumentType["attributes"]["value"];
   status: DocumentStatus;
   amount: number;
   currency: string;

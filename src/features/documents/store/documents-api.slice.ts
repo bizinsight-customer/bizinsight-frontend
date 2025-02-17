@@ -1,10 +1,6 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSlice } from "@/store/create-api-slice";
 import {
-  JsonApiCollectionResponse,
-  JsonApiSingleResponse,
-} from "@/types/json-api.types";
-import {
   Document,
   DocumentCreationPayload,
   DocumentRecognitionResponse,
@@ -20,8 +16,6 @@ export const documentsApi = createApiSlice({
         url: API_ENDPOINTS.DOCUMENTS.LIST,
         params: { page, limit },
       }),
-      transformResponse: (response: JsonApiCollectionResponse<Document>) =>
-        response.data,
       providesTags: ["Documents"],
     }),
 
@@ -29,8 +23,6 @@ export const documentsApi = createApiSlice({
       query: (id) => ({
         url: API_ENDPOINTS.DOCUMENTS.GET(id),
       }),
-      transformResponse: (response: JsonApiSingleResponse<Document>) =>
-        response.data,
       providesTags: (_result, _error, id) => [{ type: "Documents", id }],
     }),
 
@@ -44,9 +36,6 @@ export const documentsApi = createApiSlice({
           data: formData,
         };
       },
-      transformResponse: (
-        response: JsonApiSingleResponse<DocumentRecognitionResponse>
-      ) => response.data,
     }),
 
     createDocument: builder.mutation<Document, DocumentCreationPayload>({
@@ -55,8 +44,6 @@ export const documentsApi = createApiSlice({
         method: "POST",
         data: payload,
       }),
-      transformResponse: (response: JsonApiSingleResponse<Document>) =>
-        response.data,
       invalidatesTags: ["Documents"],
     }),
 

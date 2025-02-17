@@ -76,7 +76,10 @@ export const DocumentRecognition = () => {
   }, [recognitionData.documentType, isRecognizing]);
 
   const handleTypeChange = (event: SelectChangeEvent<string>) => {
-    setSelectedType(event.target.value);
+    const selectedTypeObj = documentTypes.find(
+      (type) => type.attributes.value === event.target.value
+    );
+    setSelectedType(selectedTypeObj || null);
   };
 
   const handleFieldChange = (index: number, value: string) => {
@@ -97,11 +100,12 @@ export const DocumentRecognition = () => {
       (field: DocumentField) => field.name === "description"
     );
 
+    const description = descriptionField?.value ?? null;
     const payload: DocumentCreationPayload = {
       file: fileObject,
-      type: selectedType,
+      type: selectedType.attributes.value,
       title: titleField?.value || fileObject.name,
-      description: descriptionField?.value,
+      ...(description && { description }),
       fields: recognitionData.fields,
     };
 

@@ -38,6 +38,14 @@ const initialState: DocumentUploadState = {
   uploadProgress: 0,
 };
 
+export interface DocumentCreationPayload {
+  file: File;
+  type: DocumentType["attributes"]["value"];
+  title: string;
+  description?: string;
+  fields: DocumentField[];
+}
+
 export const documentsUploadSlice = createSlice({
   name: "documentsUpload",
   initialState,

@@ -13,7 +13,7 @@ import {
 import { DocumentField, DocumentType } from "../../../types/document.types";
 
 interface DocumentReviewProps {
-  error?: string;
+  error?: string | null;
   fields: DocumentField[];
   selectedType: DocumentType | null;
   documentTypes: DocumentType[];
@@ -62,13 +62,13 @@ export const DocumentReview = ({
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel>Document Type</InputLabel>
         <Select
-          value={selectedType || ""}
+          value={selectedType?.attributes?.value || ""}
           label="Document Type"
           onChange={onTypeChange}
         >
           {documentTypes.map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
+            <MenuItem key={type.id} value={type.attributes.value}>
+              {type.attributes.name}
             </MenuItem>
           ))}
         </Select>

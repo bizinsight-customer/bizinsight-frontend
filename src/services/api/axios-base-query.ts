@@ -4,11 +4,6 @@ import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import api from "./axios";
 import { JsonApiException } from "./json-api.interceptor";
-import {
-  extractCollectionData,
-  extractSingleData,
-  isCollectionResponse,
-} from "./json-api.utils";
 
 export interface AxiosBaseQueryArgs {
   url: string;
@@ -33,10 +28,7 @@ export const axiosBaseQuery =
       });
 
       // Handle the response based on whether it's a collection or single resource
-      if (isCollectionResponse(response)) {
-        return { data: extractCollectionData(response) };
-      }
-      return { data: extractSingleData(response) };
+      return response.data;
     } catch (error) {
       // Handle JSON:API specific errors
       if (error instanceof JsonApiException) {

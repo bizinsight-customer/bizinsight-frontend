@@ -7,21 +7,25 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField,
+  Snackbar,
   Typography,
 } from "@mui/material";
-import { DocumentField, DocumentType } from "../../../types/document.types";
+import { useNavigate } from "react-router";
+import { DocumentType, RecognizedValue } from "../../../types/document.types";
+import { NestedFields } from "./NestedFields";
 
 interface DocumentReviewProps {
   error?: string | null;
-  fields: DocumentField[];
+  fields: Record<string, RecognizedValue>;
   selectedType: DocumentType | null;
   documentTypes: DocumentType[];
   isUploading: boolean;
   onTypeChange: (event: SelectChangeEvent<string>) => void;
-  onFieldChange: (index: number, value: string) => void;
+  onFieldChange: (path: string, value: string) => void;
   onCancel: () => void;
   onConfirm: () => void;
+  isSuccess?: boolean;
+  createdDocumentId?: string;
 }
 
 export const DocumentReview = ({
@@ -34,9 +38,16 @@ export const DocumentReview = ({
   onFieldChange,
   onCancel,
   onConfirm,
+  isSuccess,
+  createdDocumentId,
 }: DocumentReviewProps) => {
-  const titleField = fields.find((f) => f.name === "title");
-  const descriptionField = fields.find((f) => f.name === "description");
+  const navigate = useNavigate();
+
+  const handleSuccessClose = () => {
+    if (createdDocumentId) {
+      navigate(`/documents/${createdDocumentId}`);
+    }
+  };
 
   return (
     <Box>
@@ -48,23 +59,14 @@ export const DocumentReview = ({
           {error}
         </Alert>
       )}
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <TextField
-          label="Document Title"
-          value={titleField?.value || ""}
-          onChange={(e) => {
-            const index = fields.findIndex((f) => f.name === "title");
-            onFieldChange(index, e.target.value);
-          }}
-          fullWidth
-        />
-      </FormControl>
-      <FormControl fullWidth sx={{ mb: 2 }}>
+
+      <FormControl fullWidth sx={{ mb: 3 }}>
         <InputLabel>Document Type</InputLabel>
         <Select
-          value={selectedType?.attributes?.value || ""}
-          label="Document Type"
+          value={selectedType?.attributes.value || ""}
           onChange={onTypeChange}
+          label="Document Type"
+          disabled={isUploading}
         >
           {documentTypes.map((type) => (
             <MenuItem key={type.id} value={type.attributes.value}>
@@ -73,30 +75,36 @@ export const DocumentReview = ({
           ))}
         </Select>
       </FormControl>
-      <FormControl fullWidth>
-        <TextField
-          label="Description"
-          multiline
-          rows={3}
-          value={descriptionField?.value || ""}
-          onChange={(e) => {
-            const index = fields.findIndex((f) => f.name === "description");
-            onFieldChange(index, e.target.value);
-          }}
-        />
-      </FormControl>
-      <Box display="flex" justifyContent="flex-end" gap={2} mt={3}>
-        <Button onClick={onCancel} disabled={isUploading}>
+
+      <NestedFields
+        fields={fields}
+        isDisabled={isUploading}
+        onFieldChange={onFieldChange}
+      />
+
+      <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", mt: 3 }}>
+        <Button variant="outlined" onClick={onCancel} disabled={isUploading}>
           Cancel
         </Button>
         <Button
           variant="contained"
           onClick={onConfirm}
-          disabled={isUploading || !selectedType || !titleField?.value}
+          disabled={isUploading || !selectedType}
         >
-          Confirm & Save
+          {isUploading ? "Creating..." : "Confirm & Save"}
         </Button>
       </Box>
+
+      <Snackbar
+        open={isSuccess}
+        autoHideDuration={2000}
+        onClose={handleSuccessClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Document created successfully!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -55,9 +55,17 @@ export interface Document {
   updated_at: string;
 }
 
+export type RecognizedValuePrimitive = string | number | boolean | null;
+export type RecognizedValue =
+  | RecognizedValuePrimitive
+  | Record<
+      string,
+      RecognizedValuePrimitive | Record<string, RecognizedValuePrimitive>
+    >;
+
 export interface DocumentRecognitionResponse {
   document_type: DocumentType;
-  extracted_data: Record<string, string>;
+  extracted_data: Record<string, RecognizedValue>;
   metadata?: Record<string, unknown>;
 }
 
@@ -74,3 +82,6 @@ export interface DocumentCreationPayload {
   description?: string;
   fields: DocumentField[];
 }
+
+// Recognized Data Type - generic structure that can hold any nested data
+export type RecognizedData = Record<string, RecognizedValue>;

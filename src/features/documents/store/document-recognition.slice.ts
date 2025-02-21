@@ -27,11 +27,21 @@ export const documentRecognitionApi = createApiSlice({
     }),
 
     createDocument: builder.mutation<Document, DocumentCreationPayload>({
-      query: (payload) => ({
-        url: API_ENDPOINTS.DOCUMENTS.CREATE,
-        method: "POST",
-        data: payload,
-      }),
+      query: (payload) => {
+        const formData = new FormData();
+        formData.append("file", payload.file);
+        formData.append("document_type", payload.type);
+        formData.append("fields", JSON.stringify(payload.fields));
+
+        return {
+          url: API_ENDPOINTS.DOCUMENTS.CREATE,
+          method: "POST",
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
+      },
       invalidatesTags: ["Documents"],
     }),
   }),

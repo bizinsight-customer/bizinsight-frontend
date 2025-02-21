@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  DocumentField,
+  DocumentFields,
   DocumentRecognitionResponse,
   DocumentType,
 } from "../types/document.types";
@@ -20,7 +20,7 @@ interface DocumentUploadState {
   error: string | null;
   recognitionData: {
     documentType: DocumentType | null;
-    fields: DocumentField[];
+    fields: DocumentFields;
   };
   uploadProgress: number;
 }
@@ -33,7 +33,7 @@ const initialState: DocumentUploadState = {
   error: null,
   recognitionData: {
     documentType: null,
-    fields: [],
+    fields: {},
   },
   uploadProgress: 0,
 };
@@ -43,7 +43,7 @@ export interface DocumentCreationPayload {
   type: DocumentType["attributes"]["value"];
   title: string;
   description?: string;
-  fields: DocumentField[];
+  fields: DocumentFields;
 }
 
 export const documentsUploadSlice = createSlice({
@@ -86,21 +86,18 @@ export const documentsUploadSlice = createSlice({
       action: PayloadAction<DocumentRecognitionResponse>
     ) => {
       state.recognitionData.documentType = action.payload.document_type;
-      // Convert extracted data to fields array
-      const fields: DocumentField[] = Object.entries(
-        action.payload.extracted_data
-      ).map(([name, value]) => ({
-        name,
-        type: typeof value,
-        value: String(value),
-      }));
+      // Convert extracted data to fields dictionary
+      const fields: DocumentFields = {};
+      Object.entries(action.payload.extracted_data).forEach(([name, value]) => {
+        fields[name] = String(value);
+      });
       state.recognitionData.fields = fields;
     },
     updateField: (
       state,
-      action: PayloadAction<{ index: number; field: DocumentField }>
+      action: PayloadAction<{ key: string; value: string }>
     ) => {
-      state.recognitionData.fields[action.payload.index] = action.payload.field;
+      state.recognitionData.fields[action.payload.key] = action.payload.value;
     },
     resetState: () => initialState,
   },

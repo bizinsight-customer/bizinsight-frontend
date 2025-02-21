@@ -69,18 +69,14 @@ export interface DocumentRecognitionResponse {
   metadata?: Record<string, unknown>;
 }
 
-export interface DocumentField {
-  name: string;
-  type: string;
-  value: string;
-}
+export type DocumentFields = Record<string, string>;
 
 export interface DocumentCreationPayload {
   file: File;
   type: string;
   title: string;
   description?: string;
-  fields: DocumentField[];
+  fields: DocumentFields;
 }
 
 // Recognized Data Type - generic structure that can hold any nested data

@@ -33,7 +33,7 @@ export const API_ENDPOINTS = {
   DOCUMENTS: {
     LIST: "/documents",
     GET: (id: string) => `/documents/${id}`,
-    CREATE: "/documents",
+    CREATE: "/documents/create",
     UPLOAD: "/documents/upload",
     DELETE: (id: string) => `/documents/${id}`,
     RECOGNIZE: "/documents/recognize",

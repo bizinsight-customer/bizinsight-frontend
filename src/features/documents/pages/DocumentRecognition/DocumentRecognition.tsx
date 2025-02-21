@@ -21,7 +21,7 @@ import {
 } from "../../store/document-recognition.slice";
 import {
   DocumentCreationPayload,
-  DocumentField,
+  DocumentFields,
   DocumentType,
   RecognizedData,
   RecognizedValue,
@@ -91,38 +91,41 @@ export const DocumentRecognition = () => {
   const flattenRecognizedData = (
     data: RecognizedData,
     parentKey = ""
-  ): DocumentField[] => {
-    return Object.entries(data).flatMap(([key, value]) => {
+  ): DocumentFields => {
+    const result: DocumentFields = {};
+
+    Object.entries(data).forEach(([key, value]) => {
       const fullKey = parentKey ? `${parentKey}.${key}` : key;
 
-      if (value !== null && typeof value === "object") {
-        return flattenRecognizedData(
-          value as Record<string, RecognizedValue>,
+      if (value === null) {
+        result[fullKey] = "";
+      } else if (typeof value === "object") {
+        const nestedFields = flattenRecognizedData(
+          value as RecognizedData,
           fullKey
         );
+        Object.assign(result, nestedFields);
+      } else {
+        result[fullKey] = String(value);
       }
-
-      return [
-        {
-          name: fullKey,
-          value: String(value),
-          type:
-            typeof value === "string" && value.length > 100 ? "text" : "string",
-        },
-      ];
     });
+
+    return result;
   };
 
   const handleConfirm = async () => {
     if (!fileObject || !selectedType) return;
 
     try {
+      // First, prepare the fields array with proper structure
+      const fields = flattenRecognizedData(recognizedData);
+
       const payload: DocumentCreationPayload = {
         file: fileObject,
         type: selectedType.attributes.value,
-        title: String(recognizedData.title) || "Untitled Document",
+        title: String(recognizedData.title) || fileObject.name,
         description: recognizedData.description?.toString(),
-        fields: flattenRecognizedData(recognizedData),
+        fields,
       };
 
       const response = await createDocument(payload).unwrap();

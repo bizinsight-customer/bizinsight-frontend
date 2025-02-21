@@ -10,10 +10,7 @@ import {
   setRecognitionData,
   updateField,
 } from "../store/documents-upload.slice";
-import {
-  DocumentCreationPayload,
-  DocumentField,
-} from "../types/document.types";
+import { DocumentCreationPayload } from "../types/document.types";
 
 interface SerializableFileInfo {
   name: string;
@@ -82,13 +79,12 @@ export const useDocumentsUpload = () => {
   }, [dispatch]);
 
   const updateFieldValue = useCallback(
-    (index: number, field: DocumentField) => {
+    (key: string, value: string) => {
       console.log("[Documents Upload] Updating field value", {
-        index,
-        fieldName: field.name,
-        newValue: field.value,
+        key,
+        newValue: value,
       });
-      dispatch(updateField({ index, field }));
+      dispatch(updateField({ key, value }));
     },
     [dispatch]
   );

@@ -1,4 +1,5 @@
 import { RouteObject } from "react-router";
+import { DocumentDetail } from "./pages/DocumentDetail";
 import { DocumentRecognition } from "./pages/DocumentRecognition/DocumentRecognition";
 import { DocumentsList } from "./pages/DocumentsList";
 
@@ -14,10 +15,10 @@ export const documentsRoutes: RouteObject[] = [
         path: "new",
         element: <DocumentRecognition />,
       },
-      // {
-      //   path: ":id",
-      //   element: <DocumentDetail />,
-      // },
+      {
+        path: ":id",
+        element: <DocumentDetail />,
+      },
     ],
   },
 ];

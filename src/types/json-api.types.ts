@@ -39,6 +39,28 @@ export interface JsonApiResponse<T> {
   errors?: JsonApiError[];
 }
 
+// Generic type for JSON:API relationships
+export interface JsonApiRelationship<T = unknown> {
+  data: T extends Array<unknown>
+    ? Array<{ id: string; type: string }>
+    : { id: string; type: string } | null;
+  links?: JsonApiLinks;
+  meta?: JsonApiMeta;
+}
+
+// Generic type for JSON:API resource object
+export interface JsonApiResource<
+  TAttributes = unknown,
+  TRelationships = Record<string, JsonApiRelationship>
+> {
+  id: string;
+  type: string;
+  attributes: TAttributes;
+  relationships?: TRelationships;
+  links?: JsonApiLinks;
+  meta?: JsonApiMeta;
+}
+
 // Helper type for single resource responses
 export type JsonApiSingleResponse<T> = JsonApiResponse<T>;
 

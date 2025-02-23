@@ -37,7 +37,7 @@ export const API_ENDPOINTS = {
     UPLOAD: "/documents/upload",
     DELETE: (id: string) => `/documents/${id}`,
     RECOGNIZE: "/documents/recognize",
-    GET_TYPES: "/documents/types",
+    GET_TYPES: "/documents/types/get-types",
   },
 } as const;
 

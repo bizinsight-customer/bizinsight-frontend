@@ -1,11 +1,7 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSlice } from "@/store/create-api-slice";
-import {
-  Document,
-  DocumentCreationPayload,
-  DocumentRecognitionResponse,
-} from "../types/document.types";
-
+import { JsonApiResource } from "@/types/json-api.types";
+import { Document } from "../types/document.types";
 export const documentsApi = createApiSlice({
   reducerPath: "documentsApi",
   tagTypes: ["Documents"],
@@ -19,48 +15,13 @@ export const documentsApi = createApiSlice({
       providesTags: ["Documents"],
     }),
 
-    getDocument: builder.query<Document, string>({
+    getDocument: builder.query<JsonApiResource<Document>, string>({
       query: (id) => ({
         url: API_ENDPOINTS.DOCUMENTS.GET(id),
       }),
       providesTags: (_result, _error, id) => [{ type: "Documents", id }],
     }),
-
-    recognizeDocument: builder.mutation<DocumentRecognitionResponse, File>({
-      query: (file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        return {
-          url: API_ENDPOINTS.DOCUMENTS.RECOGNIZE,
-          method: "POST",
-          data: formData,
-        };
-      },
-    }),
-
-    createDocument: builder.mutation<Document, DocumentCreationPayload>({
-      query: (payload) => ({
-        url: API_ENDPOINTS.DOCUMENTS.CREATE,
-        method: "POST",
-        data: payload,
-      }),
-      invalidatesTags: ["Documents"],
-    }),
-
-    deleteDocument: builder.mutation<void, string>({
-      query: (id) => ({
-        url: API_ENDPOINTS.DOCUMENTS.DELETE(id),
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Documents"],
-    }),
   }),
 });
 
-export const {
-  useGetDocumentsQuery,
-  useGetDocumentQuery,
-  useRecognizeDocumentMutation,
-  useCreateDocumentMutation,
-  useDeleteDocumentMutation,
-} = documentsApi;
+export const { useGetDocumentsQuery, useGetDocumentQuery } = documentsApi;

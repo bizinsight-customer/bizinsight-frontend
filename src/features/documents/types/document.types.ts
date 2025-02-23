@@ -1,9 +1,3 @@
-export enum DocumentStatus {
-  PROCESSING = "PROCESSING",
-  COMPLETED = "COMPLETED",
-  FAILED = "FAILED",
-}
-
 export interface DocumentTypeAttributes {
   name: string;
   value: string;
@@ -37,22 +31,27 @@ export interface CompanyBase {
   description?: string;
 }
 
+// Document Data Interface
+export type DocumentData = Record<string, string>;
+
 // Base Document Interface
 export interface Document {
   id: string;
-  title: string;
-  type: DocumentType["attributes"]["value"];
-  status: DocumentStatus;
+  document_date: string;
   amount: number;
+  file_name: string;
+  updated_at: string;
+  created_at: string;
+  document_type: string;
   currency: string;
   description?: string;
-  metadata?: Record<string, unknown>;
-  document_date: string;
-  issuer_company: CompanyBase;
+  user_id: string;
+  file_path: string;
+  file_type: string;
+  document_data: DocumentData;
   recipient_company: CompanyBase;
-  size: number;
-  created_at: string;
-  updated_at: string;
+  issuer_company: CompanyBase;
+  metadata?: Record<string, unknown>;
 }
 
 export type RecognizedValuePrimitive = string | number | boolean | null;

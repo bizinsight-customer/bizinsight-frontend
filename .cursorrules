@@ -20,16 +20,17 @@ This structure ensures modularity, maintainability, and scalability.
 - React: Build the application using React with TypeScript support.
 - Material UI (MUI): Use the Material UI library for styling and UI components.
 
-# Routing & State Management
-
+# Routing
 - React Router 7: Use React Router 7 for managing routing.
 - Since React Router DOM is deprecated, import routing components from react-router instead of react-router-dom.
+- Use useTypedNavigate.ts for navigation.
+
+# State Management
+
 - Redux Toolkit: Use Redux Toolkit for global state management across the application.
 
-# Backend Communication & Authentication
+# Authentication
 
-- API Communication: The project will communicate with a backend API for data exchange
-- Ensure that requests are properly handled and state is effectively managed.
 - Firebase Auth: Use Firebase Auth for authentication.
 
 # Development Best Practices
@@ -37,6 +38,11 @@ This structure ensures modularity, maintainability, and scalability.
 - TypeScript First
 - Use TypeScript types everywhere to ensure type safety.
 - Avoid using any; prefer explicit types for function arguments and return values.
+
+# Backend Communication
+
+- The project will communicate with a backend API for data exchange
+- Use src/store/create-api-slice.ts to create API slices
 
 # JSON API Specification
 
@@ -46,6 +52,14 @@ This structure ensures modularity, maintainability, and scalability.
 - Errors (Consistent error structures)
 - Meta (Metadata about API responses)
 - Pagination (Standardized pagination structure)
+- Use files: json-api.types.ts, json-api.utils.ts
+- createApiSlice from src/store/create-api-slice.ts automatically unpack JSON API responses into data, error, meta, etc. Example:
+```
+const { data: documents, error, meta } = useGetDocumentsQuery({ page, limit });
+```
+We don't need to unpack the response manually.
+Never transformResponse in createApiSlice.
+
 
 # Folder Structure Guidelines
 
@@ -60,9 +74,5 @@ This structure ensures modularity, maintainability, and scalability.
 
 # Instructions
 - Use some-file-name.ts or some-file-name.tsx instead of index.ts or index.tsx.
-
-Available rules:
-@split-file - use this rule when you need to split file into smaller files.
-@typed-navigate - use this rule when you need to navigate to a route
 
 Use best software development practices!

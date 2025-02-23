@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouteObject } from "react-router";
+import { createBrowserRouter, Navigate, RouteObject } from "react-router";
 import App from "./App";
 import MainLayout from "./components/layouts/MainLayout/MainLayout";
 import { authRoutes } from "./features/auth/routes";
@@ -10,6 +10,11 @@ const routes: AppRouteConfig[] = [
   {
     element: <App />,
     children: [
+      // Index route - redirect to dashboard
+      {
+        path: "/",
+        element: <Navigate to="/dashboard" replace />,
+      },
       ...authRoutes,
       {
         element: <MainLayout />,
@@ -30,6 +35,11 @@ const routes: AppRouteConfig[] = [
           {
             path: "/profile",
             element: <UserProfile />,
+          },
+          // Catch-all route - redirect to dashboard
+          {
+            path: "*",
+            element: <Navigate to="/dashboard" replace />,
           },
         ],
       },

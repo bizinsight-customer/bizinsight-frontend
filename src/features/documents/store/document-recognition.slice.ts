@@ -1,5 +1,6 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSlice } from "@/store/create-api-slice";
+import { unflattenObject } from "@/utils/object.utils";
 import {
   Document,
   DocumentCreationPayload,
@@ -31,7 +32,10 @@ export const documentRecognitionApi = createApiSlice({
         const formData = new FormData();
         formData.append("file", payload.file);
         formData.append("document_type", payload.type);
-        formData.append("fields", JSON.stringify(payload.fields));
+
+        // Transform flattened fields into nested structure
+        const nestedFields = unflattenObject(payload.fields);
+        formData.append("fields", JSON.stringify(nestedFields));
 
         return {
           url: API_ENDPOINTS.DOCUMENTS.CREATE,

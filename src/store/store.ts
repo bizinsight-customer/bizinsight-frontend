@@ -1,19 +1,18 @@
+import { documentRecognitionApi } from "@/features/documents/store/document-recognition.slice";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsApi } from "@/features/documents/store/documents-api.slice";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import authReducer from "../features/auth/store/auth.slice";
-import documentsUploadReducer from "../features/documents/store/documents-upload.slice";
 import { errorPopupReducer } from "./global-slices/error-popup.slice";
 import { userReducer } from "./global-slices/user/user.slice";
-
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    documentsUpload: documentsUploadReducer,
     [documentTypesApi.reducerPath]: documentTypesApi.reducer,
     [documentsApi.reducerPath]: documentsApi.reducer,
+    [documentRecognitionApi.reducerPath]: documentRecognitionApi.reducer,
     errorPopup: errorPopupReducer,
     user: userReducer,
     // Feature reducers will be added here

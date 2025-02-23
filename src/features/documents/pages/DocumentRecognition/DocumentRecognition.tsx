@@ -18,7 +18,7 @@ import { useDocumentTypes } from "../../hooks/use-document-types.hook";
 import {
   useCreateDocumentMutation,
   useRecognizeDocumentMutation,
-} from "../../store/document-recognition.slice";
+} from "../../store/documents-api.slice";
 import {
   DocumentCreationPayload,
   DocumentFields,

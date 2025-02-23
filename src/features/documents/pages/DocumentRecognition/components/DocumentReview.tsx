@@ -1,4 +1,8 @@
 import {
+  DocumentType,
+  RecognizedValue,
+} from "@/features/documents/types/document.types";
+import {
   Alert,
   Box,
   Button,
@@ -11,7 +15,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router";
-import { DocumentType, RecognizedValue } from "../../../types/document.types";
 import { NestedFields } from "./NestedFields";
 
 interface DocumentReviewProps {

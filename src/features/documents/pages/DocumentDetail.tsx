@@ -1,7 +1,10 @@
 import { ApiErrorDisplay } from "@/components/ApiErrorDisplay";
 import { useApiErrorDisplay } from "@/hooks/useApiErrorDisplay";
 import { JsonApiResource } from "@/types/json-api.types";
-import { Download as DownloadIcon } from "@mui/icons-material";
+import {
+  Delete as DeleteIcon,
+  Download as DownloadIcon,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -14,10 +17,14 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useParams } from "react-router";
+import { useEffect, useRef } from "react"; // Import useRef and useEffect
+import { useNavigate, useParams } from "react-router";
 import { DynamicAttributes } from "../components/DynamicAttributes";
 import { MetadataField } from "../components/MetadataField";
-import { useGetDocumentQuery } from "../store/documents-api.slice";
+import {
+  useDeleteDocumentMutation,
+  useGetDocumentQuery,
+} from "../store/documents-api.slice";
 import { Document } from "../types/document.types";
 
 const COMMON_ATTRIBUTES = [
@@ -36,8 +43,26 @@ const COMMON_ATTRIBUTES = [
 
 export const DocumentDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, error } = useGetDocumentQuery(id ?? "");
+  const navigate = useNavigate();
+
+  // Create refs to track component state
+  const isDeletingRef = useRef(false);
+  const isUnmountingRef = useRef(false);
+
+  // Conditionally skip getDocumentQuery based on isUnmountingRef
+  const { data, isLoading, error } = useGetDocumentQuery(id ?? "", {
+    skip: isUnmountingRef.current, // Skip query if component is unmounting
+  });
+
+  const [deleteDocument, { isLoading: isDeleting }] =
+    useDeleteDocumentMutation();
   useApiErrorDisplay(error, "Failed to fetch document");
+
+  useEffect(() => {
+    return () => {
+      isUnmountingRef.current = true; // Set unmounting ref when component unmounts
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -78,6 +103,23 @@ export const DocumentDetail = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!id) return;
+
+    try {
+      isDeletingRef.current = true; // Set deleting ref before delete call
+      console.log("Before deleteDocument call");
+      await deleteDocument(id).unwrap();
+      console.log("After deleteDocument call, before navigate");
+      navigate("/documents");
+      console.log("After navigate call");
+    } catch (error) {
+      // Error will be handled by useApiErrorDisplay
+    } finally {
+      isDeletingRef.current = false; // Reset deleting ref
+    }
+  };
+
   return (
     <Box p={3}>
       <Paper elevation={0} sx={{ mb: 3, p: 3, bgcolor: "background.default" }}>
@@ -95,15 +137,26 @@ export const DocumentDetail = () => {
               <Chip label={attributes.document_type} />
             </Box>
           </Box>
-          {attributes.file_path && (
+          <Box display="flex" gap={2}>
+            {attributes.file_path && (
+              <Button
+                variant="contained"
+                startIcon={<DownloadIcon />}
+                onClick={handleDownload}
+              >
+                Download Original
+              </Button>
+            )}
             <Button
-              variant="contained"
-              startIcon={<DownloadIcon />}
-              onClick={handleDownload}
+              variant="outlined"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={handleDelete}
+              disabled={isDeleting}
             >
-              Download Original
+              {isDeleting ? "Deleting..." : "Delete"}
             </Button>
-          )}
+          </Box>
         </Box>
         {attributes.description && (
           <Typography color="text.secondary" paragraph>
@@ -113,7 +166,7 @@ export const DocumentDetail = () => {
       </Paper>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -139,30 +192,12 @@ export const DocumentDetail = () => {
                 <DynamicAttributes
                   attributes={documentData}
                   excludeKeys={COMMON_ATTRIBUTES}
+                  columns={2}
                 />
               </Box>
             </CardContent>
           </Card>
         </Grid>
-        {/* <Grid item xs={12} md={6}>
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              {issuerCompany && (
-                <CompanyInfo company={issuerCompany} title="Issuer Company" />
-              )}
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              {recipientCompany && (
-                <CompanyInfo
-                  company={recipientCompany}
-                  title="Recipient Company"
-                />
-              )}
-            </CardContent>
-          </Card>
-        </Grid> */}
       </Grid>
     </Box>
   );

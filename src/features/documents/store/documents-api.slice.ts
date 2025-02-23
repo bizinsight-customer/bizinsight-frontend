@@ -19,9 +19,21 @@ export const documentsApi = createApiSlice({
       query: (id) => ({
         url: API_ENDPOINTS.DOCUMENTS.GET(id),
       }),
-      providesTags: (_result, _error, id) => [{ type: "Documents", id }],
+      providesTags: (_result, _error, id) => [{ type: "Document", id }],
+    }),
+
+    deleteDocument: builder.mutation<void, string>({
+      query: (id) => ({
+        url: API_ENDPOINTS.DOCUMENTS.DELETE(id),
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _error, id) => [{ type: "Document", id }],
     }),
   }),
 });
 
-export const { useGetDocumentsQuery, useGetDocumentQuery } = documentsApi;
+export const {
+  useGetDocumentsQuery,
+  useGetDocumentQuery,
+  useDeleteDocumentMutation,
+} = documentsApi;

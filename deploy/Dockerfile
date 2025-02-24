@@ -12,7 +12,19 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the application with production environment
+ARG VITE_API_URL
+ARG VITE_USE_MOCK_API
+ARG VITE_ENV=production
+ARG VITE_FIREBASE_API_KEY
+ARG VITE_FIREBASE_AUTH_DOMAIN
+ARG VITE_FIREBASE_PROJECT_ID
+ARG VITE_FIREBASE_STORAGE_BUCKET
+ARG VITE_FIREBASE_MESSAGING_SENDER_ID
+ARG VITE_FIREBASE_APP_ID
+ARG VITE_FIREBASE_MEASUREMENT_ID
+
+# Build with environment variables
 RUN npm run build
 
 # Production stage

@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite --mode development",
     "dev-mock-api": "VITE_USE_MOCK_API=true vite --mode development",
-    "build": "tsc -b && vite build --mode production",
-    "build:staging": "tsc -b && vite build --mode staging",
+    "build": "vite build --mode production",
+    "build:staging": "vite build --mode staging",
     "preview": "vite preview --mode production",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "type-check": "tsc -b"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

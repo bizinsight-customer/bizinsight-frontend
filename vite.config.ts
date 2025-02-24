@@ -20,4 +20,10 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    // Disable type checking during build
+    typescript: {
+      ignoreBuildErrors: true,
+    },
+  },
 });

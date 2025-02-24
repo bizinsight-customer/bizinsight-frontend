@@ -31,10 +31,12 @@ export const setupAuthInterceptor = (
 
       // If we get here, we have no token and it's not a public endpoint
       // This means user is not authenticated
+      console.log("No token found, throwing USER_NOT_AUTHENTICATED error"); // Add this log
       const error = new Error(AUTH_ERROR_MESSAGES.USER_NOT_AUTHENTICATED);
       throw error;
     } catch (error) {
       console.error("Error in auth interceptor:", error);
+      console.error("Error details:", error); // Log the error details
       // Create a proper error object
       const authError = new Error(AUTH_ERROR_MESSAGES.AUTHENTICATION_REQUIRED);
       handleAuthError(authError);

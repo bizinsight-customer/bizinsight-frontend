@@ -17,7 +17,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useEffect, useRef } from "react"; // Import useRef and useEffect
+import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router";
 import { DynamicAttributes } from "../components/DynamicAttributes";
 import { MetadataField } from "../components/MetadataField";
@@ -45,13 +45,12 @@ export const DocumentDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Create refs to track component state
   const isDeletingRef = useRef(false);
   const isUnmountingRef = useRef(false);
+  const isInitialMountRef = useRef(true); // Track initial mount
 
-  // Conditionally skip getDocumentQuery based on isUnmountingRef
   const { data, isLoading, error } = useGetDocumentQuery(id ?? "", {
-    skip: isUnmountingRef.current, // Skip query if component is unmounting
+    skip: isUnmountingRef.current && !isInitialMountRef.current, // Skip only after initial mount and when unmounting
   });
 
   const [deleteDocument, { isLoading: isDeleting }] =
@@ -59,8 +58,14 @@ export const DocumentDetail = () => {
   useApiErrorDisplay(error, "Failed to fetch document");
 
   useEffect(() => {
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false; // Set initial mount to false after first render
+      return; // Skip cleanup on initial mount
+    }
+
     return () => {
-      isUnmountingRef.current = true; // Set unmounting ref when component unmounts
+      console.log("DocumentDetail component unmounted");
+      isUnmountingRef.current = true;
     };
   }, []);
 
@@ -107,7 +112,7 @@ export const DocumentDetail = () => {
     if (!id) return;
 
     try {
-      isDeletingRef.current = true; // Set deleting ref before delete call
+      isDeletingRef.current = true;
       console.log("Before deleteDocument call");
       await deleteDocument(id).unwrap();
       console.log("After deleteDocument call, before navigate");
@@ -116,7 +121,7 @@ export const DocumentDetail = () => {
     } catch (error) {
       // Error will be handled by useApiErrorDisplay
     } finally {
-      isDeletingRef.current = false; // Reset deleting ref
+      isDeletingRef.current = false;
     }
   };
 

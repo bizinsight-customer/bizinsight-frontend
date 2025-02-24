@@ -1,4 +1,3 @@
-import { documentRecognitionApi } from "@/features/documents/store/document-recognition.slice";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsApi } from "@/features/documents/store/documents-api.slice";
 import { configureStore } from "@reduxjs/toolkit";
@@ -12,7 +11,6 @@ export const store = configureStore({
     auth: authReducer,
     [documentTypesApi.reducerPath]: documentTypesApi.reducer,
     [documentsApi.reducerPath]: documentsApi.reducer,
-    [documentRecognitionApi.reducerPath]: documentRecognitionApi.reducer,
     errorPopup: errorPopupReducer,
     user: userReducer,
     // Feature reducers will be added here

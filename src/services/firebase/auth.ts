@@ -17,17 +17,25 @@ export const getUserData = async (user: User) => {
 
 export const getCurrentUserToken = async (): Promise<string | null> => {
   try {
+    console.log("Attempting to get current user token..."); // Add this log
     let currentUser = auth.currentUser;
+    console.log("Current User:", currentUser); // Add this log
     if (!currentUser) {
+      console.log("currentUser is null, re-initializing auth..."); // Add this log
       auth = getAuth(app);
       currentUser = auth.currentUser;
+      console.log("Current User after re-init:", currentUser); // Add this log
       if (!currentUser) {
+        console.log("currentUser is still null after re-init, returning null"); // Add this log
         return null;
       }
     }
-    return await currentUser.getIdToken();
+    const token = await currentUser.getIdToken();
+    console.log("Token retrieved successfully:", token ? "yes" : "no"); // Add this log
+    return token;
   } catch (error) {
     console.error("Error getting user token:", error);
+    console.error("Error details:", error); // Log the error details
     return null;
   }
 };

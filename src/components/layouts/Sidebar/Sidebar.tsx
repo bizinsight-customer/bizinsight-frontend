@@ -1,18 +1,17 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import { useState } from "react";
 import { DesktopSidebar } from "./DesktopSidebar";
 import { MobileSidebar } from "./MobileSidebar";
 import { DRAWER_WIDTH } from "./SidebarConfig";
 import { SidebarContent } from "./SidebarContent";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [isOpen, setIsOpen] = useState(!isMobile);
-
-  const handleDrawerToggle = () => {
-    setIsOpen(!isOpen);
-  };
 
   return (
     <Box
@@ -23,12 +22,12 @@ export const Sidebar = () => {
       }}
     >
       {isMobile ? (
-        <MobileSidebar isOpen={isOpen} onToggle={handleDrawerToggle}>
-          <SidebarContent isOpen={isOpen} onToggle={handleDrawerToggle} />
+        <MobileSidebar isOpen={isOpen} onToggle={onToggle}>
+          <SidebarContent isOpen={isOpen} onToggle={onToggle} />
         </MobileSidebar>
       ) : (
         <DesktopSidebar isOpen={isOpen}>
-          <SidebarContent isOpen={isOpen} onToggle={handleDrawerToggle} />
+          <SidebarContent isOpen={isOpen} onToggle={onToggle} />
         </DesktopSidebar>
       )}
     </Box>

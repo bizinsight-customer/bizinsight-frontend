@@ -9,7 +9,11 @@ import {
   useTheme,
 } from "@mui/material";
 
-export const Navbar = () => {
+interface NavbarProps {
+  onSidebarToggle: () => void;
+}
+
+export const Navbar = ({ onSidebarToggle }: NavbarProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -27,6 +31,7 @@ export const Navbar = () => {
           <IconButton
             color="inherit"
             edge="start"
+            onClick={onSidebarToggle}
             sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />

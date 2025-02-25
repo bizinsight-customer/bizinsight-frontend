@@ -1,13 +1,20 @@
 import { Box } from "@mui/material";
+import { useState } from "react";
 import { Outlet } from "react-router";
 import { Navbar } from "../Navbar/Navbar";
 import { Sidebar } from "../Sidebar/Sidebar";
 
 const MainLayout = () => {
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  const handleSidebarToggle = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+  };
+
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar isOpen={isMobileSidebarOpen} onToggle={handleSidebarToggle} />
 
       {/* Main content */}
       <Box
@@ -20,7 +27,7 @@ const MainLayout = () => {
           bgcolor: (theme) => theme.palette.grey[100],
         }}
       >
-        <Navbar />
+        <Navbar onSidebarToggle={handleSidebarToggle} />
         <Box sx={{ p: 3, flexGrow: 1 }}>
           <Outlet />
         </Box>

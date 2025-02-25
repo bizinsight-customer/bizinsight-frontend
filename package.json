@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development",
-    "dev-mock-api": "VITE_USE_MOCK_API=true vite --mode development",
+    "dev": "vite --mode development --host",
+    "dev-mock-api": "VITE_USE_MOCK_API=true vite --mode development --host",
     "build": "vite build --mode production",
     "build:staging": "vite build --mode staging",
     "preview": "vite preview --mode production",

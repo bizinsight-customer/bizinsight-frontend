@@ -16,6 +16,8 @@ import {
   Grid,
   Paper,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -44,6 +46,8 @@ const COMMON_ATTRIBUTES = [
 export const DocumentDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const isDeletingRef = useRef(false);
   const isUnmountingRef = useRef(false);
@@ -88,7 +92,7 @@ export const DocumentDetail = () => {
 
   if (!data) {
     return (
-      <Box p={3}>
+      <Box p={isMobile ? 2 : 3}>
         <Typography>No document data available</Typography>
       </Box>
     );
@@ -126,28 +130,55 @@ export const DocumentDetail = () => {
   };
 
   return (
-    <Box p={3}>
-      <Paper elevation={0} sx={{ mb: 3, p: 3, bgcolor: "background.default" }}>
+    <Box p={isMobile ? 2 : 3}>
+      <Paper
+        elevation={0}
+        sx={{
+          mb: isMobile ? 2 : 3,
+          p: isMobile ? 2 : 3,
+          bgcolor: "background.default",
+        }}
+      >
         <Box
           display="flex"
+          flexDirection={isMobile ? "column" : "row"}
           justifyContent="space-between"
-          alignItems="flex-start"
+          alignItems={isMobile ? "stretch" : "flex-start"}
+          gap={isMobile ? 2 : 0}
           mb={2}
         >
           <Box>
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Typography
+              variant={isMobile ? "h5" : "h4"}
+              component="h1"
+              gutterBottom
+              sx={{
+                wordBreak: "break-word",
+                mb: isMobile ? 1 : 2,
+              }}
+            >
               {attributes.document_type}
             </Typography>
-            <Box display="flex" gap={1} mb={2}>
-              <Chip label={attributes.document_type} />
+            <Box display="flex" gap={1} mb={isMobile ? 1.5 : 2}>
+              <Chip
+                label={attributes.document_type}
+                size={isMobile ? "small" : "medium"}
+              />
             </Box>
           </Box>
-          <Box display="flex" gap={2}>
+          <Box
+            display="flex"
+            flexDirection={isMobile ? "column" : "row"}
+            gap={isMobile ? 1 : 2}
+            width={isMobile ? "100%" : "auto"}
+          >
             {attributes.file_path && (
               <Button
                 variant="contained"
                 startIcon={<DownloadIcon />}
                 onClick={handleDownload}
+                fullWidth={isMobile}
+                size={isMobile ? "large" : "medium"}
               >
                 Download Original
               </Button>
@@ -158,46 +189,65 @@ export const DocumentDetail = () => {
               startIcon={<DeleteIcon />}
               onClick={handleDelete}
               disabled={isDeleting}
+              fullWidth={isMobile}
+              size={isMobile ? "large" : "medium"}
             >
               {isDeleting ? "Deleting..." : "Delete"}
             </Button>
           </Box>
         </Box>
         {attributes.description && (
-          <Typography color="text.secondary" paragraph>
+          <Typography
+            color="text.secondary"
+            paragraph
+            variant={isMobile ? "body2" : "body1"}
+            sx={{ mb: 0 }}
+          >
             {attributes.description}
           </Typography>
         )}
       </Paper>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={isMobile ? 2 : 3}>
         <Grid item xs={12} md={12}>
           <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
+            <CardContent sx={{ p: isMobile ? 2 : 3 }}>
+              <Typography
+                variant={isMobile ? "subtitle1" : "h6"}
+                gutterBottom
+                sx={{ mb: isMobile ? 1.5 : 2 }}
+              >
                 Document Information
               </Typography>
-              <Divider sx={{ mb: 2 }} />
+              <Divider sx={{ mb: isMobile ? 1.5 : 2 }} />
               <MetadataField
                 label="Document Type"
                 value={attributes.document_type}
+                isMobile={isMobile}
               />
               <MetadataField
                 label="Created At"
                 value={new Date(attributes.created_at).toLocaleString()}
+                isMobile={isMobile}
               />
               <MetadataField
                 label="Updated At"
                 value={new Date(attributes.updated_at).toLocaleString()}
+                isMobile={isMobile}
               />
-              <Box mt={2}>
-                <Typography variant="subtitle1" gutterBottom>
+              <Box mt={isMobile ? 1.5 : 2}>
+                <Typography
+                  variant={isMobile ? "subtitle2" : "subtitle1"}
+                  gutterBottom
+                  sx={{ mb: isMobile ? 1 : 1.5 }}
+                >
                   Additional Information
                 </Typography>
                 <DynamicAttributes
                   attributes={documentData}
                   excludeKeys={COMMON_ATTRIBUTES}
-                  columns={2}
+                  columns={isMobile ? 1 : 2}
+                  isMobile={isMobile}
                 />
               </Box>
             </CardContent>

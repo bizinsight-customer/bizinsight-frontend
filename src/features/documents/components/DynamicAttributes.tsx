@@ -4,13 +4,15 @@ import { MetadataField } from "./MetadataField";
 interface DynamicAttributesProps {
   attributes: Record<string, unknown>;
   excludeKeys?: readonly string[];
-  columns?: 1 | 2;
+  columns?: number;
+  isMobile?: boolean;
 }
 
 export const DynamicAttributes = ({
   attributes,
   excludeKeys = [],
-  columns = 1,
+  columns = 2,
+  isMobile = false,
 }: DynamicAttributesProps) => {
   const formatKey = (key: string): string => {
     return key
@@ -82,14 +84,35 @@ export const DynamicAttributes = ({
   };
 
   const filteredEntries = Object.entries(attributes).filter(
-    ([key]) => !excludeKeys.includes(key)
+    ([key, value]) =>
+      !excludeKeys.includes(key) &&
+      value !== null &&
+      value !== undefined &&
+      value !== "" &&
+      !Array.isArray(value) &&
+      typeof value !== "object"
   );
 
+  if (filteredEntries.length === 0) {
+    return (
+      <Typography variant={isMobile ? "body2" : "body1"} color="text.secondary">
+        No additional information available
+      </Typography>
+    );
+  }
+
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={isMobile ? 1.5 : 2}>
       {filteredEntries.map(([key, value]) => (
-        <Grid item xs={12} md={columns === 2 ? 6 : 12} key={key}>
-          {renderValue(key, value)}
+        <Grid item xs={12} md={12 / columns} key={key}>
+          <MetadataField
+            label={key
+              .split("_")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ")}
+            value={String(value)}
+            isMobile={isMobile}
+          />
         </Grid>
       ))}
     </Grid>

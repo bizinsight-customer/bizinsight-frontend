@@ -8,6 +8,8 @@ import {
   StepLabel,
   Stepper,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -34,6 +36,8 @@ const steps = ["Upload File", "Processing", "Review & Confirm"];
 
 export const DocumentRecognition = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [activeStep, setActiveStep] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [createdDocumentId, setCreatedDocumentId] = useState<string>();
@@ -209,12 +213,25 @@ export const DocumentRecognition = () => {
   }
 
   return (
-    <Container maxWidth="md">
-      <Paper sx={{ p: 3, mt: 3 }}>
-        <Typography variant="h5" gutterBottom>
+    <Container maxWidth="md" sx={{ px: isMobile ? 2 : 3 }}>
+      <Paper sx={{ p: isMobile ? 2 : 3, mt: isMobile ? 2 : 3 }}>
+        <Typography
+          variant={isMobile ? "h6" : "h5"}
+          gutterBottom
+          sx={{ mb: isMobile ? 2 : 3 }}
+        >
           Document Recognition
         </Typography>
-        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+        <Stepper
+          activeStep={activeStep}
+          sx={{
+            mb: isMobile ? 3 : 4,
+            "& .MuiStepLabel-label": {
+              fontSize: isMobile ? "0.875rem" : undefined,
+            },
+          }}
+          orientation={isMobile ? "vertical" : "horizontal"}
+        >
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>

@@ -13,6 +13,8 @@ import {
   SelectChangeEvent,
   Snackbar,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router";
 import { NestedFields } from "./NestedFields";
@@ -45,6 +47,8 @@ export const DocumentReview = ({
   createdDocumentId,
 }: DocumentReviewProps) => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSuccessClose = () => {
     if (createdDocumentId) {
@@ -54,22 +58,27 @@ export const DocumentReview = ({
 
   return (
     <Box>
-      <Typography variant="h6" gutterBottom>
+      <Typography
+        variant={isMobile ? "subtitle1" : "h6"}
+        gutterBottom
+        sx={{ mb: isMobile ? 1.5 : 2 }}
+      >
         Review Document Information
       </Typography>
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ mb: isMobile ? 1.5 : 2 }}>
           {error}
         </Alert>
       )}
 
-      <FormControl fullWidth sx={{ mb: 3 }}>
+      <FormControl fullWidth sx={{ mb: isMobile ? 2 : 3 }}>
         <InputLabel>Document Type</InputLabel>
         <Select
           value={selectedType?.attributes.value || ""}
           onChange={onTypeChange}
           label="Document Type"
           disabled={isUploading}
+          size={isMobile ? "small" : "medium"}
         >
           {documentTypes.map((type) => (
             <MenuItem key={type.id} value={type.attributes.value}>
@@ -83,16 +92,33 @@ export const DocumentReview = ({
         fields={fields}
         isDisabled={isUploading}
         onFieldChange={onFieldChange}
+        isMobile={isMobile}
       />
 
-      <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", mt: 3 }}>
-        <Button variant="outlined" onClick={onCancel} disabled={isUploading}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? 1 : 2,
+          justifyContent: isMobile ? "stretch" : "flex-end",
+          mt: isMobile ? 2 : 3,
+        }}
+      >
+        <Button
+          variant="outlined"
+          onClick={onCancel}
+          disabled={isUploading}
+          fullWidth={isMobile}
+          size={isMobile ? "large" : "medium"}
+        >
           Cancel
         </Button>
         <Button
           variant="contained"
           onClick={onConfirm}
           disabled={isUploading || !selectedType}
+          fullWidth={isMobile}
+          size={isMobile ? "large" : "medium"}
         >
           {isUploading ? "Creating..." : "Confirm & Save"}
         </Button>
@@ -102,9 +128,18 @@ export const DocumentReview = ({
         open={isSuccess}
         autoHideDuration={2000}
         onClose={handleSuccessClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{
+          vertical: isMobile ? "bottom" : "top",
+          horizontal: "center",
+        }}
       >
-        <Alert severity="success" sx={{ width: "100%" }}>
+        <Alert
+          severity="success"
+          sx={{
+            width: "100%",
+            boxShadow: theme.shadows[3],
+          }}
+        >
           Document created successfully!
         </Alert>
       </Snackbar>

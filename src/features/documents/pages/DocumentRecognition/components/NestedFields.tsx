@@ -5,6 +5,7 @@ interface NestedFieldsProps {
   fields: Record<string, RecognizedValue>;
   parentPath?: string;
   isDisabled?: boolean;
+  isMobile?: boolean;
   onFieldChange: (path: string, value: string) => void;
 }
 
@@ -12,6 +13,7 @@ export const NestedFields = ({
   fields,
   parentPath = "",
   isDisabled = false,
+  isMobile = false,
   onFieldChange,
 }: NestedFieldsProps) => {
   const formatFieldName = (name: string) =>
@@ -24,19 +26,25 @@ export const NestedFields = ({
 
     if (typeof value === "object") {
       return (
-        <Box key={path} sx={{ mb: 3 }}>
+        <Box key={path} sx={{ mb: isMobile ? 2 : 3 }}>
           <Paper
             elevation={0}
             variant="outlined"
-            sx={{ p: 2, backgroundColor: "grey.50" }}
+            sx={{
+              p: isMobile ? 1.5 : 2,
+              backgroundColor: "grey.50",
+            }}
           >
             <Typography
-              variant="subtitle1"
-              sx={{ mb: 2, fontWeight: "medium" }}
+              variant={isMobile ? "subtitle2" : "subtitle1"}
+              sx={{
+                mb: isMobile ? 1.5 : 2,
+                fontWeight: "medium",
+              }}
             >
               {formatFieldName(name)}
             </Typography>
-            <Box sx={{ pl: 2 }}>
+            <Box sx={{ pl: isMobile ? 1 : 2 }}>
               {Object.entries(value).map(([childName, childValue]) =>
                 renderField(childName, childValue, `${path}.${childName}`)
               )}
@@ -54,10 +62,11 @@ export const NestedFields = ({
         onChange={(e) => onFieldChange(path, e.target.value)}
         disabled={isDisabled}
         fullWidth
+        size={isMobile ? "small" : "medium"}
         type={typeof value === "number" ? "number" : "text"}
         multiline={typeof value === "string" && value.length > 100}
         rows={typeof value === "string" && value.length > 100 ? 3 : 1}
-        sx={{ mb: 2 }}
+        sx={{ mb: isMobile ? 1.5 : 2 }}
       />
     );
   };

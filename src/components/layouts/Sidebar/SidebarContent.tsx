@@ -12,6 +12,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useLocation } from "react-router";
 import { menuItems } from "./SidebarConfig";
@@ -24,9 +26,15 @@ interface SidebarContentProps {
 export const SidebarContent = ({ isOpen, onToggle }: SidebarContentProps) => {
   const location = useLocation();
   const navigate = useTypedNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleNavigate = (path: AppRoutePath) => {
     navigate.navigateTo(path);
+    // Only close the sidebar on mobile devices
+    if (isMobile) {
+      onToggle();
+    }
   };
 
   return (

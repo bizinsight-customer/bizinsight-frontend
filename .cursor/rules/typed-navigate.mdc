@@ -1,5 +1,6 @@
 ---
-description: 
+description: How to navigate between pages in project using router
 globs: 
+alwaysApply: false
 ---
 Use useTypedNavigate from [useTypedNavigate.ts](mdc:src/hooks/useTypedNavigate.ts) instead of useNavigate from react-router.

@@ -1,5 +1,3 @@
-import { ENV } from "./env";
-
 // API configuration types
 export interface ApiConfig {
   baseURL: string;
@@ -11,11 +9,10 @@ export interface ApiConfig {
 
 // Base API configuration
 export const apiConfig: ApiConfig = {
-  baseURL: ENV.API_URL,
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
-    HUI: "HUI",
   },
 };
 
@@ -31,7 +28,7 @@ export const API_ENDPOINTS = {
     },
   },
   DOCUMENTS: {
-    LIST: "/documents",
+    LIST: "/documents/",
     GET: (id: string) => `/documents/${id}`,
     CREATE: "/documents/create",
     UPLOAD: "/documents/upload",

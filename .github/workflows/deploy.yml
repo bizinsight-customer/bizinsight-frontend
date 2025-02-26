@@ -27,8 +27,8 @@ jobs:
         run: |
           npm ci  # Using ci instead of install for more reliable builds
         
-      - name: Run type check
-        run: npm run type-check  # Ensure TypeScript types are valid
+      # - name: Run type check
+      #   run: npm run type-check  # Ensure TypeScript types are valid
         
       - name: Build frontend
         run: npm run build

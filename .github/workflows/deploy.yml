@@ -1,0 +1,51 @@
+name: Build and Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  NODE_VERSION: '23.x'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Using latest v4 for better security and performance
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4  # Using latest v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci  # Using ci instead of install for more reliable builds
+        
+      - name: Run type check
+        run: npm run type-check  # Ensure TypeScript types are valid
+        
+      - name: Build frontend
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4  # Using latest v4
+        with:
+          name: frontend-build
+          path: dist/
+          retention-days: 1
+          
+      - name: Trigger Infrastructure Deploy
+        if: success()
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          repository: ${{ secrets.INFRASTRUCTURE_REPO }}
+          event-type: deploy_infrastructure 

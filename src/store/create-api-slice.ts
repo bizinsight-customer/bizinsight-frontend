@@ -1,4 +1,5 @@
 import { axiosBaseQuery } from "@/services/api/axios-base-query";
+import { axiosBaseQuery2Version } from "@/services/api/axios-base-query-2-version";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 interface CreateApiSliceOptions {
@@ -18,6 +19,18 @@ export const createApiSlice = ({
   return createApi({
     reducerPath,
     baseQuery: axiosBaseQuery(),
+    tagTypes,
+    endpoints: () => ({}),
+  });
+};
+
+export const createApiSliceNonJsonApi = ({
+  reducerPath,
+  tagTypes = [],
+}: CreateApiSliceOptions) => {
+  return createApi({
+    reducerPath,
+    baseQuery: axiosBaseQuery2Version(),
     tagTypes,
     endpoints: () => ({}),
   });

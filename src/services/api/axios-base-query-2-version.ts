@@ -12,7 +12,7 @@ export interface AxiosBaseQueryArgs {
   headers?: AxiosRequestConfig["headers"];
 }
 
-export const axiosBaseQuery =
+export const axiosBaseQuery2Version =
   (): BaseQueryFn<AxiosBaseQueryArgs, unknown, unknown> =>
   async (requestConfig) => {
     try {
@@ -43,10 +43,10 @@ export const axiosBaseQuery =
         },
       });
 
-      console.log("RESPONSE", response.data);
+      console.log("RESPONSE", response);
 
       // Handle the response based on whether it's a collection or single resource
-      return response.data;
+      return response;
     } catch (error) {
       // Handle JSON:API specific errors
       if (error instanceof JsonApiException) {

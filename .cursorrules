@@ -42,17 +42,8 @@ This structure ensures modularity, maintainability, and scalability.
 # Backend Communication
 
 - The project will communicate with a backend API for data exchange
-- Use src/store/create-api-slice.ts to create API slices
+- Use src/store/create-api-slice.ts createApiSlice function to create API slices. Do not use createApi from "@reduxjs/toolkit/query/react"
 
-# JSON API Specification
-
-- Follow the JSON API specification for API communication.
-- Ensure proper handling of:
-- Data (Standardized API responses)
-- Errors (Consistent error structures)
-- Meta (Metadata about API responses)
-- Pagination (Standardized pagination structure)
-- Use files: json-api.types.ts, json-api.utils.ts
 - createApiSlice from src/store/create-api-slice.ts automatically unpack JSON API responses into data, error, meta, etc. Example:
 ```
 const { data: documents, error, meta } = useGetDocumentsQuery({ page, limit });

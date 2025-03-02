@@ -4,6 +4,11 @@ import axios from "axios";
 import { setupAuthInterceptor } from "./auth.interceptor";
 import { setupJsonApiInterceptor } from "./json-api.interceptor";
 
+export const apiState = {
+  isReady: false,
+  isAuthInitialized: false,
+};
+
 // Create axios instance with configuration from api config
 const api = axios.create(apiConfig);
 

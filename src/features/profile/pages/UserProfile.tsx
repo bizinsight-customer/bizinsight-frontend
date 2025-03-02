@@ -1,6 +1,8 @@
 import { ENV } from "@/config/env";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { Box, Paper, Typography } from "@mui/material";
+import { CompanyDataDialog } from "@/features/company/components/company-data-dialog";
+import { useCompanyDataCheck } from "@/features/company/hooks/use-company-data-check";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface UserMetadata {
@@ -22,6 +24,8 @@ export const UserProfile = () => {
   const { user, firebaseUser } = useAuth();
   const [token, setToken] = useState<string | null>(null);
   const [tokenError, setTokenError] = useState<string | null>(null);
+  const { openDialog, showDialog, closeDialog, companyData } =
+    useCompanyDataCheck();
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -65,9 +69,25 @@ export const UserProfile = () => {
 
   return (
     <Box sx={{ textAlign: "left", p: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        User Profile
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="h4">User Profile</Typography>
+        <Button variant="contained" color="primary" onClick={openDialog}>
+          Company Data
+        </Button>
+      </Box>
+
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle1" color="text.secondary">
+          Email: {user?.email || "No email available"}
+        </Typography>
+      </Box>
 
       {ENV.ENV === "development" && (
         <Paper elevation={2} sx={{ p: 2, mb: 3, bgcolor: "background.paper" }}>
@@ -119,6 +139,13 @@ export const UserProfile = () => {
           )}
         </Paper>
       )}
+
+      <CompanyDataDialog
+        open={showDialog}
+        onClose={closeDialog}
+        initialData={companyData}
+        isRequired={false}
+      />
     </Box>
   );
 };

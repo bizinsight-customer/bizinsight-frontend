@@ -1,16 +1,25 @@
+import { companyApiSlice } from "@/features/company/store/company.slice";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsApi } from "@/features/documents/store/documents-api.slice";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, Middleware } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import authReducer from "../features/auth/store/auth.slice";
 import { errorPopupReducer } from "./global-slices/error-popup.slice";
 import { userReducer } from "./global-slices/user/user.slice";
+
+const apiMiddleware = [
+  documentTypesApi.middleware,
+  documentsApi.middleware,
+  companyApiSlice.middleware,
+] as Middleware[];
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     [documentTypesApi.reducerPath]: documentTypesApi.reducer,
     [documentsApi.reducerPath]: documentsApi.reducer,
+    [companyApiSlice.reducerPath]: companyApiSlice.reducer,
     errorPopup: errorPopupReducer,
     user: userReducer,
     // Feature reducers will be added here
@@ -23,7 +32,7 @@ export const store = configureStore({
         // Ignore these field paths in all actions and state
         ignoredPaths: ["documentsUpload.file", "auth.user"],
       },
-    }).concat(documentTypesApi.middleware, documentsApi.middleware),
+    }).concat(apiMiddleware),
   devTools: process.env.NODE_ENV !== "production",
 });
 

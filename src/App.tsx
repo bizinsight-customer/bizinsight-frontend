@@ -1,5 +1,7 @@
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
-import { auth } from "@/services/firebase/auth"; // Assuming your firebase.ts is in services/firebase
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { CompanyDataProvider } from "@/features/company/components/company-data-provider";
+import { auth } from "@/services/firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { ErrorInfo, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -8,6 +10,7 @@ import "./App.css";
 import AuthStateChangeHandler from "./components/auth/AuthStateChangeHandler";
 import { GlobalErrorHandler } from "./components/error-boundary/GlobalErrorHandler";
 import { ErrorPopup } from "./components/error-popup/ErrorPopup";
+import { apiState } from "./services/api/axios";
 
 const logError = (error: Error, info: ErrorInfo) => {
   // Log to your error reporting service
@@ -16,16 +19,21 @@ const logError = (error: Error, info: ErrorInfo) => {
 
 function App() {
   const [isAuthInitialized, setIsAuthInitialized] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsAuthInitialized(true);
+      if (user) {
+        apiState.isAuthInitialized = true;
+        apiState.isReady = true;
+      }
     });
     return () => unsubscribe();
   }, []);
 
   if (!isAuthInitialized) {
-    return <div>Loading application...</div>; // Simple loading indicator
+    return <div>Loading application...</div>;
   }
 
   return (
@@ -33,7 +41,13 @@ function App() {
       <GlobalErrorHandler />
       <AuthStateChangeHandler />
       <ErrorPopup />
-      <Outlet />
+      {isAuthenticated ? (
+        <CompanyDataProvider>
+          <Outlet />
+        </CompanyDataProvider>
+      ) : (
+        <Outlet />
+      )}
     </ErrorBoundary>
   );
 }

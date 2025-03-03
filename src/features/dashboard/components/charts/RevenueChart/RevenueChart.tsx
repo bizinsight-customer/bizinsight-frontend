@@ -122,7 +122,9 @@ export const RevenueChart: React.FC = () => {
   }, [revenueData, startDate, endDate, mode, prevStartDate]);
 
   return (
-    <Paper sx={{ p: 3, height: "400px" }}>
+    <Paper
+      sx={{ p: 3, height: "500px", display: "flex", flexDirection: "column" }}
+    >
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Revenue Over Time</Typography>
@@ -149,32 +151,44 @@ export const RevenueChart: React.FC = () => {
       )}
 
       {chartData && (
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData}>
-            <XAxis dataKey="displayDate" />
-            <YAxis />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="current"
-              stroke="#684AFF"
-              strokeWidth={3}
-              name="Current Period"
-              connectNulls
-              fill="#684AFF"
-            />
-            <Line
-              type="monotone"
-              dataKey="previous"
-              stroke="#FF915F"
-              strokeWidth={3}
-              name="Previous Period"
-              connectNulls
-              fill="#FF915F"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <Box sx={{ flex: 1, minHeight: 0 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData}>
+              <XAxis dataKey="displayDate" />
+              <YAxis />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="previous"
+                stroke="#FF915F"
+                strokeWidth={3}
+                name={`Previous Period ${
+                  mode === "manual" && prevStartDate && prevEndDate
+                    ? `${formatChartDate(prevStartDate)} - ${formatChartDate(
+                        prevEndDate
+                      )}`
+                    : `${formatChartDate(
+                        subDays(startDate, periodDays)
+                      )} - ${formatChartDate(subDays(endDate, periodDays))}`
+                }`}
+                connectNulls
+                fill="#FF915F"
+              />
+              <Line
+                type="monotone"
+                dataKey="current"
+                stroke="#684AFF"
+                strokeWidth={3}
+                name={`Current Period ${formatChartDate(
+                  startDate
+                )} - ${formatChartDate(endDate)}`}
+                connectNulls
+                fill="#684AFF"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </Box>
       )}
     </Paper>
   );

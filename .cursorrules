@@ -20,14 +20,26 @@ This structure ensures modularity, maintainability, and scalability.
 - React: Build the application using React with TypeScript support.
 - Material UI (MUI): Use the Material UI library for styling and UI components.
 
+# State Management
+
+- Redux Toolkit: Use Redux Toolkit for global state management across the application.
+
+# Folder Structure Guidelines
+
+## Key Folders
+
+- src/components/: Shared UI components across features
+- src/config/: Environment variables, constants, and API endpoints
+- src/hooks/: Custom React hooks
+- src/services/: API service functions and authentication logic
+- src/store/: Redux Toolkit state management
+- src/utils/: Utility functions for formatting, validation, etc.
+- deploy/ deploy configuration ( docker files, nginx config )
+
 # Routing
 - React Router 7: Use React Router 7 for managing routing.
 - Since React Router DOM is deprecated, import routing components from react-router instead of react-router-dom.
 - Use useTypedNavigate.ts for navigation.
-
-# State Management
-
-- Redux Toolkit: Use Redux Toolkit for global state management across the application.
 
 # Authentication
 
@@ -43,6 +55,7 @@ This structure ensures modularity, maintainability, and scalability.
 
 - The project will communicate with a backend API for data exchange
 - Use src/store/create-api-slice.ts createApiSlice function to create API slices. Do not use createApi from "@reduxjs/toolkit/query/react"
+- When you add use createApiSlice, you always should add this slice to src/store as reducer and as apiMiddleware
 
 - createApiSlice from src/store/create-api-slice.ts automatically unpack JSON API responses into data, error, meta, etc. Example:
 ```
@@ -51,23 +64,15 @@ const { data: documents, error, meta } = useGetDocumentsQuery({ page, limit });
 We don't need to unpack the response manually.
 Never transformResponse in createApiSlice.
 
-
-# Folder Structure Guidelines
-
-## Key Folders
-
-- src/components/: Shared UI components across features
-- src/config/: Environment variables, constants, and API endpoints
-- src/hooks/: Custom React hooks
-- src/services/: API service functions and authentication logic
-- src/store/: Redux Toolkit state management
-- src/utils/: Utility functions for formatting, validation, etc.
-- deploy/ deploy configuration ( docker files, nginx config )
+- always add and take API paths from src/config/api.ts
 
 # Deploy
 We use docker, docker compose, nginx to build our project for production.
 Command to build project for production:
 ```docker compose -f deploy/docker-compose.yml --env-file .env.production up --build```
+
+# Dates
+- Use date-fns library for all operations with dates
 
 # Instructions
 - Use some-file-name.ts or some-file-name.tsx instead of index.ts or index.tsx.

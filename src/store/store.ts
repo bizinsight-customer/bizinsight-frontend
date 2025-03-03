@@ -1,4 +1,5 @@
 import { companyApiSlice } from "@/features/company/store/company.slice";
+import { revenueApi } from "@/features/dashboard/services/revenue-api";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsApi } from "@/features/documents/store/documents-api.slice";
 import { configureStore, Middleware } from "@reduxjs/toolkit";
@@ -12,6 +13,7 @@ const apiMiddleware = [
   documentTypesApi.middleware,
   documentsApi.middleware,
   companyApiSlice.middleware,
+  revenueApi.middleware,
 ] as Middleware[];
 
 export const store = configureStore({
@@ -20,6 +22,7 @@ export const store = configureStore({
     [documentTypesApi.reducerPath]: documentTypesApi.reducer,
     [documentsApi.reducerPath]: documentsApi.reducer,
     [companyApiSlice.reducerPath]: companyApiSlice.reducer,
+    [revenueApi.reducerPath]: revenueApi.reducer,
     errorPopup: errorPopupReducer,
     user: userReducer,
     // Feature reducers will be added here

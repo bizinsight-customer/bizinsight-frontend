@@ -36,6 +36,9 @@ export const API_ENDPOINTS = {
     RECOGNIZE: "/documents/recognize",
     GET_TYPES: "/documents/types/get-types",
   },
+  METRICS: {
+    REVENUE: "/metrics/revenue",
+  },
 } as const;
 
 // Type for endpoint paths

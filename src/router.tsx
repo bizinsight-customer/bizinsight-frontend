@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, RouteObject } from "react-router";
 import App from "./App";
 import MainLayout from "./components/layouts/MainLayout/MainLayout";
 import { authRoutes } from "./features/auth/routes";
+import { DashboardPage } from "./features/dashboard/pages/DashboardPage";
 import { documentsRoutes } from "./features/documents/routes";
 import { UserProfile } from "./features/profile/pages/UserProfile";
 import { AppRouteConfig } from "./types/routes.types";
@@ -21,7 +22,7 @@ const routes: AppRouteConfig[] = [
         children: [
           {
             path: "/dashboard",
-            element: <div>Dashboard Page</div>,
+            element: <DashboardPage />,
           },
           ...documentsRoutes,
           {

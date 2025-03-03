@@ -19,6 +19,8 @@ export interface RevenueResponse {
 export interface GetRevenueParams {
   start_date: string;
   end_date: string;
+  previous_start_date?: string;
+  previous_end_date?: string;
 }
 
 export const revenueApi = createApiSliceNonJsonApi({
@@ -26,10 +28,20 @@ export const revenueApi = createApiSliceNonJsonApi({
 }).injectEndpoints({
   endpoints: (builder) => ({
     getRevenue: builder.query<RevenueResponse, GetRevenueParams>({
-      query: ({ start_date, end_date }) => ({
+      query: ({
+        start_date,
+        end_date,
+        previous_start_date,
+        previous_end_date,
+      }) => ({
         url: API_ENDPOINTS.METRICS.REVENUE,
         method: "GET",
-        params: { start_date, end_date },
+        params: {
+          start_date,
+          end_date,
+          ...(previous_start_date && { previous_start_date }),
+          ...(previous_end_date && { previous_end_date }),
+        },
       }),
     }),
   }),

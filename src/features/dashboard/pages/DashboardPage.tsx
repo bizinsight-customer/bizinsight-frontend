@@ -1,6 +1,6 @@
 import { Container, Grid } from "@mui/material";
 import React from "react";
-import { RevenueChart } from "../components/RevenueChart";
+import { RevenueChart } from "../components/charts/RevenueChart/RevenueChart";
 
 export const DashboardPage: React.FC = () => {
   return (

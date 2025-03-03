@@ -1,5 +1,6 @@
 ---
 description: 
 globs: 
+alwaysApply: false
 ---
-Split current file into smaller parts. Try to extract logically coupled components and logic into separate entities. You can move this entities into separate files if it's nescesary
+Split current file into smaller parts. For example big component into smaller component. Try to extract logically coupled components and logic into separate entities. You can move this entities into separate files.

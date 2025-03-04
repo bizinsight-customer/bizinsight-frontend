@@ -2,9 +2,9 @@ import { Box, Paper, Typography } from "@mui/material";
 import { addDays, differenceInDays, format, subDays } from "date-fns";
 import React, { useState } from "react";
 import {
+  Area,
+  AreaChart,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -153,16 +153,39 @@ export const RevenueChart: React.FC = () => {
       {chartData && (
         <Box sx={{ flex: 1, minHeight: 0 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
+            <AreaChart data={chartData}>
+              <defs>
+                <linearGradient
+                  id="currentGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="5%" stopColor="#684AFF" stopOpacity={0.95} />
+                  <stop offset="95%" stopColor="#684AFF" stopOpacity={0.01} />
+                </linearGradient>
+                <linearGradient
+                  id="previousGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="5%" stopColor="#FF915F" stopOpacity={0.95} />
+                  <stop offset="95%" stopColor="#FF915F" stopOpacity={0.01} />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="displayDate" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Line
+              <Area
                 type="monotone"
                 dataKey="previous"
                 stroke="#FF915F"
                 strokeWidth={3}
+                fill="url(#previousGradient)"
                 name={`Previous Period ${
                   mode === "manual" && prevStartDate && prevEndDate
                     ? `${formatChartDate(prevStartDate)} - ${formatChartDate(
@@ -173,20 +196,19 @@ export const RevenueChart: React.FC = () => {
                       )} - ${formatChartDate(subDays(endDate, periodDays))}`
                 }`}
                 connectNulls
-                fill="#FF915F"
               />
-              <Line
+              <Area
                 type="monotone"
                 dataKey="current"
                 stroke="#684AFF"
                 strokeWidth={3}
+                fill="url(#currentGradient)"
                 name={`Current Period ${formatChartDate(
                   startDate
                 )} - ${formatChartDate(endDate)}`}
                 connectNulls
-                fill="#684AFF"
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </Box>
       )}

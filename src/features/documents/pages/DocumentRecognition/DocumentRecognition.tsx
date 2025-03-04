@@ -23,14 +23,16 @@ import {
 } from "../../store/documents-api.slice";
 import {
   DocumentCreationPayload,
-  DocumentFields,
   DocumentType,
-  RecognizedData,
-  RecognizedValue,
 } from "../../types/document.types";
 import { DocumentProcessing } from "./components/DocumentProcessing";
 import { DocumentReview } from "./components/DocumentReview";
 import { DocumentUpload } from "./components/DocumentUpload";
+import {
+  DocumentFields,
+  RecognizedData,
+  RecognizedValue,
+} from "./document-recognition.types";
 
 const steps = ["Upload File", "Processing", "Review & Confirm"];
 

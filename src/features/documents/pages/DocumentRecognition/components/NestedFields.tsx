@@ -1,5 +1,5 @@
 import { Box, Paper, TextField, Typography } from "@mui/material";
-import { RecognizedValue } from "../../../types/document.types";
+import { RecognizedValue } from "../document-recognition.types";
 
 interface NestedFieldsProps {
   fields: Record<string, RecognizedValue>;

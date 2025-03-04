@@ -1,7 +1,7 @@
 import { RouteObject } from "react-router";
 import { DocumentDetail } from "./pages/DocumentDetail";
 import { DocumentRecognition } from "./pages/DocumentRecognition/DocumentRecognition";
-import { DocumentsList } from "./pages/DocumentsList";
+import { DocumentsList } from "./pages/DocumentsList/DocumentsList";
 
 export const documentsRoutes: RouteObject[] = [
   {

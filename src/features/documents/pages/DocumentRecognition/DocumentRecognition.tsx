@@ -171,13 +171,7 @@ export const DocumentRecognition = () => {
       case 0:
         return <DocumentUpload onFileSelect={handleUpload} />;
       case 1:
-        return (
-          <DocumentProcessing
-            isUploading={isRecognizing}
-            uploadProgress={0}
-            fileName={fileObject?.name || ""}
-          />
-        );
+        return <DocumentProcessing fileName={fileObject?.name || ""} />;
       case 2:
         return (
           <DocumentReview

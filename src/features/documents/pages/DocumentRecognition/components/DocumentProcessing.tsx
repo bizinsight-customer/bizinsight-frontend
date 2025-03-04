@@ -1,32 +1,21 @@
-import { Box, LinearProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 interface DocumentProcessingProps {
-  isUploading: boolean;
-  uploadProgress: number;
   fileName?: string;
 }
 
-export const DocumentProcessing = ({
-  isUploading,
-  uploadProgress,
-  fileName,
-}: DocumentProcessingProps) => {
+export const DocumentProcessing = ({ fileName }: DocumentProcessingProps) => {
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        {isUploading
-          ? "Uploading your document..."
-          : "Processing your document..."}
+        Processing your document...
       </Typography>
-      {isUploading ? (
-        <LinearProgress
-          variant="determinate"
-          value={uploadProgress}
-          sx={{ my: 2 }}
-        />
-      ) : (
-        <LinearProgress sx={{ my: 2 }} />
-      )}
+      <Typography variant="body2" color="textSecondary">
+        It can take several minutes
+      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+        <CircularProgress />
+      </Box>
       {fileName && (
         <Typography variant="body2" color="textSecondary">
           {fileName}

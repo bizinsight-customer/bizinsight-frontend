@@ -1,5 +1,6 @@
 import { Container, Grid } from "@mui/material";
 import React from "react";
+import { ProfitChart } from "../components/charts/ProfitChart/ProfitChart";
 import { RevenueChart } from "../components/charts/RevenueChart/RevenueChart";
 
 export const DashboardPage: React.FC = () => {
@@ -8,6 +9,9 @@ export const DashboardPage: React.FC = () => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <RevenueChart />
+        </Grid>
+        <Grid item xs={12}>
+          <ProfitChart />
         </Grid>
         {/* Add more dashboard widgets here */}
       </Grid>

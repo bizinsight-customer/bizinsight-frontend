@@ -1,4 +1,5 @@
 import { companyApiSlice } from "@/features/company/store/company.slice";
+import { profitApi } from "@/features/dashboard/services/profit-api";
 import { revenueApi } from "@/features/dashboard/services/revenue-api";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsApi } from "@/features/documents/store/documents-api.slice";
@@ -14,6 +15,7 @@ const apiMiddleware = [
   documentsApi.middleware,
   companyApiSlice.middleware,
   revenueApi.middleware,
+  profitApi.middleware,
 ] as Middleware[];
 
 export const store = configureStore({
@@ -23,6 +25,7 @@ export const store = configureStore({
     [documentsApi.reducerPath]: documentsApi.reducer,
     [companyApiSlice.reducerPath]: companyApiSlice.reducer,
     [revenueApi.reducerPath]: revenueApi.reducer,
+    [profitApi.reducerPath]: profitApi.reducer,
     errorPopup: errorPopupReducer,
     user: userReducer,
     // Feature reducers will be added here

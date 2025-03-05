@@ -38,6 +38,7 @@ export const API_ENDPOINTS = {
   },
   METRICS: {
     REVENUE: "/metrics/revenue",
+    PROFIT: "/metrics/profit",
   },
 } as const;
 

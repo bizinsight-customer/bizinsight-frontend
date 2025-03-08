@@ -1,23 +1,27 @@
-import { companyApiSlice } from "@/features/company/store/company.slice";
 import { expenseCategoriesApi } from "@/features/dashboard/services/expense-categories-api";
 import { profitApi } from "@/features/dashboard/services/profit-api";
 import { revenueApi } from "@/features/dashboard/services/revenue-api";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsApi } from "@/features/documents/store/documents-api.slice";
+import { userCompanyApiSlice } from "@/features/profile/store/user-company.api-slice";
+import { userSettingsSlice } from "@/features/profile/store/user-settings.api-slice";
 import { configureStore, Middleware } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import authReducer from "../features/auth/store/auth.slice";
+import { globalUserSettingsApiSlice } from "./global-api-slices/global-user-settings.api-slice";
 import { errorPopupReducer } from "./global-slices/error-popup.slice";
 import { userReducer } from "./global-slices/user/user.slice";
 
 const apiMiddleware = [
   documentTypesApi.middleware,
   documentsApi.middleware,
-  companyApiSlice.middleware,
+  userCompanyApiSlice.middleware,
   revenueApi.middleware,
   profitApi.middleware,
   expenseCategoriesApi.middleware,
+  userSettingsSlice.middleware,
+  globalUserSettingsApiSlice.middleware,
 ] as Middleware[];
 
 export const store = configureStore({
@@ -25,10 +29,13 @@ export const store = configureStore({
     auth: authReducer,
     [documentTypesApi.reducerPath]: documentTypesApi.reducer,
     [documentsApi.reducerPath]: documentsApi.reducer,
-    [companyApiSlice.reducerPath]: companyApiSlice.reducer,
+    [userCompanyApiSlice.reducerPath]: userCompanyApiSlice.reducer,
     [revenueApi.reducerPath]: revenueApi.reducer,
     [profitApi.reducerPath]: profitApi.reducer,
     [expenseCategoriesApi.reducerPath]: expenseCategoriesApi.reducer,
+    [userSettingsSlice.reducerPath]: userSettingsSlice.reducer,
+    [globalUserSettingsApiSlice.reducerPath]:
+      globalUserSettingsApiSlice.reducer,
     errorPopup: errorPopupReducer,
     user: userReducer,
     // Feature reducers will be added here

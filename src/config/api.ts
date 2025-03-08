@@ -41,6 +41,14 @@ export const API_ENDPOINTS = {
     PROFIT: "/metrics/profit",
     EXPENSE_CATEGORIES: "/metrics/expense-categories",
   },
+  USER_SETTINGS: {
+    UPDATE: "/users/me/settings",
+    STATUS: "/users/me/settings/status",
+    GET: "/users/me/settings",
+  },
+  CURRENCIES: {
+    LIST: "/currencies",
+  },
 } as const;
 
 // Type for endpoint paths

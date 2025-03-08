@@ -1,3 +1,4 @@
+import useFormatCurrency from "@/hooks/useFormatCurrency";
 import { Box, Paper, Typography } from "@mui/material";
 import React from "react";
 import {
@@ -10,6 +11,8 @@ export const CustomTooltip: React.FC<CustomTooltipProps> = ({
   payload,
   label,
 }) => {
+  const { format: formatCurrency } = useFormatCurrency();
+
   if (!active || !payload || !payload.length) return null;
 
   const currentValue = payload.find((p) => p.dataKey === "current");
@@ -21,12 +24,13 @@ export const CustomTooltip: React.FC<CustomTooltipProps> = ({
       <Typography variant="body2" sx={{ mb: 1 }}>
         {currentValue && (
           <Box>
-            Current ({label}): {currentValue.value}
+            Current ({label}): {formatCurrency(Number(currentValue.value))}
           </Box>
         )}
         {previousValue && (
           <Box>
-            Previous ({entry.originalDate}): {previousValue.value}
+            Previous ({entry.originalDate}):{" "}
+            {formatCurrency(Number(previousValue.value))}
           </Box>
         )}
       </Typography>

@@ -11,27 +11,29 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useUpdateCompanyDataMutation } from "../store/company.slice";
-import { CompanyData } from "../types/company.types";
+import { useUpdateUserCompanyDataMutation } from "../store/user-company.api-slice";
+import { UserCompanyData } from "../types/user-company.types";
 
-interface CompanyDataDialogProps {
+interface UserCompanyDataDialogProps {
   open: boolean;
   onClose?: () => void;
-  initialData?: CompanyData | null;
+  initialData?: UserCompanyData | null;
   isRequired?: boolean;
+  onSuccess?: () => void;
 }
 
-export const CompanyDataDialog: React.FC<CompanyDataDialogProps> = ({
+export const UserCompanyDataDialog: React.FC<UserCompanyDataDialogProps> = ({
   open,
   onClose,
   initialData,
   isRequired = false,
+  onSuccess,
 }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<CompanyData>({
+  } = useForm<UserCompanyData>({
     defaultValues: initialData || {
       name: "",
       tax_number: "",
@@ -46,13 +48,16 @@ export const CompanyDataDialog: React.FC<CompanyDataDialogProps> = ({
   });
 
   const [updateCompanyData, { isLoading, error }] =
-    useUpdateCompanyDataMutation();
+    useUpdateUserCompanyDataMutation();
 
-  const onSubmit = async (data: CompanyData) => {
+  const onSubmit = async (data: UserCompanyData) => {
     console.log("onSubmit", data);
     try {
       await updateCompanyData(data).unwrap();
-      onClose?.();
+      onSuccess?.();
+      if (!isRequired) {
+        onClose?.();
+      }
     } catch {
       // Error is handled by the mutation
     }

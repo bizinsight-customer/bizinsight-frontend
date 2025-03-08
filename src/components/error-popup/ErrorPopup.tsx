@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from "@/store";
 import {
   closeErrorPopup,
   selectErrorPopup,
 } from "@/store/global-slices/error-popup.slice";
+import { useAppDispatch, useAppSelector } from "@/store/store";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Dialog,

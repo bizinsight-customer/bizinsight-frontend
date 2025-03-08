@@ -1,0 +1,6 @@
+---
+description: Display error message
+globs: 
+alwaysApply: false
+---
+To display error message use [ErrorMessage.tsx](mdc:src/components/common/ErrorMessage.tsx)

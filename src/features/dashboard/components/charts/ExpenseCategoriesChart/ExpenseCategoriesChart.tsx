@@ -1,9 +1,11 @@
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { LoadingSpinner } from "@/components/common/loading-spinner";
+import useFormatCurrency from "@/hooks/useFormatCurrency";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React, { useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useGetExpenseCategoriesQuery } from "../../../services/expense-categories-api";
-import { formatCurrency } from "../../../utils/format-currency";
 import { DateRangePicker } from "../DateRangePicker";
 
 // Predefined colors for categories
@@ -25,8 +27,14 @@ export const ExpenseCategoriesChart: React.FC = () => {
     new Date(new Date().setMonth(new Date().getMonth() - 1))
   );
   const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const { format: formatCurrency, isLoading: isCurrencyLoading } =
+    useFormatCurrency();
 
-  const { data, isLoading, error } = useGetExpenseCategoriesQuery(
+  const {
+    data,
+    isLoading: isDataLoading,
+    error,
+  } = useGetExpenseCategoriesQuery(
     {
       start_date: startDate ? format(startDate, "dd.MM.yyyy") : "",
       end_date: endDate ? format(endDate, "dd.MM.yyyy") : "",
@@ -63,11 +71,9 @@ export const ExpenseCategoriesChart: React.FC = () => {
         />
       </Box>
 
-      {isLoading && <Typography>Loading...</Typography>}
+      {(isDataLoading || isCurrencyLoading) && <LoadingSpinner />}
       {error && (
-        <Typography color="error">
-          Error loading expense categories data
-        </Typography>
+        <ErrorMessage message="Error loading expense categories data" />
       )}
 
       {data && (

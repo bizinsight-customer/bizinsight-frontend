@@ -8,6 +8,8 @@ export interface AppRouteParams extends AuthRouteParams {
   "/documents": undefined;
   "/analytics": undefined;
   "/settings": undefined;
+  "/profile": undefined;
+  "/user-settings": undefined;
 }
 
 // Export the combined route path type

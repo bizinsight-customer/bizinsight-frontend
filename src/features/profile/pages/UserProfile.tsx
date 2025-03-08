@@ -1,7 +1,7 @@
+import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { ENV } from "@/config/env";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { CompanyDataDialog } from "@/features/company/components/company-data-dialog";
-import { useCompanyDataCheck } from "@/features/company/hooks/use-company-data-check";
+import { UserCompanyDataDialogContainer } from "@/features/profile/components/user-company-data-dialog-container";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -24,8 +24,7 @@ export const UserProfile = () => {
   const { user, firebaseUser } = useAuth();
   const [token, setToken] = useState<string | null>(null);
   const [tokenError, setTokenError] = useState<string | null>(null);
-  const { openDialog, showDialog, closeDialog, companyData } =
-    useCompanyDataCheck();
+  const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -78,7 +77,11 @@ export const UserProfile = () => {
         }}
       >
         <Typography variant="h4">User Profile</Typography>
-        <Button variant="contained" color="primary" onClick={openDialog}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setShowDialog(true)}
+        >
           Company Data
         </Button>
       </Box>
@@ -117,11 +120,7 @@ export const UserProfile = () => {
               </Typography>
             </Box>
           )}
-          {tokenError && (
-            <Typography variant="body2" color="error">
-              Error: {tokenError}
-            </Typography>
-          )}
+          {tokenError && <ErrorMessage message={tokenError} />}
           {user && (
             <Box sx={{ mb: 2 }}>
               <Typography variant="h6" gutterBottom color="primary">
@@ -140,12 +139,12 @@ export const UserProfile = () => {
         </Paper>
       )}
 
-      <CompanyDataDialog
-        open={showDialog}
-        onClose={closeDialog}
-        initialData={companyData}
-        isRequired={false}
-      />
+      {showDialog && (
+        <UserCompanyDataDialogContainer
+          skipIfHasRequiredData={false}
+          onSuccess={() => setShowDialog(false)}
+        />
+      )}
     </Box>
   );
 };

@@ -1,6 +1,6 @@
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { CompanyDataProvider } from "@/features/company/components/company-data-provider";
+import { StartupProvider } from "@/features/startup/components/startup-provider";
 import { auth } from "@/services/firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { ErrorInfo, useEffect, useState } from "react";
@@ -42,9 +42,9 @@ function App() {
       <AuthStateChangeHandler />
       <ErrorPopup />
       {isAuthenticated ? (
-        <CompanyDataProvider>
+        <StartupProvider>
           <Outlet />
-        </CompanyDataProvider>
+        </StartupProvider>
       ) : (
         <Outlet />
       )}

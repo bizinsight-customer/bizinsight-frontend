@@ -1,3 +1,4 @@
+import useFormatCurrency from "@/hooks/useFormatCurrency";
 import { Box, Paper, Typography } from "@mui/material";
 import { addDays, differenceInDays, format, subDays } from "date-fns";
 import React, { useState } from "react";
@@ -23,6 +24,7 @@ import {
 export const ProfitChart: React.FC = () => {
   const [mode, setMode] = useState<DateSelectionMode>("auto");
   const [periodDays, setPeriodDays] = useState<number>(30);
+  const { format: formatCurrency } = useFormatCurrency();
 
   // Current period dates
   const [startDate, setStartDate] = useState<Date | null>(
@@ -177,7 +179,7 @@ export const ProfitChart: React.FC = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="displayDate" />
-              <YAxis />
+              <YAxis tickFormatter={(value) => formatCurrency(value)} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Area

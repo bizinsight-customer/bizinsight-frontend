@@ -1,0 +1,6 @@
+---
+description: Display loading message
+globs: 
+alwaysApply: false
+---
+To display loading message use [loading-spinner.tsx](mdc:src/components/common/loading-spinner.tsx)

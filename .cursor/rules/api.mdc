@@ -1,0 +1,11 @@
+---
+description: API interaction
+globs: *slice.ts
+alwaysApply: false
+---
+To interact with backend API use Redux Toolkit api slices.
+Use createApiSliceNonJsonApi from [create-api-slice.ts](mdc:src/store/create-api-slice.ts)](mdc:src/store/create-api-slice.ts).
+Check [api.ts](mdc:src/config/api.ts) for api routes, add routes there if nescesary.
+- create *.api-slice.ts file for new api slice in store folder of feature
+- add api slice to [store.ts](mdc:src/store/store.ts)
+- for mutation queries use data field instead of body

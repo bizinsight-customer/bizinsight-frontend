@@ -1,4 +1,4 @@
-export interface CompanyData {
+export interface UserCompanyData {
   name: string | null;
   tax_number: string | null;
   registration_number: string | null;
@@ -10,4 +10,4 @@ export interface CompanyData {
   bank_swift: string | null;
 }
 
-export type CompanyUpdateData = CompanyData;
+export type UserCompanyUpdateData = UserCompanyData;

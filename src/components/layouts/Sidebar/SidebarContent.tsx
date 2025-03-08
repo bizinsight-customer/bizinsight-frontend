@@ -1,7 +1,9 @@
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useTypedNavigate } from "@/hooks/useTypedNavigate";
 import { AppRoutePath } from "@/types/routes.types";
 import {
   ChevronLeft as ChevronLeftIcon,
+  Logout as LogoutIcon,
   Menu as MenuIcon,
 } from "@mui/icons-material";
 import {
@@ -28,6 +30,7 @@ export const SidebarContent = ({ isOpen, onToggle }: SidebarContentProps) => {
   const navigate = useTypedNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { signOut } = useAuth();
 
   const handleNavigate = (path: AppRoutePath) => {
     navigate.navigateTo(path);
@@ -37,8 +40,12 @@ export const SidebarContent = ({ isOpen, onToggle }: SidebarContentProps) => {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+  };
+
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box
         sx={{
           display: "flex",
@@ -51,7 +58,7 @@ export const SidebarContent = ({ isOpen, onToggle }: SidebarContentProps) => {
           {isOpen ? <ChevronLeftIcon /> : <MenuIcon />}
         </IconButton>
       </Box>
-      <List>
+      <List sx={{ flexGrow: 1 }}>
         {menuItems.map((item) => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton
@@ -77,6 +84,35 @@ export const SidebarContent = ({ isOpen, onToggle }: SidebarContentProps) => {
           </ListItem>
         ))}
       </List>
-    </>
+      <List>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={handleLogout}
+            sx={{
+              minHeight: 48,
+              justifyContent: isOpen ? "initial" : "center",
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: isOpen ? 2 : "auto",
+                justifyContent: "center",
+                color: theme.palette.error.main,
+              }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+            {isOpen && (
+              <ListItemText
+                primary="Logout"
+                sx={{ color: theme.palette.error.main }}
+              />
+            )}
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Box>
   );
 };

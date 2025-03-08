@@ -3,10 +3,9 @@ import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { format } from "date-fns";
-import React, { useState } from "react";
+import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useGetExpenseCategoriesQuery } from "../../../services/expense-categories-api";
-import { DateRangePicker } from "../DateRangePicker";
 
 // Predefined colors for categories
 const CATEGORY_COLORS = [
@@ -22,13 +21,16 @@ const CATEGORY_COLORS = [
   "#607D8B", // Blue Grey
 ];
 
-export const ExpenseCategoriesChart: React.FC = () => {
-  const [startDate, setStartDate] = useState<Date | null>(
-    new Date(new Date().setMonth(new Date().getMonth() - 1))
-  );
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-  const { format: formatCurrency, isLoading: isCurrencyLoading } =
-    useFormatCurrency();
+interface ExpenseCategoriesChartProps {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
+  startDate,
+  endDate,
+}) => {
+  const { isLoading: isCurrencyLoading } = useFormatCurrency();
 
   const {
     data,
@@ -56,19 +58,12 @@ export const ExpenseCategoriesChart: React.FC = () => {
 
   return (
     <Paper
-      sx={{ p: 3, height: "500px", display: "flex", flexDirection: "column" }}
+      sx={{ p: 3, height: "450px", display: "flex", flexDirection: "column" }}
     >
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Expense Categories</Typography>
         </Box>
-
-        <DateRangePicker
-          startDate={startDate}
-          endDate={endDate}
-          onStartDateChange={setStartDate}
-          onEndDateChange={setEndDate}
-        />
       </Box>
 
       {(isDataLoading || isCurrencyLoading) && <LoadingSpinner />}
@@ -77,8 +72,8 @@ export const ExpenseCategoriesChart: React.FC = () => {
       )}
 
       {data && (
-        <Grid container spacing={3} sx={{ flex: 1 }}>
-          <Grid item xs={12} md={8}>
+        <Grid container sx={{ flex: 1 }}>
+          <Grid item xs={12} md={6}>
             <Box
               sx={{
                 height: "100%",
@@ -95,9 +90,9 @@ export const ExpenseCategoriesChart: React.FC = () => {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
+                    innerRadius={100}
+                    outerRadius={160}
+                    paddingAngle={1}
                   >
                     {chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
@@ -115,39 +110,39 @@ export const ExpenseCategoriesChart: React.FC = () => {
               </ResponsiveContainer>
             </Box>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <Box
               sx={{
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                gap: 1,
+                overflowY: "auto",
+                pl: { xs: 0, md: 2 },
               }}
             >
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Total Expenses: {formatCurrency(data.total_amount)}
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                {data.categories.map((category, index) => (
+              {chartData.map((entry) => (
+                <Box
+                  key={entry.name}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
                   <Box
-                    key={index}
-                    sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                  >
-                    <Box
-                      sx={{
-                        width: 12,
-                        height: 12,
-                        borderRadius: "50%",
-                        backgroundColor:
-                          CATEGORY_COLORS[index % CATEGORY_COLORS.length],
-                      }}
-                    />
-                    <Typography variant="body2">
-                      {category.category} ({category.percent.toFixed(1)}%)
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
+                    sx={{
+                      width: 16,
+                      height: 16,
+                      borderRadius: "50%",
+                      bgcolor: entry.color,
+                    }}
+                  />
+                  <Typography>
+                    {entry.name}: {entry.value.toFixed(1)}%
+                  </Typography>
+                </Box>
+              ))}
             </Box>
           </Grid>
         </Grid>

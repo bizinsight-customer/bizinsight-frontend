@@ -1,7 +1,9 @@
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
 import { Box, Paper, Typography } from "@mui/material";
 import { addDays, differenceInDays, format, subDays } from "date-fns";
-import React, { useState } from "react";
+import React from "react";
 import {
   Area,
   AreaChart,
@@ -13,7 +15,6 @@ import {
 } from "recharts";
 import { useGetProfitQuery } from "../../../services/profit-api";
 import { CustomTooltip } from "../CustomTooltip";
-import { DateSelection } from "../DateSelection";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
 import {
   ChartEntry,
@@ -21,40 +22,24 @@ import {
   DateSelectionMode,
 } from "./profit-chart.types";
 
-export const ProfitChart: React.FC = () => {
-  const [mode, setMode] = useState<DateSelectionMode>("auto");
-  const [periodDays, setPeriodDays] = useState<number>(30);
+interface ProfitChartProps {
+  mode: DateSelectionMode;
+  startDate: Date | null;
+  endDate: Date | null;
+  prevStartDate: Date | null;
+  prevEndDate: Date | null;
+  periodDays: number;
+}
+
+export const ProfitChart: React.FC<ProfitChartProps> = ({
+  mode,
+  startDate,
+  endDate,
+  prevStartDate,
+  prevEndDate,
+  periodDays,
+}) => {
   const { format: formatCurrency } = useFormatCurrency();
-
-  // Current period dates
-  const [startDate, setStartDate] = useState<Date | null>(
-    new Date(new Date().setMonth(new Date().getMonth() - 1))
-  );
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-
-  // Previous period dates for manual mode
-  const [prevStartDate, setPrevStartDate] = useState<Date | null>(null);
-  const [prevEndDate, setPrevEndDate] = useState<Date | null>(null);
-
-  // Reset or set previous dates when switching modes or when startDate changes
-  React.useEffect(() => {
-    if (mode === "auto") {
-      setPrevStartDate(null);
-      setPrevEndDate(null);
-    } else if (mode === "manual" && startDate) {
-      setPrevStartDate(subDays(startDate, periodDays));
-    }
-  }, [mode, startDate, periodDays]);
-
-  // Calculate end dates based on period days in manual mode
-  React.useEffect(() => {
-    if (mode === "manual" && startDate && periodDays > 0) {
-      setEndDate(addDays(startDate, periodDays));
-    }
-    if (mode === "manual" && prevStartDate && periodDays > 0) {
-      setPrevEndDate(addDays(prevStartDate, periodDays));
-    }
-  }, [mode, startDate, prevStartDate, periodDays]);
 
   const {
     data: profitData,
@@ -125,32 +110,16 @@ export const ProfitChart: React.FC = () => {
 
   return (
     <Paper
-      sx={{ p: 3, height: "500px", display: "flex", flexDirection: "column" }}
+      sx={{ p: 3, height: "450px", display: "flex", flexDirection: "column" }}
     >
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Profit Over Time</Typography>
         </Box>
-
-        <DateSelection
-          mode={mode}
-          startDate={startDate}
-          endDate={endDate}
-          prevStartDate={prevStartDate}
-          prevEndDate={prevEndDate}
-          periodDays={periodDays}
-          onModeChange={setMode}
-          onStartDateChange={setStartDate}
-          onEndDateChange={setEndDate}
-          onPrevStartDateChange={setPrevStartDate}
-          onPeriodDaysChange={setPeriodDays}
-        />
       </Box>
 
-      {isLoading && <Typography>Loading...</Typography>}
-      {error && (
-        <Typography color="error">Error loading profit data</Typography>
-      )}
+      {isLoading && <LoadingSpinner />}
+      {error && <ErrorMessage message="Error loading profit data" />}
 
       {chartData && (
         <Box sx={{ flex: 1, minHeight: 0 }}>
@@ -193,9 +162,11 @@ export const ProfitChart: React.FC = () => {
                     ? `${formatChartDate(prevStartDate)} - ${formatChartDate(
                         prevEndDate
                       )}`
-                    : `${formatChartDate(
+                    : startDate && endDate
+                    ? `${formatChartDate(
                         subDays(startDate, periodDays)
                       )} - ${formatChartDate(subDays(endDate, periodDays))}`
+                    : ""
                 }`}
                 connectNulls
               />
@@ -205,9 +176,13 @@ export const ProfitChart: React.FC = () => {
                 stroke="#684AFF"
                 strokeWidth={3}
                 fill="url(#currentGradient)"
-                name={`Current Period ${formatChartDate(
-                  startDate
-                )} - ${formatChartDate(endDate)}`}
+                name={`Current Period ${
+                  startDate && endDate
+                    ? `${formatChartDate(startDate)} - ${formatChartDate(
+                        endDate
+                      )}`
+                    : ""
+                }`}
                 connectNulls
               />
             </AreaChart>

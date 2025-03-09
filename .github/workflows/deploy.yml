@@ -40,6 +40,7 @@ jobs:
         with:
           name: frontend-build
           path: dist/
+          retention-days: 1
           
       - name: Trigger Infrastructure Deploy
         if: success()

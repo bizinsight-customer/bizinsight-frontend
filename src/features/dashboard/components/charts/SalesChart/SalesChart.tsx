@@ -90,7 +90,16 @@ export const SalesChart: React.FC<SalesChartProps> = ({
                 textAnchor="end"
                 height={100}
               />
-              <YAxis />
+              <YAxis
+                label={{
+                  value: "Number of Sales",
+                  angle: -90,
+                  position: "insideLeft",
+                  style: {
+                    textAnchor: "middle",
+                  },
+                }}
+              />
               <Tooltip content={<CustomSalesToolTip />} />
               <Bar
                 dataKey="sales"

@@ -4,6 +4,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -38,12 +39,28 @@ export const DashboardDateSelection: React.FC<DashboardDateSelectionProps> = ({
   onPrevStartDateChange,
   onPeriodDaysChange,
 }) => {
+  const handlePeriodDaysChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = parseInt(event.target.value);
+    if (!isNaN(value) && value > 0) {
+      onPeriodDaysChange(value);
+    }
+  };
+
   return (
     <Box sx={{ mb: 3, p: 2, bgcolor: "background.paper", borderRadius: 1 }}>
       <Typography variant="h6" sx={{ mb: 2 }}>
         Dashboard Period
       </Typography>
-      <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+        }}
+      >
         <FormControl size="small" sx={{ minWidth: 200 }}>
           <InputLabel>Date Selection Mode</InputLabel>
           <Select
@@ -57,33 +74,55 @@ export const DashboardDateSelection: React.FC<DashboardDateSelectionProps> = ({
         </FormControl>
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Start Date"
-            value={startDate}
-            onChange={onStartDateChange}
-            format={DATE_FORMAT}
-            slotProps={{ textField: { size: "small" } }}
-          />
-
-          <DatePicker
-            label="End Date"
-            value={endDate}
-            onChange={onEndDateChange}
-            format={DATE_FORMAT}
-            slotProps={{ textField: { size: "small" } }}
-            disabled={mode === "manual"}
-          />
-
-          {mode === "manual" && (
-            <>
+          {mode === "auto" && (
+            <Box sx={{ display: "flex", gap: 2 }}>
               <DatePicker
-                label="Previous Start Date"
-                value={prevStartDate}
-                onChange={onPrevStartDateChange}
+                label="Current Period Start"
+                value={startDate}
+                onChange={onStartDateChange}
                 format={DATE_FORMAT}
                 slotProps={{ textField: { size: "small" } }}
               />
-            </>
+              <DatePicker
+                label="Current Period End"
+                value={endDate}
+                onChange={onEndDateChange}
+                format={DATE_FORMAT}
+                slotProps={{ textField: { size: "small" } }}
+              />
+            </Box>
+          )}
+
+          {mode === "manual" && (
+            <Box sx={{ display: "flex", gap: 4 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <DatePicker
+                  label="Current Period Start"
+                  value={startDate}
+                  onChange={onStartDateChange}
+                  format={DATE_FORMAT}
+                  slotProps={{ textField: { size: "small" } }}
+                />
+                <DatePicker
+                  label="Previous Period Start"
+                  value={prevStartDate}
+                  onChange={onPrevStartDateChange}
+                  format={DATE_FORMAT}
+                  slotProps={{ textField: { size: "small" } }}
+                />
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <TextField
+                  label="Period Days"
+                  type="number"
+                  size="small"
+                  value={periodDays}
+                  onChange={handlePeriodDaysChange}
+                  inputProps={{ min: 1 }}
+                  sx={{ width: 120 }}
+                />
+              </Box>
+            </Box>
           )}
         </LocalizationProvider>
       </Box>

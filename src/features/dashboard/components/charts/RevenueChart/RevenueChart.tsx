@@ -13,7 +13,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useGetRevenueQuery } from "../../../services/revenue-api";
+import { useGetRevenueQuery } from "../../../api-slices/revenue.api-slice";
 import { CustomTooltip } from "../CustomTooltip";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
 import {

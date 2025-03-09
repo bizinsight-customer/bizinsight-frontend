@@ -1,6 +1,6 @@
 ---
-description: API interaction
-globs: *slice.ts
+description: API interaction. If you need to take any data from API use this rule
+globs: *slice.ts,*.api-slice.ts
 alwaysApply: false
 ---
 To interact with backend API use Redux Toolkit api slices.

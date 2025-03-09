@@ -5,7 +5,7 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { useGetExpenseCategoriesQuery } from "../../../services/expense-categories-api";
+import { useGetExpenseCategoriesQuery } from "../../../api-slices/expense-categories.api-slice";
 
 // Predefined colors for categories
 const CATEGORY_COLORS = [

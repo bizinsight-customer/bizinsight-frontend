@@ -5,6 +5,7 @@ import { ExpenseCategoriesChart } from "../components/charts/ExpenseCategoriesCh
 import { ProfitChart } from "../components/charts/ProfitChart/ProfitChart";
 import { DateSelectionMode } from "../components/charts/RevenueChart/revenue-chart.types";
 import { RevenueChart } from "../components/charts/RevenueChart/RevenueChart";
+import { SalesChart } from "../components/charts/SalesChart/SalesChart";
 import { DashboardDateSelection } from "../components/DashboardDateSelection";
 
 export const DashboardPage: React.FC = () => {
@@ -79,6 +80,9 @@ export const DashboardPage: React.FC = () => {
         </Grid>
         <Grid item xs={12}>
           <ExpenseCategoriesChart startDate={startDate} endDate={endDate} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <SalesChart startDate={startDate} endDate={endDate} />
         </Grid>
       </Grid>
     </Container>

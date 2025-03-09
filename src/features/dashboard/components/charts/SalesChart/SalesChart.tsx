@@ -1,0 +1,136 @@
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { LoadingSpinner } from "@/components/common/loading-spinner";
+import { Box, Paper, Typography } from "@mui/material";
+import { format } from "date-fns";
+import React from "react";
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { useGetSalesQuery } from "../../../api-slices/sales.api-slice";
+import { DATE_FORMAT } from "../RevenueChart/revenue-chart.types";
+import { formatChartDate, parseDateSafely } from "../utils/date-utils";
+
+interface SalesChartProps {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+interface ChartEntry {
+  displayDate: string;
+  periodStart: string;
+  periodEnd: string;
+  sales: number;
+}
+
+export const SalesChart: React.FC<SalesChartProps> = ({
+  startDate,
+  endDate,
+}) => {
+  const {
+    data: salesData,
+    isLoading,
+    error,
+  } = useGetSalesQuery(
+    {
+      start_date: startDate ? format(startDate, DATE_FORMAT) : "",
+      end_date: endDate ? format(endDate, DATE_FORMAT) : "",
+    },
+    {
+      skip: !startDate || !endDate,
+    }
+  );
+
+  const chartData = React.useMemo(() => {
+    if (!salesData) return [];
+
+    return salesData.periods
+      .map((period) => {
+        const startDate = parseDateSafely(period.period_start);
+        const endDate = parseDateSafely(period.period_end);
+
+        if (!startDate || !endDate) return null;
+
+        return {
+          displayDate: `${formatChartDate(startDate)} - ${formatChartDate(
+            endDate
+          )}`,
+          periodStart: period.period_start,
+          periodEnd: period.period_end,
+          sales: period.number_of_sales,
+        };
+      })
+      .filter((entry): entry is ChartEntry => entry !== null);
+  }, [salesData]);
+
+  return (
+    <Paper
+      sx={{ p: 3, height: "450px", display: "flex", flexDirection: "column" }}
+    >
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="h6">Sales Over Time</Typography>
+        </Box>
+      </Box>
+
+      {isLoading && <LoadingSpinner />}
+      {error && <ErrorMessage message="Error loading sales data" />}
+
+      {chartData && (
+        <Box sx={{ flex: 1, minHeight: 0 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
+              <XAxis
+                dataKey="displayDate"
+                angle={-45}
+                textAnchor="end"
+                height={100}
+              />
+              <YAxis />
+              <Tooltip content={<CustomSalesToolTip />} />
+              <Bar
+                dataKey="sales"
+                fill="#684AFF"
+                name="Number of Sales"
+                radius={[8, 8, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
+      )}
+    </Paper>
+  );
+};
+
+interface CustomSalesToolTipProps {
+  active?: boolean;
+  payload?: {
+    payload: ChartEntry;
+    value: number;
+    dataKey: string;
+  }[];
+  label?: string;
+}
+
+const CustomSalesToolTip: React.FC<CustomSalesToolTipProps> = ({
+  active,
+  payload,
+  label,
+}) => {
+  if (!active || !payload || !payload.length) return null;
+
+  const data = payload[0].payload as ChartEntry;
+
+  return (
+    <Paper sx={{ p: 1 }}>
+      <Typography variant="body2">
+        <Box>Period: {label}</Box>
+        <Box>Sales: {data.sales}</Box>
+      </Typography>
+    </Paper>
+  );
+};

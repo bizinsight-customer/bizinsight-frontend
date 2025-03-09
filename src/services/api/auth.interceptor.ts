@@ -20,8 +20,6 @@ export const setupAuthInterceptor = (
 
   api.interceptors.request.use(async (config) => {
     try {
-      console.log("AUTH REQUEST INTERCEPTOR");
-      console.log("CONFIG", config);
       const token = await getCurrentUserToken();
       console.log("TOKEN", token);
       if (token) {

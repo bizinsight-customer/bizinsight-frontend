@@ -40,6 +40,7 @@ export const API_ENDPOINTS = {
     REVENUE: "/metrics/revenue",
     PROFIT: "/metrics/profit",
     EXPENSE_CATEGORIES: "/metrics/expense-categories",
+    SALES: "/metrics/sales",
   },
   USER_SETTINGS: {
     UPDATE: "/users/me/settings",
@@ -53,5 +54,11 @@ export const API_ENDPOINTS = {
 
 // Type for endpoint paths
 export type ApiEndpoint = typeof API_ENDPOINTS;
+
+export const API_PATHS = {
+  // ... existing code ...
+  METRICS_SALES: "/metrics/sales",
+  // ... existing code ...
+} as const;
 
 export default apiConfig;

@@ -43,7 +43,7 @@ export const axiosBaseQuery2Version =
         },
       });
 
-      console.log("RESPONSE", response);
+      console.log(`RESPONSE ${requestConfig.url}`, response);
 
       // Handle the response based on whether it's a collection or single resource
       return response;

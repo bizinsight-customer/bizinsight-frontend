@@ -1,10 +1,12 @@
 import { Container, Grid } from "@mui/material";
 import { addDays, subDays } from "date-fns";
 import React, { useState } from "react";
+import { ClientsMetrics } from "../components/charts/ClientsMetrics/ClientsMetrics";
 import { ExpenseCategoriesChart } from "../components/charts/ExpenseCategoriesChart/ExpenseCategoriesChart";
 import { ProfitChart } from "../components/charts/ProfitChart/ProfitChart";
 import { DateSelectionMode } from "../components/charts/RevenueChart/revenue-chart.types";
 import { RevenueChart } from "../components/charts/RevenueChart/RevenueChart";
+import { SalaryMetrics } from "../components/charts/SalaryMetrics/SalaryMetrics";
 import { SalesChart } from "../components/charts/SalesChart/SalesChart";
 import { DashboardDateSelection } from "../components/DashboardDateSelection";
 
@@ -83,6 +85,12 @@ export const DashboardPage: React.FC = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           <SalesChart startDate={startDate} endDate={endDate} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ClientsMetrics startDate={startDate} endDate={endDate} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <SalaryMetrics startDate={startDate} endDate={endDate} />
         </Grid>
       </Grid>
     </Container>

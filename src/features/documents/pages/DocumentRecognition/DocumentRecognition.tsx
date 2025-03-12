@@ -96,19 +96,33 @@ export const DocumentRecognition = () => {
 
   const flattenRecognizedData = (
     data: RecognizedData,
-    parentKey = ""
+    parentKey = "",
+    isArrayItem = false
   ): DocumentFields => {
     const result: DocumentFields = {};
 
     Object.entries(data).forEach(([key, value]) => {
-      const fullKey = parentKey ? `${parentKey}.${key}` : key;
+      // For array items, we don't include the parent key in the path
+      const fullKey = isArrayItem
+        ? key
+        : parentKey
+        ? `${parentKey}.${key}`
+        : key;
 
       if (value === null) {
         result[fullKey] = "";
+      } else if (Array.isArray(value)) {
+        // Handle arrays by keeping them as arrays
+        result[fullKey] = value.map((item) =>
+          typeof item === "object" && item !== null
+            ? flattenRecognizedData(item as RecognizedData, fullKey, true)
+            : String(item)
+        );
       } else if (typeof value === "object") {
         const nestedFields = flattenRecognizedData(
           value as RecognizedData,
-          fullKey
+          fullKey,
+          isArrayItem
         );
         Object.assign(result, nestedFields);
       } else {

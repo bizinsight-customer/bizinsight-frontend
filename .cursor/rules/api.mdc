@@ -10,3 +10,5 @@ Check [api.ts](mdc:src/config/api.ts) for api routes, add routes there if nesces
 - add api slice to [store.ts](mdc:src/store/store.ts)
 - for mutation queries use data field instead of body
 - use injectEndpoints function for created slice
+- when you add new api endpoints to application you should firstly download openapi scheme for endpoint using command:
+```curl -s http://localhost:8000/openapi.json -o openapi.json && openapi-extract -p /metrics/clients -m get -i openapi.json && rm openapi.json```

@@ -1,42 +1,62 @@
 import { useApiErrorDisplay } from "@/hooks/useApiErrorDisplay";
 import { getApiErrorMessage } from "@/utils/api-error.utils";
-import {
-  Box,
-  CircularProgress,
-  Pagination,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
-import { useState } from "react";
-import { useGetDocumentsQuery } from "../../store/documents-api.slice";
+import { Box, CircularProgress, useMediaQuery, useTheme } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { useGetDocumentsQuery } from "../../store/documents-updated.api-slice";
 import { DocumentsGrid } from "./components/DocumentsGrid";
 import { DocumentsHeader } from "./components/DocumentsHeader";
 import { EmptyDocumentsList } from "./components/EmptyDocumentsList";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 40;
 
 export const DocumentsList = () => {
   const [page, setPage] = useState(1);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const {
     data: documents,
     isLoading,
     error,
+    isFetching,
   } = useGetDocumentsQuery({
     page,
-    limit: ITEMS_PER_PAGE,
+    per_page: ITEMS_PER_PAGE,
   });
 
   useApiErrorDisplay(error, "Failed to fetch documents");
 
-  const handlePageChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    setPage(value);
-  };
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        console.log("Intersecting", first.isIntersecting);
+        console.log("isFetching", isFetching);
+        console.log("documents", documents);
+        if (
+          first.isIntersecting &&
+          !isFetching &&
+          documents?.meta.current_page < documents?.meta.total_pages
+        ) {
+          console.log("Setting page", page);
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [isFetching, documents?.meta.current_page, documents?.meta.total_pages]);
 
   if (error) {
     return <div>Error: {getApiErrorMessage(error)}</div>;
@@ -55,28 +75,27 @@ export const DocumentsList = () => {
     );
   }
 
-  const totalPages = documents?.meta?.totalPages || 1;
-
   return (
     <Box p={isMobile ? 2 : 3}>
       <DocumentsHeader />
 
-      {!documents?.length ? (
+      {!documents?.data?.length ? (
         <EmptyDocumentsList />
       ) : (
-        <DocumentsGrid documents={documents} />
-      )}
-
-      {totalPages > 1 && (
-        <Box display="flex" justifyContent="center" mt={isMobile ? 2 : 4}>
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-            size={isMobile ? "small" : "medium"}
-          />
-        </Box>
+        <>
+          <DocumentsGrid documents={documents.data} />
+          {documents.meta.current_page < documents.meta.total_pages && (
+            <Box
+              ref={loadMoreRef}
+              display="flex"
+              justifyContent="center"
+              mt={isMobile ? 2 : 4}
+              minHeight="100px"
+            >
+              {isFetching && <CircularProgress />}
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );

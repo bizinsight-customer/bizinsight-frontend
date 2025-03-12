@@ -1,3 +1,8 @@
+/**
+ * @deprecated This hook is deprecated. Please use createApiSlice from src/store/create-api-slice.ts instead.
+ * This file will be removed in future versions.
+ */
+
 import api from "@/services/api/axios";
 import { ApiError, ApiResponse } from "@/types/api.types";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";

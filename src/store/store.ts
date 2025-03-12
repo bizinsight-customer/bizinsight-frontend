@@ -6,6 +6,7 @@ import { salesApi } from "@/features/dashboard/api-slices/sales.api-slice";
 import { clientsMetricsApiSlice } from "@/features/dashboard/store/clients-metrics.api-slice";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsApi } from "@/features/documents/store/documents-api.slice";
+import { documentsUpdatedApi } from "@/features/documents/store/documents-updated.api-slice";
 import { userCompanyApiSlice } from "@/features/profile/store/user-company.api-slice";
 import { userSettingsSlice } from "@/features/profile/store/user-settings.api-slice";
 import { configureStore, Middleware } from "@reduxjs/toolkit";
@@ -19,6 +20,7 @@ import { userReducer } from "./global-slices/user/user.slice";
 const apiMiddleware = [
   documentTypesApi.middleware,
   documentsApi.middleware,
+  documentsUpdatedApi.middleware,
   userCompanyApiSlice.middleware,
   revenueApi.middleware,
   profitApi.middleware,
@@ -35,6 +37,7 @@ export const store = configureStore({
     auth: authReducer,
     [documentTypesApi.reducerPath]: documentTypesApi.reducer,
     [documentsApi.reducerPath]: documentsApi.reducer,
+    [documentsUpdatedApi.reducerPath]: documentsUpdatedApi.reducer,
     [userCompanyApiSlice.reducerPath]: userCompanyApiSlice.reducer,
     [revenueApi.reducerPath]: revenueApi.reducer,
     [profitApi.reducerPath]: profitApi.reducer,

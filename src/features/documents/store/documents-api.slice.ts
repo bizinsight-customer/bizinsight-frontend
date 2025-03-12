@@ -13,14 +13,6 @@ export const documentsApi = createApiSlice({
   tagTypes: ["Documents"],
 }).injectEndpoints({
   endpoints: (builder) => ({
-    getDocuments: builder.query<Document[], { page?: number; limit?: number }>({
-      query: ({ page = 1, limit = 10 }) => ({
-        url: API_ENDPOINTS.DOCUMENTS.LIST,
-        params: { page, limit },
-      }),
-      providesTags: ["Documents"],
-    }),
-
     getDocument: builder.query<JsonApiResource<Document>, string>({
       query: (id) => ({
         url: API_ENDPOINTS.DOCUMENTS.GET(id),
@@ -79,7 +71,6 @@ export const documentsApi = createApiSlice({
 });
 
 export const {
-  useGetDocumentsQuery,
   useGetDocumentQuery,
   useDeleteDocumentMutation,
   useRecognizeDocumentMutation,

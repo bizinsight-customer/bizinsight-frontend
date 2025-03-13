@@ -3,6 +3,7 @@ import { addDays, subDays } from "date-fns";
 import React, { useState } from "react";
 import { ClientsMetrics } from "../components/charts/ClientsMetrics/ClientsMetrics";
 import { ExpenseCategoriesChart } from "../components/charts/ExpenseCategoriesChart/ExpenseCategoriesChart";
+import { FacilityChargesChart } from "../components/charts/FacilityChargesChart/FacilityChargesChart";
 import { ProfitChart } from "../components/charts/ProfitChart/ProfitChart";
 import { DateSelectionMode } from "../components/charts/RevenueChart/revenue-chart.types";
 import { RevenueChart } from "../components/charts/RevenueChart/RevenueChart";
@@ -82,6 +83,16 @@ export const DashboardPage: React.FC = () => {
         </Grid>
         <Grid item xs={12}>
           <ExpenseCategoriesChart startDate={startDate} endDate={endDate} />
+        </Grid>
+        <Grid item xs={12}>
+          <FacilityChargesChart
+            mode={mode}
+            startDate={startDate}
+            endDate={endDate}
+            prevStartDate={prevStartDate}
+            prevEndDate={prevEndDate}
+            periodDays={periodDays}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <SalesChart startDate={startDate} endDate={endDate} />

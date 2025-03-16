@@ -48,6 +48,17 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
     }
   );
 
+  // Calculate total amount
+  const totalAmount = React.useMemo(() => {
+    if (!data) return 0;
+    return (
+      data.stock_procurement +
+      data.customs +
+      data.logistics +
+      data.stock_procurement_other
+    );
+  }, [data]);
+
   // Transform data for the chart
   const chartData = React.useMemo<ChartDataEntry[]>(() => {
     if (!data) return [];
@@ -108,6 +119,7 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                position: "relative",
               }}
             >
               <ResponsiveContainer width="100%" height="100%">
@@ -136,6 +148,35 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
                   />
                 </PieChart>
               </ResponsiveContainer>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "52%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "text.primary",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {formatCurrency(totalAmount)}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 0.5,
+                  }}
+                >
+                  Total
+                </Typography>
+              </Box>
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>

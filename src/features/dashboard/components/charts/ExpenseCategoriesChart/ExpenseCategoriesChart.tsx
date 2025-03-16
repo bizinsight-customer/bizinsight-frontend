@@ -65,11 +65,6 @@ export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Expense Categories</Typography>
-          {data && (
-            <Typography variant="subtitle2" color="text.secondary">
-              Total Amount: {formatCurrency(data.total_amount)}
-            </Typography>
-          )}
         </Box>
       </Box>
 
@@ -87,6 +82,7 @@ export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                position: "relative",
               }}
             >
               <ResponsiveContainer width="100%" height="100%">
@@ -115,6 +111,35 @@ export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
                   />
                 </PieChart>
               </ResponsiveContainer>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "52%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "text.primary",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {formatCurrency(data?.total_amount || 0)}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 0.5,
+                  }}
+                >
+                  Total
+                </Typography>
+              </Box>
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>

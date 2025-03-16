@@ -5,6 +5,7 @@ import { revenueApi } from "@/features/dashboard/api-slices/revenue.api-slice";
 import { salaryApiSlice } from "@/features/dashboard/api-slices/salary.api-slice";
 import { salesApi } from "@/features/dashboard/api-slices/sales.api-slice";
 import { stockProcurementApiSlice } from "@/features/dashboard/api-slices/stock-procurement.api-slice";
+import { unforeseenExpensesApiSlice } from "@/features/dashboard/api-slices/unforeseen-expenses.api-slice";
 import { clientsMetricsApiSlice } from "@/features/dashboard/store/clients-metrics.api-slice";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsApi } from "@/features/documents/store/documents-api.slice";
@@ -34,6 +35,7 @@ const apiMiddleware = [
   salaryApiSlice.middleware,
   facilityApiSlice.middleware,
   stockProcurementApiSlice.middleware,
+  unforeseenExpensesApiSlice.middleware,
 ] as Middleware[];
 
 export const store = configureStore({
@@ -56,6 +58,8 @@ export const store = configureStore({
     [salaryApiSlice.reducerPath]: salaryApiSlice.reducer,
     [facilityApiSlice.reducerPath]: facilityApiSlice.reducer,
     [stockProcurementApiSlice.reducerPath]: stockProcurementApiSlice.reducer,
+    [unforeseenExpensesApiSlice.reducerPath]:
+      unforeseenExpensesApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

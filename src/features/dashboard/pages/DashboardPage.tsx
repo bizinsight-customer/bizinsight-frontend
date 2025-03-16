@@ -10,6 +10,7 @@ import { RevenueChart } from "../components/charts/RevenueChart/RevenueChart";
 import { SalaryMetrics } from "../components/charts/SalaryMetrics/SalaryMetrics";
 import { SalesChart } from "../components/charts/SalesChart/SalesChart";
 import { StockProcurementChart } from "../components/charts/StockProcurementChart/StockProcurementChart";
+import { UnforeseenExpensesChart } from "../components/charts/UnforeseenExpensesChart/UnforeseenExpensesChart";
 import { DashboardDateSelection } from "../components/DashboardDateSelection";
 
 export const DashboardPage: React.FC = () => {
@@ -106,6 +107,9 @@ export const DashboardPage: React.FC = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           <SalaryMetrics startDate={startDate} endDate={endDate} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <UnforeseenExpensesChart startDate={startDate} endDate={endDate} />
         </Grid>
       </Grid>
     </Container>

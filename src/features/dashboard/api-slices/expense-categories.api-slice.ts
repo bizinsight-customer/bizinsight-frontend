@@ -3,7 +3,7 @@ import { createApiSliceNonJsonApi } from "../../../store/create-api-slice";
 
 export interface ExpenseCategoryEntry {
   category: string;
-  percent: number;
+  amount: number;
 }
 
 export interface ExpenseCategoriesResponse {

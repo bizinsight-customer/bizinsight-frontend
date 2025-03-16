@@ -30,7 +30,8 @@ export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
   startDate,
   endDate,
 }) => {
-  const { isLoading: isCurrencyLoading } = useFormatCurrency();
+  const { format: formatCurrency, isLoading: isCurrencyLoading } =
+    useFormatCurrency();
 
   const {
     data,
@@ -51,7 +52,8 @@ export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
     if (!data) return [];
     return data.categories.map((entry, index) => ({
       name: entry.category,
-      value: entry.percent,
+      value: (entry.amount / data.total_amount) * 100,
+      amount: entry.amount,
       color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
     }));
   }, [data]);
@@ -63,6 +65,11 @@ export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Expense Categories</Typography>
+          {data && (
+            <Typography variant="subtitle2" color="text.secondary">
+              Total Amount: {formatCurrency(data.total_amount)}
+            </Typography>
+          )}
         </Box>
       </Box>
 
@@ -139,7 +146,8 @@ export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
                     }}
                   />
                   <Typography>
-                    {entry.name}: {entry.value.toFixed(1)}%
+                    {entry.name}: {entry.value.toFixed(1)}% (
+                    {formatCurrency(entry.amount)})
                   </Typography>
                 </Box>
               ))}

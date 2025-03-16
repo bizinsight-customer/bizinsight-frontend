@@ -1,0 +1,9 @@
+---
+description: New metric chart implementation
+globs: 
+alwaysApply: false
+---
+- add new metric chart to [DashboardPage.tsx](mdc:src/features/dashboard/pages/DashboardPage.tsx) 
+- add new api endpoint accoring to [api.mdc](mdc:.cursor/rules/api.mdc) 
+- get endpoint schema using command from [api.mdc](mdc:.cursor/rules/api.mdc) 
+- as example you can check implementation of [RevenueChart.tsx](mdc:src/features/dashboard/components/charts/RevenueChart/RevenueChart.tsx), [FacilityChargesChart.tsx](mdc:src/features/dashboard/components/charts/FacilityChargesChart/FacilityChargesChart.tsx) 

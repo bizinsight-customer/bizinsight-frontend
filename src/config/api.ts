@@ -44,6 +44,7 @@ export const API_ENDPOINTS = {
     CLIENTS: "/metrics/clients",
     SALARY: "/metrics/salary",
     FACILITY: "/metrics/facility",
+    STOCK_PROCUREMENT: "/metrics/stock-procurement",
   },
   USER_SETTINGS: {
     UPDATE: "/users/me/settings",

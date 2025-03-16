@@ -3,17 +3,16 @@ import {
   RecognizedValue,
 } from "../pages/DocumentRecognition/document-recognition.types";
 
-export interface DocumentTypeAttributes {
-  name: string;
-  value: string;
+export interface DocumentTypeField {
+  title: string;
+  type: string;
 }
 
 export interface DocumentType {
-  id: string;
-  type: "document_type";
-  attributes: DocumentTypeAttributes;
-  relationships: null;
-  meta: null;
+  name: string;
+  value: string;
+  description: string;
+  fields: Record<string, DocumentTypeField>;
 }
 
 // Company Information
@@ -61,7 +60,7 @@ export interface Document {
 }
 
 export interface DocumentRecognitionResponse {
-  document_type: DocumentType;
+  document_type: string;
   extracted_data: Record<string, RecognizedValue>;
   metadata?: Record<string, unknown>;
 }

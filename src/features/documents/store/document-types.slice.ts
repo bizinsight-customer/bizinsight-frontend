@@ -1,8 +1,12 @@
 import { API_ENDPOINTS } from "@/config/api";
-import { createApiSlice } from "@/store/create-api-slice";
+import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
 import { DocumentType } from "../types/document.types";
 
-export const documentTypesApi = createApiSlice({
+type DocumentTypesResponse = {
+  data: DocumentType[];
+};
+
+export const documentTypesApi = createApiSliceNonJsonApi({
   reducerPath: "documentTypesApi",
 }).injectEndpoints({
   endpoints: (builder) => ({
@@ -10,6 +14,7 @@ export const documentTypesApi = createApiSlice({
       query: () => ({
         url: API_ENDPOINTS.DOCUMENTS.GET_TYPES,
       }),
+      transformResponse: (response: DocumentTypesResponse) => response.data,
     }),
   }),
 });

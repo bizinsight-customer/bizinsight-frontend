@@ -16,7 +16,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { get, set } from "lodash";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
-import { useDocumentTypes } from "../../hooks/use-document-types.hook";
+import { useGetDocumentTypesQuery } from "../../store/document-types.slice";
 import {
   useCreateDocumentMutation,
   useRecognizeDocumentMutation,
@@ -52,10 +52,10 @@ export const DocumentRecognition = () => {
     useCreateDocumentMutation();
 
   const {
-    documentTypes,
+    data: documentTypes,
     isLoading: isLoadingTypes,
     error: documentTypesError,
-  } = useDocumentTypes();
+  } = useGetDocumentTypesQuery();
 
   const [selectedType, setSelectedType] = useState<DocumentType | null>(null);
 
@@ -70,10 +70,43 @@ export const DocumentRecognition = () => {
 
   const handleTypeChange = (event: SelectChangeEvent<string>) => {
     const selectedValue = event.target.value;
-    const newType = documentTypes?.find(
-      (type) => type.attributes.value === selectedValue
-    );
+    const newType = documentTypes?.find((type) => type.value === selectedValue);
     setSelectedType(newType || null);
+
+    // Reset recognized data with new document type's fields while preserving common values
+    if (newType) {
+      const initialFields = Object.entries(newType.fields).reduce(
+        (acc, [key, field]) => {
+          // If the field exists in both old and new type, keep its value
+          if (key in recognizedData) {
+            acc[key] = recognizedData[key];
+          } else {
+            // For new fields, initialize based on field type
+            switch (field.type) {
+              case "number":
+                acc[key] = 0;
+                break;
+              case "boolean":
+                acc[key] = false;
+                break;
+              case "object":
+                acc[key] = {};
+                break;
+              case "array":
+                acc[key] = [] as RecognizedValue[];
+                break;
+              default:
+                acc[key] = "";
+            }
+          }
+          return acc;
+        },
+        {} as RecognizedData
+      );
+      setRecognizedData(initialFields);
+    } else {
+      setRecognizedData({});
+    }
   };
 
   const handleFieldChange = (path: string, value: string) => {
@@ -142,7 +175,7 @@ export const DocumentRecognition = () => {
 
       const payload: DocumentCreationPayload = {
         file: fileObject,
-        type: selectedType.attributes.value,
+        type: selectedType.value,
         title: String(recognizedData.title) || fileObject.name,
         description: recognizedData.description?.toString(),
         fields,
@@ -169,7 +202,9 @@ export const DocumentRecognition = () => {
       setActiveStep(1);
       try {
         const response = await recognizeDocument(file).unwrap();
-        setSelectedType(response.document_type);
+        setSelectedType(
+          documentTypes?.find((type) => type.value === response.document_type)
+        );
         setRecognizedData(response.extracted_data);
         setActiveStep(2);
       } catch (err) {
@@ -177,7 +212,7 @@ export const DocumentRecognition = () => {
         setActiveStep(0);
       }
     },
-    [recognizeDocument]
+    [recognizeDocument, documentTypes]
   );
 
   const renderStepContent = (step: number) => {

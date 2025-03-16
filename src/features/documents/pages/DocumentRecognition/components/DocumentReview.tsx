@@ -72,15 +72,15 @@ export const DocumentReview = ({
       <FormControl fullWidth sx={{ mb: isMobile ? 2 : 3 }}>
         <InputLabel>Document Type</InputLabel>
         <Select
-          value={selectedType?.attributes.value || ""}
+          value={selectedType?.value || ""}
           onChange={onTypeChange}
           label="Document Type"
           disabled={isUploading}
           size={isMobile ? "small" : "medium"}
         >
           {documentTypes.map((type) => (
-            <MenuItem key={type.id} value={type.attributes.value}>
-              {type.attributes.name}
+            <MenuItem key={type.value} value={type.value}>
+              {type.name}
             </MenuItem>
           ))}
         </Select>

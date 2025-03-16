@@ -1,5 +1,6 @@
 import { expenseCategoriesApi } from "@/features/dashboard/api-slices/expense-categories.api-slice";
 import { facilityApiSlice } from "@/features/dashboard/api-slices/facility.api-slice";
+import { marketingApiSlice } from "@/features/dashboard/api-slices/marketing.api-slice";
 import { profitApi } from "@/features/dashboard/api-slices/profit.api-slice";
 import { revenueApi } from "@/features/dashboard/api-slices/revenue.api-slice";
 import { salaryApiSlice } from "@/features/dashboard/api-slices/salary.api-slice";
@@ -36,6 +37,7 @@ const apiMiddleware = [
   facilityApiSlice.middleware,
   stockProcurementApiSlice.middleware,
   unforeseenExpensesApiSlice.middleware,
+  marketingApiSlice.middleware,
 ] as Middleware[];
 
 export const store = configureStore({
@@ -60,6 +62,7 @@ export const store = configureStore({
     [stockProcurementApiSlice.reducerPath]: stockProcurementApiSlice.reducer,
     [unforeseenExpensesApiSlice.reducerPath]:
       unforeseenExpensesApiSlice.reducer,
+    [marketingApiSlice.reducerPath]: marketingApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

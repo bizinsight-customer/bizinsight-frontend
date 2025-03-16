@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { ClientsMetrics } from "../components/charts/ClientsMetrics/ClientsMetrics";
 import { ExpenseCategoriesChart } from "../components/charts/ExpenseCategoriesChart/ExpenseCategoriesChart";
 import { FacilityChargesChart } from "../components/charts/FacilityChargesChart/FacilityChargesChart";
+import { MarketingChart } from "../components/charts/MarketingChart/MarketingChart";
 import { ProfitChart } from "../components/charts/ProfitChart/ProfitChart";
 import { DateSelectionMode } from "../components/charts/RevenueChart/revenue-chart.types";
 import { RevenueChart } from "../components/charts/RevenueChart/RevenueChart";
@@ -110,6 +111,9 @@ export const DashboardPage: React.FC = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           <UnforeseenExpensesChart startDate={startDate} endDate={endDate} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <MarketingChart startDate={startDate} endDate={endDate} />
         </Grid>
       </Grid>
     </Container>

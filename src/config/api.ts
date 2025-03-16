@@ -46,6 +46,7 @@ export const API_ENDPOINTS = {
     FACILITY: "/metrics/facility",
     STOCK_PROCUREMENT: "/metrics/stock-procurement",
     UNFORESEEN_EXPENSES: "/metrics/unforeseen-expenses",
+    MARKETING: "/metrics/marketing",
   },
   USER_SETTINGS: {
     UPDATE: "/users/me/settings",

@@ -1,11 +1,12 @@
 import { Box, Paper, TextField, Typography } from "@mui/material";
-import { RecognizedValue } from "../document-recognition.types";
+import { FieldErrors, RecognizedValue } from "../document-recognition.types";
 
 interface NestedFieldsProps {
   fields: Record<string, RecognizedValue>;
   parentPath?: string;
   isDisabled?: boolean;
   isMobile?: boolean;
+  fieldErrors: FieldErrors;
   onFieldChange: (path: string, value: string) => void;
 }
 
@@ -14,6 +15,7 @@ export const NestedFields = ({
   parentPath = "",
   isDisabled = false,
   isMobile = false,
+  fieldErrors,
   onFieldChange,
 }: NestedFieldsProps) => {
   const formatFieldName = (name: string) =>
@@ -54,6 +56,8 @@ export const NestedFields = ({
       );
     }
 
+    const error = fieldErrors[path];
+
     return (
       <TextField
         key={path}
@@ -67,6 +71,8 @@ export const NestedFields = ({
         multiline={typeof value === "string" && value.length > 100}
         rows={typeof value === "string" && value.length > 100 ? 3 : 1}
         sx={{ mb: isMobile ? 1.5 : 2 }}
+        error={!!error}
+        helperText={error}
       />
     );
   };

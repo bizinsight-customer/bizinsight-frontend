@@ -1,9 +1,7 @@
 import { apiConfig } from "@/config/api";
-import { JsonApiResponse } from "@/types/json-api.types";
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import api, { apiState } from "./axios";
-import { JsonApiException } from "./json-api.interceptor";
 export interface AxiosBaseQueryArgs {
   url: string;
   method?: AxiosRequestConfig["method"];
@@ -16,7 +14,7 @@ export const axiosBaseQuery2Version =
   (): BaseQueryFn<AxiosBaseQueryArgs, unknown, unknown> =>
   async (requestConfig) => {
     try {
-      console.log("AXIOS BASE QUERY");
+      console.log("AXIOS UPDATED BASE 2.0 QUERY");
       console.log("URL", requestConfig.url);
       console.log("METHOD", requestConfig.method);
       console.log("DATA", requestConfig.data);
@@ -48,22 +46,11 @@ export const axiosBaseQuery2Version =
       // Handle the response based on whether it's a collection or single resource
       return response;
     } catch (error) {
-      // Handle JSON:API specific errors
-      if (error instanceof JsonApiException) {
-        return {
-          error: {
-            status: error.status,
-            data: {
-              errors: error.errors,
-              message: error.message,
-            },
-          },
-        };
-      }
-
+      console.log("ERROR", error);
       // Handle other Axios errors
-      const axiosError = error as AxiosError<JsonApiResponse<unknown>>;
-      const errors = axiosError.response?.data?.errors || [];
+      const axiosError = error as AxiosError;
+      const errors = axiosError.errors || [];
+      console.log("ERRORS", errors);
 
       return {
         error: {

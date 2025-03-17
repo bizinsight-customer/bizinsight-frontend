@@ -11,3 +11,22 @@ export type RecognizedValue =
       string,
       RecognizedValuePrimitive | Record<string, RecognizedValuePrimitive>
     >;
+
+export interface ValidationErrorContext {
+  error: string;
+}
+
+export interface ValidationError {
+  type: string;
+  loc: string[];
+  msg: string;
+  input: string;
+  ctx?: ValidationErrorContext;
+  url?: string;
+}
+
+export interface ValidationErrorResponse {
+  detail: ValidationError[];
+}
+
+export type FieldErrors = Record<string, string>;

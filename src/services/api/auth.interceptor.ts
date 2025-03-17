@@ -76,7 +76,6 @@ export const setupAuthInterceptor = (
       }
 
       // For other errors, just propagate them to the error boundary
-      safeHandleError(error);
       return Promise.reject(error);
     }
   );

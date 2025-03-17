@@ -1,12 +1,7 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSlice } from "@/store/create-api-slice";
 import { JsonApiResource } from "@/types/json-api.types";
-import { unflattenObject } from "@/utils/object.utils";
-import {
-  Document,
-  DocumentCreationPayload,
-  DocumentRecognitionResponse,
-} from "../types/document.types";
+import { Document, DocumentRecognitionResponse } from "../types/document.types";
 
 export const documentsApi = createApiSlice({
   reducerPath: "documentsApi",
@@ -45,28 +40,6 @@ export const documentsApi = createApiSlice({
         };
       },
     }),
-
-    createDocument: builder.mutation<Document, DocumentCreationPayload>({
-      query: (payload) => {
-        const formData = new FormData();
-        formData.append("file", payload.file);
-        formData.append("document_type", payload.type);
-
-        // Transform flattened fields into nested structure
-        const nestedFields = unflattenObject(payload.fields);
-        formData.append("fields", JSON.stringify(nestedFields));
-
-        return {
-          url: API_ENDPOINTS.DOCUMENTS.CREATE,
-          method: "POST",
-          data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        };
-      },
-      invalidatesTags: ["Documents"],
-    }),
   }),
 });
 
@@ -74,5 +47,4 @@ export const {
   useGetDocumentQuery,
   useDeleteDocumentMutation,
   useRecognizeDocumentMutation,
-  useCreateDocumentMutation,
 } = documentsApi;

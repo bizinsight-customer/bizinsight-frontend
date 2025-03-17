@@ -1,7 +1,8 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
 import { PaginatedResponse, PaginationParams } from "@/types/api-updated.types";
-import { Document } from "../types/document.types";
+import { unflattenDocumentFields } from "../pages/DocumentRecognition/utils/document-data-transformer";
+import { Document, DocumentCreationPayload } from "../types/document.types";
 
 export const documentsUpdatedApi = createApiSliceNonJsonApi({
   reducerPath: "documentsUpdatedApi",
@@ -37,7 +38,33 @@ export const documentsUpdatedApi = createApiSliceNonJsonApi({
       },
       providesTags: ["Documents"],
     }),
+
+    createDocument: builder.mutation<Document, DocumentCreationPayload>({
+      query: (payload) => {
+        const formData = new FormData();
+        formData.append("file", payload.file);
+        formData.append("document_type", payload.type);
+
+        // Transform flattened fields into nested structure
+        const nestedFields = unflattenDocumentFields(payload.fields);
+        formData.append("fields", JSON.stringify(nestedFields));
+
+        console.log("UPDATED DOCUMENT API");
+        console.log("FORM DATA", formData);
+
+        return {
+          url: API_ENDPOINTS.DOCUMENTS.CREATE,
+          method: "POST",
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
+      },
+      invalidatesTags: ["Documents"],
+    }),
   }),
 });
 
-export const { useGetDocumentsQuery } = documentsUpdatedApi;
+export const { useGetDocumentsQuery, useCreateDocumentMutation } =
+  documentsUpdatedApi;

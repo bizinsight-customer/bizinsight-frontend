@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router";
-import { RecognizedValue } from "../document-recognition.types";
+import { FieldErrors, RecognizedValue } from "../document-recognition.types";
 import { NestedFields } from "./NestedFields";
 
 interface DocumentReviewProps {
@@ -23,6 +23,7 @@ interface DocumentReviewProps {
   selectedType: DocumentType | null;
   documentTypes: DocumentType[];
   isUploading: boolean;
+  fieldErrors: FieldErrors;
   onTypeChange: (event: SelectChangeEvent<string>) => void;
   onFieldChange: (path: string, value: string) => void;
   onCancel: () => void;
@@ -37,6 +38,7 @@ export const DocumentReview = ({
   selectedType,
   documentTypes,
   isUploading,
+  fieldErrors,
   onTypeChange,
   onFieldChange,
   onCancel,
@@ -70,13 +72,14 @@ export const DocumentReview = ({
       )}
 
       <FormControl fullWidth sx={{ mb: isMobile ? 2 : 3 }}>
-        <InputLabel>Document Type</InputLabel>
+        <InputLabel error={!!fieldErrors["type"]}>Document Type</InputLabel>
         <Select
           value={selectedType?.value || ""}
           onChange={onTypeChange}
           label="Document Type"
           disabled={isUploading}
           size={isMobile ? "small" : "medium"}
+          error={!!fieldErrors["type"]}
         >
           {documentTypes.map((type) => (
             <MenuItem key={type.value} value={type.value}>
@@ -84,12 +87,18 @@ export const DocumentReview = ({
             </MenuItem>
           ))}
         </Select>
+        {fieldErrors["type"] && (
+          <Typography color="error" variant="caption" sx={{ mt: 0.5, ml: 2 }}>
+            {fieldErrors["type"]}
+          </Typography>
+        )}
       </FormControl>
 
       <NestedFields
         fields={fields}
         isDisabled={isUploading}
         onFieldChange={onFieldChange}
+        fieldErrors={fieldErrors}
         isMobile={isMobile}
       />
 

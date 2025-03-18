@@ -1,7 +1,7 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
@@ -40,9 +40,7 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
   }, [data]);
 
   return (
-    <Paper
-      sx={{ p: 3, height: "450px", display: "flex", flexDirection: "column" }}
-    >
+    <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>
       <Box>
         <Typography variant="h6">Marketing Expenses</Typography>
       </Box>
@@ -130,6 +128,6 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
           )}
         </>
       )}
-    </Paper>
+    </Box>
   );
 };

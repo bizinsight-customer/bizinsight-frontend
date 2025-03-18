@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Routing
+- React Router 7: Use React Router 7 for managing routing.
+- Since React Router DOM is deprecated, import routing components from react-router instead of react-router-dom.
+- For navigation always use useTypedNavigate hook from [useTypedNavigate.ts](mdc:src/hooks/useTypedNavigate.ts) .

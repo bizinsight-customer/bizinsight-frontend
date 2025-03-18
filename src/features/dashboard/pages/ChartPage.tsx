@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/material";
+import { Container, Paper } from "@mui/material";
 import { useParams } from "react-router";
 import { DateSelection } from "../components/DateSelection";
 import { CHART_CONFIGS, ChartType } from "../config/chart-types";
@@ -42,7 +42,7 @@ export const ChartPage = () => {
         onPeriodDaysChange={setPeriodDays}
         includePreviousPeriod={config.includePreviousPeriod}
       />
-      <Box sx={{ mt: 3 }}>
+      <Paper sx={{ mt: 3, p: 6 }}>
         <ChartComponent
           mode={mode}
           startDate={startDate}
@@ -51,7 +51,7 @@ export const ChartPage = () => {
           prevEndDate={prevEndDate}
           periodDays={periodDays}
         />
-      </Box>
+      </Paper>
     </Container>
   );
 };

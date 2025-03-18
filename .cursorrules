@@ -36,11 +36,6 @@ This structure ensures modularity, maintainability, and scalability.
 - src/utils/: Utility functions for formatting, validation, etc.
 - deploy/ deploy configuration ( docker files, nginx config )
 
-# Routing
-- React Router 7: Use React Router 7 for managing routing.
-- Since React Router DOM is deprecated, import routing components from react-router instead of react-router-dom.
-- Use useTypedNavigate.ts for navigation.
-
 # Authentication
 
 - Firebase Auth: Use Firebase Auth for authentication.

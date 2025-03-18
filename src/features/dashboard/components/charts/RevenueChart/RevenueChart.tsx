@@ -1,7 +1,7 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { addDays, differenceInDays, format, subDays } from "date-fns";
 import React from "react";
 import {
@@ -109,9 +109,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
   }, [revenueData, startDate, endDate, mode, prevStartDate]);
 
   return (
-    <Paper
-      sx={{ p: 3, height: "450px", display: "flex", flexDirection: "column" }}
-    >
+    <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Revenue Over Time</Typography>
@@ -189,6 +187,6 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
           </ResponsiveContainer>
         </Box>
       )}
-    </Paper>
+    </Box>
   );
 };

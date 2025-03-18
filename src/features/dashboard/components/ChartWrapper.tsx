@@ -21,7 +21,6 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
     <Paper
       sx={{
         p: 3,
-        height: "450px",
         display: "flex",
         flexDirection: "column",
         cursor: "pointer",

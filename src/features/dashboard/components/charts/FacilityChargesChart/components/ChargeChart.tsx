@@ -1,5 +1,5 @@
 import useFormatCurrency from "@/hooks/useFormatCurrency";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { format, subDays } from "date-fns";
 import React from "react";
 import {
@@ -40,7 +40,7 @@ export const ChargeChart: React.FC<ChargeChartProps> = ({
   const { format: formatCurrency } = useFormatCurrency();
 
   return (
-    <Paper sx={{ p: 2, height: "200px" }}>
+    <Box sx={{ height: "200px", p: 2 }}>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         {title}
       </Typography>
@@ -143,6 +143,6 @@ export const ChargeChart: React.FC<ChargeChartProps> = ({
           </Typography>
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 };

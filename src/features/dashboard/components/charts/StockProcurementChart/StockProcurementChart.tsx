@@ -1,7 +1,7 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
@@ -98,9 +98,7 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
   }, [data]);
 
   return (
-    <Paper
-      sx={{ p: 3, height: "450px", display: "flex", flexDirection: "column" }}
-    >
+    <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Stock Procurement Expenses</Typography>
@@ -217,6 +215,6 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
           </Grid>
         </Grid>
       )}
-    </Paper>
+    </Box>
   );
 };

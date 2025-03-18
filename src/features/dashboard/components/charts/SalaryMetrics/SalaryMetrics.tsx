@@ -3,7 +3,7 @@ import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import GroupIcon from "@mui/icons-material/Group";
-import { Box, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
 import { useGetSalaryMetricsQuery } from "../../../api-slices/salary.api-slice";
@@ -35,13 +35,7 @@ export const SalaryMetrics: React.FC<SalaryMetricsProps> = ({
   );
 
   return (
-    <Paper
-      sx={{ p: 3, height: "450px", display: "flex", flexDirection: "column" }}
-    >
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h6">Salary Metrics</Typography>
-      </Box>
-
+    <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>
       {isLoading && <LoadingSpinner />}
       {error && <ErrorMessage message="Error loading salary data" />}
 
@@ -98,6 +92,6 @@ export const SalaryMetrics: React.FC<SalaryMetricsProps> = ({
           </Box>
         </Stack>
       )}
-    </Paper>
+    </Box>
   );
 };

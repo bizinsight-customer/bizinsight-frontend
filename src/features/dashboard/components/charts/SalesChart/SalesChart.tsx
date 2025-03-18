@@ -68,9 +68,7 @@ export const SalesChart: React.FC<SalesChartProps> = ({
   }, [salesData]);
 
   return (
-    <Paper
-      sx={{ p: 3, height: "450px", display: "flex", flexDirection: "column" }}
-    >
+    <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>
       <Box sx={{ mb: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6">Sales Over Time</Typography>
@@ -111,7 +109,7 @@ export const SalesChart: React.FC<SalesChartProps> = ({
           </ResponsiveContainer>
         </Box>
       )}
-    </Paper>
+    </Box>
   );
 };
 

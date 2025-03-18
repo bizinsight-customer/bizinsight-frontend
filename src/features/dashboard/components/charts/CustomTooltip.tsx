@@ -1,5 +1,5 @@
 import useFormatCurrency from "@/hooks/useFormatCurrency";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React from "react";
 import {
   ChartEntry,
@@ -20,7 +20,9 @@ export const CustomTooltip: React.FC<CustomTooltipProps> = ({
   const entry = payload[0].payload as ChartEntry;
 
   return (
-    <Paper sx={{ p: 1 }}>
+    <Box
+      sx={{ p: 1, bgcolor: "background.paper", boxShadow: 1, borderRadius: 1 }}
+    >
       <Typography variant="body2" sx={{ mb: 1 }}>
         {currentValue && (
           <Box>
@@ -34,6 +36,6 @@ export const CustomTooltip: React.FC<CustomTooltipProps> = ({
           </Box>
         )}
       </Typography>
-    </Paper>
+    </Box>
   );
 };

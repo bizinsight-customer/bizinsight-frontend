@@ -1,4 +1,9 @@
-import { Menu as MenuIcon } from "@mui/icons-material";
+import { usePageTitle } from "@/hooks/usePageTitle";
+import { useTypedNavigate } from "@/hooks/useTypedNavigate";
+import {
+  ArrowBack as ArrowBackIcon,
+  Menu as MenuIcon,
+} from "@mui/icons-material";
 import {
   AppBar,
   Box,
@@ -8,6 +13,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { useMatch } from "react-router";
 
 interface NavbarProps {
   onSidebarToggle: () => void;
@@ -16,6 +22,16 @@ interface NavbarProps {
 export const Navbar = ({ onSidebarToggle }: NavbarProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const pageTitle = usePageTitle();
+  const { goBack } = useTypedNavigate();
+
+  // Check if current route matches the chart details page with parameter
+  const isChartPage = useMatch("/dashboard/chart/:chartType");
+  const showBackButton = Boolean(isChartPage);
+
+  const handleBack = () => {
+    goBack();
+  };
 
   return (
     <AppBar
@@ -37,8 +53,19 @@ export const Navbar = ({ onSidebarToggle }: NavbarProps) => {
             <MenuIcon />
           </IconButton>
         )}
+        {showBackButton && (
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={handleBack}
+            sx={{ mr: 2 }}
+            aria-label="back"
+          >
+            <ArrowBackIcon />
+          </IconButton>
+        )}
         <Typography variant="h6" noWrap component="div">
-          BizInsight
+          {pageTitle}
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         {/* Add user menu or other navbar items here */}

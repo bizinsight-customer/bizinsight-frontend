@@ -1,6 +1,6 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
-import { Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { differenceInDays, format } from "date-fns";
 import React from "react";
 import { useGetFacilityChargesQuery } from "../../../api-slices/facility.api-slice";
@@ -80,64 +80,72 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
   );
 
   return (
-    <Paper sx={{ p: 3 }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Typography variant="h6" sx={{ mb: 3 }}>
         Facility Charges
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-          <ChargeChart
-            data={waterData}
-            title="Water Charges"
-            total={facilityData.current_period.total_water}
-            mode={mode}
-            startDate={startDate}
-            endDate={endDate}
-            prevStartDate={prevStartDate}
-            prevEndDate={prevEndDate}
-            periodDays={periodDays}
-          />
+          <Paper elevation={1} sx={{ p: 2, height: "100%" }}>
+            <ChargeChart
+              data={waterData}
+              title="Water Charges"
+              total={facilityData.current_period.total_water}
+              mode={mode}
+              startDate={startDate}
+              endDate={endDate}
+              prevStartDate={prevStartDate}
+              prevEndDate={prevEndDate}
+              periodDays={periodDays}
+            />
+          </Paper>
         </Grid>
         <Grid item xs={12} md={6}>
-          <ChargeChart
-            data={electricityData}
-            title="Electricity Charges"
-            total={facilityData.current_period.total_electricity}
-            mode={mode}
-            startDate={startDate}
-            endDate={endDate}
-            prevStartDate={prevStartDate}
-            prevEndDate={prevEndDate}
-            periodDays={periodDays}
-          />
+          <Paper elevation={1} sx={{ p: 2, height: "100%" }}>
+            <ChargeChart
+              data={electricityData}
+              title="Electricity Charges"
+              total={facilityData.current_period.total_electricity}
+              mode={mode}
+              startDate={startDate}
+              endDate={endDate}
+              prevStartDate={prevStartDate}
+              prevEndDate={prevEndDate}
+              periodDays={periodDays}
+            />
+          </Paper>
         </Grid>
         <Grid item xs={12} md={6}>
-          <ChargeChart
-            data={rentData}
-            title="Rent Charges"
-            total={facilityData.current_period.total_rent}
-            mode={mode}
-            startDate={startDate}
-            endDate={endDate}
-            prevStartDate={prevStartDate}
-            prevEndDate={prevEndDate}
-            periodDays={periodDays}
-          />
+          <Paper elevation={1} sx={{ p: 2, height: "100%" }}>
+            <ChargeChart
+              data={rentData}
+              title="Rent Charges"
+              total={facilityData.current_period.total_rent}
+              mode={mode}
+              startDate={startDate}
+              endDate={endDate}
+              prevStartDate={prevStartDate}
+              prevEndDate={prevEndDate}
+              periodDays={periodDays}
+            />
+          </Paper>
         </Grid>
         <Grid item xs={12} md={6}>
-          <ChargeChart
-            data={otherData}
-            title="Other Charges"
-            total={facilityData.current_period.total_other}
-            mode={mode}
-            startDate={startDate}
-            endDate={endDate}
-            prevStartDate={prevStartDate}
-            prevEndDate={prevEndDate}
-            periodDays={periodDays}
-          />
+          <Paper elevation={1} sx={{ p: 2, height: "100%" }}>
+            <ChargeChart
+              data={otherData}
+              title="Other Charges"
+              total={facilityData.current_period.total_other}
+              mode={mode}
+              startDate={startDate}
+              endDate={endDate}
+              prevStartDate={prevStartDate}
+              prevEndDate={prevEndDate}
+              periodDays={periodDays}
+            />
+          </Paper>
         </Grid>
       </Grid>
-    </Paper>
+    </Box>
   );
 };

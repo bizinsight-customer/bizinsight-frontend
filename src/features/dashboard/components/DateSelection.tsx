@@ -55,8 +55,8 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
   const effectiveMode = includePreviousPeriod ? mode : "auto";
 
   return (
-    <Box sx={{ mb: 3, p: 2, bgcolor: "background.paper", borderRadius: 1 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
+    <Box sx={{ mb: 3, p: 4, bgcolor: "background.paper", borderRadius: 1 }}>
+      <Typography variant="h6" sx={{ mb: 2 }} textAlign="start">
         Period selection
       </Typography>
       <Box

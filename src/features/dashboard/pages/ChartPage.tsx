@@ -1,9 +1,11 @@
-import { Container } from "@mui/material";
-import { ChartsGrid } from "../components/ChartsGrid";
+import { Box, Container } from "@mui/material";
+import { useParams } from "react-router";
 import { DateSelection } from "../components/DateSelection";
+import { CHART_CONFIGS, ChartType } from "../config/chart-types";
 import { useDashboardDates } from "../hooks/useDashboardDates";
 
-export const DashboardPage: React.FC = () => {
+export const ChartPage = () => {
+  const { chartType } = useParams<{ chartType: ChartType }>();
   const {
     mode,
     startDate,
@@ -18,6 +20,13 @@ export const DashboardPage: React.FC = () => {
     setPeriodDays,
   } = useDashboardDates();
 
+  if (!chartType || !CHART_CONFIGS[chartType]) {
+    return <div>Chart not found</div>;
+  }
+
+  const config = CHART_CONFIGS[chartType];
+  const ChartComponent = config.component;
+
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <DateSelection
@@ -31,15 +40,18 @@ export const DashboardPage: React.FC = () => {
         onEndDateChange={setEndDate}
         onPrevStartDateChange={setPrevStartDate}
         onPeriodDaysChange={setPeriodDays}
+        includePreviousPeriod={config.includePreviousPeriod}
       />
-      <ChartsGrid
-        mode={mode}
-        startDate={startDate}
-        endDate={endDate}
-        prevStartDate={prevStartDate}
-        prevEndDate={prevEndDate}
-        periodDays={periodDays}
-      />
+      <Box sx={{ mt: 3 }}>
+        <ChartComponent
+          mode={mode}
+          startDate={startDate}
+          endDate={endDate}
+          prevStartDate={prevStartDate}
+          prevEndDate={prevEndDate}
+          periodDays={periodDays}
+        />
+      </Box>
     </Container>
   );
 };

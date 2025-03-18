@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate, RouteObject } from "react-router";
 import App from "./App";
 import MainLayout from "./components/layouts/MainLayout/MainLayout";
 import { authRoutes } from "./features/auth/routes";
-import { DashboardPage } from "./features/dashboard/pages/DashboardPage";
+import { dashboardRoutes } from "./features/dashboard/routes";
 import { documentsRoutes } from "./features/documents/routes";
 import { UserProfile } from "./features/profile/pages/UserProfile";
 import { AppRouteConfig } from "./types/routes.types";
@@ -20,10 +20,7 @@ const routes: AppRouteConfig[] = [
       {
         element: <MainLayout />,
         children: [
-          {
-            path: "/dashboard",
-            element: <DashboardPage />,
-          },
+          ...dashboardRoutes,
           ...documentsRoutes,
           {
             path: "/analytics",

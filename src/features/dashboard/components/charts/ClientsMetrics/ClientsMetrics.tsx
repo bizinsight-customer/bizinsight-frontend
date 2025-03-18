@@ -7,11 +7,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { format } from "date-fns";
 import React from "react";
 import { useGetClientsMetricsQuery } from "../../../store/clients-metrics.api-slice";
-
-interface ClientsMetricsProps {
-  startDate: Date | null;
-  endDate: Date | null;
-}
+import { SimpleChartProps } from "../types/chart-props.types";
 
 const getErrorMessage = (
   error: FetchBaseQueryError | SerializedError
@@ -28,7 +24,7 @@ const formatDateForApi = (date: Date | null): string | null => {
   return date ? format(date, "dd.MM.yyyy") : null;
 };
 
-export const ClientsMetrics: React.FC<ClientsMetricsProps> = ({
+export const ClientsMetrics: React.FC<SimpleChartProps> = ({
   startDate,
   endDate,
 }) => {

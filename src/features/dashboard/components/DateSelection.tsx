@@ -11,28 +11,32 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import React from "react";
-import { DATE_FORMAT } from "./charts/RevenueChart/revenue-chart.types";
+import {
+  DATE_FORMAT,
+  DateSelectionMode,
+} from "./charts/RevenueChart/revenue-chart.types";
 
-export interface DashboardDateSelectionProps {
-  mode: "auto" | "manual";
+interface DateSelectionProps {
+  mode: DateSelectionMode;
   startDate: Date | null;
   endDate: Date | null;
   prevStartDate: Date | null;
-  prevEndDate: Date | null;
   periodDays: number;
-  onModeChange: (mode: "auto" | "manual") => void;
+  includePreviousPeriod?: boolean;
+  onModeChange: (mode: DateSelectionMode) => void;
   onStartDateChange: (date: Date | null) => void;
   onEndDateChange: (date: Date | null) => void;
   onPrevStartDateChange: (date: Date | null) => void;
   onPeriodDaysChange: (days: number) => void;
 }
 
-export const DashboardDateSelection: React.FC<DashboardDateSelectionProps> = ({
+export const DateSelection: React.FC<DateSelectionProps> = ({
   mode,
   startDate,
   endDate,
   prevStartDate,
   periodDays,
+  includePreviousPeriod = true,
   onModeChange,
   onStartDateChange,
   onEndDateChange,
@@ -48,10 +52,12 @@ export const DashboardDateSelection: React.FC<DashboardDateSelectionProps> = ({
     }
   };
 
+  const effectiveMode = includePreviousPeriod ? mode : "auto";
+
   return (
     <Box sx={{ mb: 3, p: 2, bgcolor: "background.paper", borderRadius: 1 }}>
       <Typography variant="h6" sx={{ mb: 2 }}>
-        Dashboard Period
+        Period selection
       </Typography>
       <Box
         sx={{
@@ -61,20 +67,24 @@ export const DashboardDateSelection: React.FC<DashboardDateSelectionProps> = ({
           flexWrap: "wrap",
         }}
       >
-        <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel>Date Selection Mode</InputLabel>
-          <Select
-            value={mode}
-            label="Date Selection Mode"
-            onChange={(e) => onModeChange(e.target.value as "auto" | "manual")}
-          >
-            <MenuItem value="auto">Automatic Previous Period</MenuItem>
-            <MenuItem value="manual">Manual Previous Period</MenuItem>
-          </Select>
-        </FormControl>
+        {includePreviousPeriod && (
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel>Period Selection Mode</InputLabel>
+            <Select
+              value={mode}
+              label="Date Selection Mode"
+              onChange={(e) =>
+                onModeChange(e.target.value as DateSelectionMode)
+              }
+            >
+              <MenuItem value="auto">Automatic Previous Period</MenuItem>
+              <MenuItem value="manual">Manual Previous Period</MenuItem>
+            </Select>
+          </FormControl>
+        )}
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          {mode === "auto" && (
+          {effectiveMode === "auto" && (
             <Box sx={{ display: "flex", gap: 2 }}>
               <DatePicker
                 label="Current Period Start"
@@ -93,7 +103,7 @@ export const DashboardDateSelection: React.FC<DashboardDateSelectionProps> = ({
             </Box>
           )}
 
-          {mode === "manual" && (
+          {effectiveMode === "manual" && (
             <Box sx={{ display: "flex", gap: 4 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <DatePicker

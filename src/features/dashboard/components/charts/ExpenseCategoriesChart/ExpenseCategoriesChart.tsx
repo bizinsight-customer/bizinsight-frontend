@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useGetExpenseCategoriesQuery } from "../../../api-slices/expense-categories.api-slice";
+import { SimpleChartProps } from "../types/chart-props.types";
 
 // Predefined colors for categories
 const CATEGORY_COLORS = [
@@ -21,12 +22,7 @@ const CATEGORY_COLORS = [
   "#607D8B", // Blue Grey
 ];
 
-interface ExpenseCategoriesChartProps {
-  startDate: Date | null;
-  endDate: Date | null;
-}
-
-export const ExpenseCategoriesChart: React.FC<ExpenseCategoriesChartProps> = ({
+export const ExpenseCategoriesChart: React.FC<SimpleChartProps> = ({
   startDate,
   endDate,
 }) => {

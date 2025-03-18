@@ -4,11 +4,11 @@ import { Grid, Paper, Typography } from "@mui/material";
 import { differenceInDays, format } from "date-fns";
 import React from "react";
 import { useGetFacilityChargesQuery } from "../../../api-slices/facility.api-slice";
+import { ComparisonChartProps } from "../types/chart-props.types";
 import { ChargeChart } from "./components/ChargeChart";
-import { FacilityChargesChartProps } from "./facility-charges-chart.types";
 import { processChartData } from "./utils/chart-data-processor";
 
-export const FacilityChargesChart: React.FC<FacilityChargesChartProps> = ({
+export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
   mode,
   startDate,
   endDate,

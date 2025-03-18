@@ -6,11 +6,9 @@ import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { useGetMarketingMetricsQuery } from "../../../api-slices/marketing.api-slice";
+import { BaseDateProps } from "../types/chart-props.types";
 
-interface MarketingChartProps {
-  startDate: Date;
-  endDate: Date;
-}
+type MarketingChartProps = Required<BaseDateProps>;
 
 export const MarketingChart: React.FC<MarketingChartProps> = ({
   startDate,

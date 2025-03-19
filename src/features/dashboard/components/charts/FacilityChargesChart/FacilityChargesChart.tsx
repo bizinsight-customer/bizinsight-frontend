@@ -4,6 +4,7 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import { differenceInDays, format } from "date-fns";
 import React from "react";
 import { useGetFacilityChargesQuery } from "../../../api-slices/facility.api-slice";
+import { NoDataMessage } from "../NoDataMessage";
 import { ComparisonChartProps } from "../types/chart-props.types";
 import { ChargeChart } from "./components/ChargeChart";
 import { processChartData } from "./utils/chart-data-processor";
@@ -39,10 +40,31 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
     }
   );
 
+  const hasAnyCharges = React.useMemo(() => {
+    if (!facilityData) return false;
+    const { total_water, total_electricity, total_rent, total_other } =
+      facilityData.current_period;
+    return (
+      total_water > 0 ||
+      total_electricity > 0 ||
+      total_rent > 0 ||
+      total_other > 0
+    );
+  }, [facilityData]);
+
   if (isLoading) return <LoadingSpinner />;
   if (error)
     return <ErrorMessage message="Error loading facility charges data" />;
-  if (!facilityData || !startDate || !endDate) return null;
+  if (!facilityData || !startDate || !endDate) return <NoDataMessage />;
+  if (!hasAnyCharges)
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", height: "450px" }}>
+        <Typography variant="h6" sx={{ mb: 3 }}>
+          Facility Charges
+        </Typography>
+        <NoDataMessage />
+      </Box>
+    );
 
   const periodDuration = differenceInDays(endDate, startDate);
 

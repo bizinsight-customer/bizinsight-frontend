@@ -35,6 +35,7 @@ export const API_ENDPOINTS = {
     DELETE: (id: string) => `/documents/${id}`,
     RECOGNIZE: "/documents/recognize",
     GET_TYPES: "/documents/types/get-types",
+    DOWNLOAD: (id: string) => `/documents/${id}/download`,
   },
   METRICS: {
     REVENUE: "/metrics/revenue",

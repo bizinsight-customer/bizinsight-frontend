@@ -63,8 +63,19 @@ export const documentsUpdatedApi = createApiSliceNonJsonApi({
       },
       invalidatesTags: ["Documents"],
     }),
+
+    downloadDocument: builder.mutation<Blob, string>({
+      query: (id) => ({
+        url: API_ENDPOINTS.DOCUMENTS.DOWNLOAD(id),
+        method: "GET",
+        responseType: "blob",
+      }),
+    }),
   }),
 });
 
-export const { useGetDocumentsQuery, useCreateDocumentMutation } =
-  documentsUpdatedApi;
+export const {
+  useGetDocumentsQuery,
+  useCreateDocumentMutation,
+  useDownloadDocumentMutation,
+} = documentsUpdatedApi;

@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { useGetRevenueQuery } from "../../../api-slices/revenue.api-slice";
 import { CustomTooltip } from "../CustomTooltip";
+import { NoDataMessage } from "../NoDataMessage";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
 import {
   ChartEntry,
@@ -119,7 +120,11 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
       {isLoading && <LoadingSpinner />}
       {error && <ErrorMessage message="Error loading revenue data" />}
 
-      {chartData && (
+      {!isLoading && !error && (!chartData || chartData.length === 0) && (
+        <NoDataMessage />
+      )}
+
+      {chartData && chartData.length > 0 && (
         <Box sx={{ flex: 1, minHeight: 0 }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>

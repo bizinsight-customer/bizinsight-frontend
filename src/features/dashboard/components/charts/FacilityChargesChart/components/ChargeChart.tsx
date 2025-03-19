@@ -11,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import { CustomTooltip } from "../../CustomTooltip";
+import { NoDataMessage } from "../../NoDataMessage";
 import { DateSelectionMode } from "../../RevenueChart/revenue-chart.types";
 import { ChartEntry } from "../facility-charges-chart.types";
 
@@ -39,19 +40,23 @@ export const ChargeChart: React.FC<ChargeChartProps> = ({
 }) => {
   const { format: formatCurrency } = useFormatCurrency();
 
+  const hasData = React.useMemo(() => {
+    return data && data.length > 0 && data.some((entry) => entry.current > 0);
+  }, [data]);
+
   return (
-    <Box sx={{ height: "200px", p: 2 }}>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        {title}
-      </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          height: "calc(100% - 32px)",
-        }}
-      >
-        <Box sx={{ flex: 1, height: "100%" }}>
+    <Box sx={{ height: "100%" }}>
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="subtitle1">{title}</Typography>
+        {hasData && (
+          <Typography variant="h6">{formatCurrency(total)}</Typography>
+        )}
+      </Box>
+
+      {!hasData ? (
+        <NoDataMessage />
+      ) : (
+        <Box sx={{ height: "calc(100% - 76px)" }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
@@ -134,15 +139,7 @@ export const ChargeChart: React.FC<ChargeChartProps> = ({
             </AreaChart>
           </ResponsiveContainer>
         </Box>
-        <Box sx={{ ml: 3, textAlign: "right", minWidth: "120px" }}>
-          <Typography variant="h5" color="primary" sx={{ mb: 0.5 }}>
-            {formatCurrency(total)}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            Total Amount
-          </Typography>
-        </Box>
-      </Box>
+      )}
     </Box>
   );
 };

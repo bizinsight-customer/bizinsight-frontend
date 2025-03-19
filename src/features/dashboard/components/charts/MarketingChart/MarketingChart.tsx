@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { useGetMarketingMetricsQuery } from "../../../api-slices/marketing.api-slice";
+import { NoDataMessage } from "../NoDataMessage";
 import { BaseDateProps } from "../types/chart-props.types";
 
 type MarketingChartProps = Required<BaseDateProps>;
@@ -41,8 +42,10 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
 
   return (
     <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>
-      <Box>
-        <Typography variant="h6">Marketing Expenses</Typography>
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="h6">Marketing Expenses</Typography>
+        </Box>
       </Box>
 
       {isLoading && <LoadingSpinner />}
@@ -50,83 +53,66 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
         <ErrorMessage message="Error loading marketing expenses data" />
       )}
 
-      {data && (
-        <>
-          {data.marketing_expenses === 0 ? (
-            <Box
+      {!isLoading && !error && (!data || data.marketing_expenses === 0) && (
+        <NoDataMessage />
+      )}
+
+      {data && data.marketing_expenses > 0 && (
+        <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="57%"
+                startAngle={220}
+                endAngle={-40}
+                innerRadius="85%"
+                outerRadius="95%"
+                paddingAngle={0}
+                dataKey="value"
+                strokeLinecap="round"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -20%)",
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              variant="h3"
               sx={{
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                mb: 1,
+                color: "text.primary",
+                fontWeight: 500,
               }}
             >
-              <Typography
-                variant="h4"
-                color="text.secondary"
-                sx={{ textAlign: "center" }}
-              >
-                No marketing expenses
-              </Typography>
-            </Box>
-          ) : (
-            <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="57%"
-                    startAngle={220}
-                    endAngle={-40}
-                    innerRadius="85%"
-                    outerRadius="95%"
-                    paddingAngle={0}
-                    dataKey="value"
-                    strokeLinecap="round"
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -20%)",
-                  textAlign: "center",
-                }}
-              >
-                <Typography
-                  variant="h3"
-                  sx={{
-                    mb: 1,
-                    color: "text.primary",
-                    fontWeight: 500,
-                  }}
-                >
-                  {formatCurrency(data.marketing_expenses)}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    mb: 1,
-                    color: "text.primary",
-                    fontWeight: 500,
-                  }}
-                >
-                  ROAS - {roas.toFixed(2)}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  of {formatCurrency(data.total_income)} total income
-                </Typography>
-              </Box>
-            </Box>
-          )}
-        </>
+              {formatCurrency(data.marketing_expenses)}
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                mb: 1,
+                color: "text.primary",
+                fontWeight: 500,
+              }}
+            >
+              ROAS - {roas.toFixed(2)}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              of {formatCurrency(data.total_income)} total income
+            </Typography>
+          </Box>
+        </Box>
       )}
     </Box>
   );

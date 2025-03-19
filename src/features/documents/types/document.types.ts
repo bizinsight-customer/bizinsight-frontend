@@ -16,19 +16,18 @@ export interface DocumentType {
 }
 
 // Company Information
-export interface CompanyBase {
-  name: string;
+export interface Company {
+  name?: string;
+  email?: string;
   phone?: string;
   tax_number?: string;
   registration_number?: string;
   legal_address?: string;
   postal_address?: string;
-  email?: string;
   bank_name?: string;
   bank_account?: string;
   bank_swift?: string;
   website?: string;
-  description?: string;
 }
 
 // Document Data Interface
@@ -47,16 +46,27 @@ export interface DocumentAttributes {
   file_path: string | null;
   currency: string;
   created_at: string;
-  issuer_company: CompanyBase;
+  issuer_company?: Company;
   document_data: DocumentData;
-  recipient_company: CompanyBase;
+  recipient_company?: Company;
 }
 
 // Base Document Interface
 export interface Document {
-  id: string;
-  type: "documents";
-  attributes: DocumentAttributes;
+  document_type: string;
+  file_name: string;
+  file_type: string;
+  file_path?: string;
+  amount: string | number;
+  currency: string;
+  document_date: string;
+  created_at: string;
+  updated_at: string;
+  description: string;
+  issuer_company?: Company;
+  recipient_company?: Company;
+  document_data?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface DocumentRecognitionResponse {

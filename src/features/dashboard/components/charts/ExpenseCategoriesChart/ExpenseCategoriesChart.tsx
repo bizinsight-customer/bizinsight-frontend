@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useGetExpenseCategoriesQuery } from "../../../api-slices/expense-categories.api-slice";
+import { NoDataMessage } from "../NoDataMessage";
 import { SimpleChartProps } from "../types/chart-props.types";
 
 // Predefined colors for categories
@@ -67,7 +68,12 @@ export const ExpenseCategoriesChart: React.FC<SimpleChartProps> = ({
         <ErrorMessage message="Error loading expense categories data" />
       )}
 
-      {data && (
+      {!isDataLoading &&
+        !isCurrencyLoading &&
+        !error &&
+        (!chartData || chartData.length === 0) && <NoDataMessage />}
+
+      {data && chartData && chartData.length > 0 && (
         <Grid container sx={{ flex: 1 }}>
           <Grid item xs={12} md={6}>
             <Box
@@ -122,7 +128,7 @@ export const ExpenseCategoriesChart: React.FC<SimpleChartProps> = ({
                     lineHeight: 1.2,
                   }}
                 >
-                  {formatCurrency(data?.total_amount || 0)}
+                  {formatCurrency(data.total_amount)}
                 </Typography>
                 <Typography
                   variant="subtitle1"

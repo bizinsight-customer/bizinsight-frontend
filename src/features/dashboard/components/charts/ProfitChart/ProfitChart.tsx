@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { useGetProfitQuery } from "../../../api-slices/profit.api-slice";
 import { CustomTooltip } from "../CustomTooltip";
+import { NoDataMessage } from "../NoDataMessage";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
 import {
   ChartEntry,
@@ -119,7 +120,11 @@ export const ProfitChart: React.FC<ProfitChartProps> = ({
       {isLoading && <LoadingSpinner />}
       {error && <ErrorMessage message="Error loading profit data" />}
 
-      {chartData && (
+      {!isLoading && !error && (!chartData || chartData.length === 0) && (
+        <NoDataMessage />
+      )}
+
+      {chartData && chartData.length > 0 && (
         <Box sx={{ flex: 1, minHeight: 0 }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>

@@ -25,9 +25,10 @@ export const Navbar = ({ onSidebarToggle }: NavbarProps) => {
   const pageTitle = usePageTitle();
   const { goBack } = useTypedNavigate();
 
-  // Check if current route matches the chart details page with parameter
+  // Check if current route matches the chart details or document detail page
   const isChartPage = useMatch("/dashboard/chart/:chartType");
-  const showBackButton = Boolean(isChartPage);
+  const isDocumentDetailPage = useMatch("/documents/:id");
+  const showBackButton = Boolean(isChartPage || isDocumentDetailPage);
 
   const handleBack = () => {
     goBack();

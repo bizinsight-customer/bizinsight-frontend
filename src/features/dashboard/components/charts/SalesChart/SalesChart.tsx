@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { useGetSalesQuery } from "../../../api-slices/sales.api-slice";
+import { NoDataMessage } from "../NoDataMessage";
 import { DATE_FORMAT } from "../RevenueChart/revenue-chart.types";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
 
@@ -67,6 +68,10 @@ export const SalesChart: React.FC<SalesChartProps> = ({
       .filter((entry): entry is ChartEntry => entry !== null);
   }, [salesData]);
 
+  const hasSales = React.useMemo(() => {
+    return chartData.some((entry) => entry.sales > 0);
+  }, [chartData]);
+
   return (
     <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>
       <Box sx={{ mb: 3 }}>
@@ -78,7 +83,13 @@ export const SalesChart: React.FC<SalesChartProps> = ({
       {isLoading && <LoadingSpinner />}
       {error && <ErrorMessage message="Error loading sales data" />}
 
-      {chartData && (
+      {!isLoading &&
+        !error &&
+        (!chartData || chartData.length === 0 || !hasSales) && (
+          <NoDataMessage />
+        )}
+
+      {chartData && chartData.length > 0 && hasSales && (
         <Box sx={{ flex: 1, minHeight: 0 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>

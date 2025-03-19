@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useGetStockProcurementQuery } from "../../../api-slices/stock-procurement.api-slice";
+import { NoDataMessage } from "../NoDataMessage";
 
 // Predefined colors for categories
 const CATEGORY_COLORS = [
@@ -108,7 +109,12 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
       {(isDataLoading || isCurrencyLoading) && <LoadingSpinner />}
       {error && <ErrorMessage message="Error loading stock procurement data" />}
 
-      {data && (
+      {!isDataLoading &&
+        !isCurrencyLoading &&
+        !error &&
+        (!data || totalAmount === 0) && <NoDataMessage />}
+
+      {data && totalAmount > 0 && chartData && chartData.length > 0 && (
         <Grid container sx={{ flex: 1 }}>
           <Grid item xs={12} md={6}>
             <Box

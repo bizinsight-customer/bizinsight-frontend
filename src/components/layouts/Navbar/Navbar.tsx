@@ -28,7 +28,12 @@ export const Navbar = ({ onSidebarToggle }: NavbarProps) => {
   // Check if current route matches the chart details or document detail page
   const isChartPage = useMatch("/dashboard/chart/:chartType");
   const isDocumentDetailPage = useMatch("/documents/:id");
-  const showBackButton = Boolean(isChartPage || isDocumentDetailPage);
+  const isDocumentHistoryPage = useMatch("/documents/history");
+  let showBackButton = Boolean(isChartPage || isDocumentDetailPage);
+
+  if (isDocumentHistoryPage) {
+    showBackButton = false;
+  }
 
   const handleBack = () => {
     goBack();

@@ -3,6 +3,7 @@ import {
   Analytics as AnalyticsIcon,
   Dashboard as DashboardIcon,
   Description as DocumentsIcon,
+  History as HistoryIcon,
   AccountCircle as ProfileIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
@@ -19,6 +20,11 @@ export const menuItems = [
     path: "/documents" as AppRoutePath,
     label: "Documents",
     icon: <DocumentsIcon />,
+  },
+  {
+    path: "/documents/history" as AppRoutePath,
+    label: "Documents History",
+    icon: <HistoryIcon />,
   },
   {
     path: "/analytics" as AppRoutePath,

@@ -28,38 +28,3 @@ export function createPath<T extends keyof RouteParams>(
 export function isRoute(path: string): path is keyof typeof ROUTES {
   return Object.values(ROUTES).includes(path as any);
 }
-
-export const routeTitles: Record<AppRoutePath, string> = {
-  "/": "Dashboard",
-  "/dashboard": "Dashboard",
-  "/dashboard/chart/:chartType": "Chart Details",
-  "/documents": "Documents",
-  "/analytics": "Analytics",
-  "/settings": "Settings",
-  "/profile": "Profile",
-  "/user-settings": "User Settings",
-  "/auth": "Authentication",
-  "/auth/sign-in": "Sign In",
-  "/auth/sign-up": "Sign Up",
-};
-
-export const getPageTitle = (pathname: string): string => {
-  // First try exact match
-  if (pathname in routeTitles) {
-    return routeTitles[pathname as AppRoutePath];
-  }
-
-  // Then try matching dynamic routes
-  for (const [route, title] of Object.entries(routeTitles)) {
-    if (route.includes(":")) {
-      const pattern = new RegExp(
-        "^" + route.replace(/:[^/]+/g, "([^/]+)") + "$"
-      );
-      if (pattern.test(pathname)) {
-        return title;
-      }
-    }
-  }
-
-  return "BizInsight";
-};

@@ -10,8 +10,6 @@ export interface AppRouteParams extends AuthRouteParams {
   "/dashboard/chart/:chartType": { chartType: ChartType };
   "/documents": undefined;
   "/documents/history": undefined;
-  "/analytics": undefined;
-  "/settings": undefined;
   "/profile": undefined;
   "/user-settings": undefined;
 }

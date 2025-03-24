@@ -23,14 +23,6 @@ const routes: AppRouteConfig[] = [
           ...dashboardRoutes,
           ...documentsRoutes,
           {
-            path: "/analytics",
-            element: <div>Analytics Page</div>,
-          },
-          {
-            path: "/settings",
-            element: <div>Settings Page</div>,
-          },
-          {
             path: "/profile",
             element: <UserProfile />,
           },

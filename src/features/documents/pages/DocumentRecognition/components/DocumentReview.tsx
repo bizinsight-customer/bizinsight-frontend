@@ -15,8 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
-import { FieldErrors, RecognizedValue } from "../document-recognition.types";
+import { RecognizedValue } from "../document-recognition.types";
 import { NestedFields } from "./NestedFields";
 
 interface DocumentReviewProps {
@@ -25,13 +24,12 @@ interface DocumentReviewProps {
   selectedType: DocumentType | null;
   documentTypes: DocumentType[];
   isUploading: boolean;
-  fieldErrors: FieldErrors;
+  fieldErrors: Record<string, string>;
   onTypeChange: (event: SelectChangeEvent<string>) => void;
   onFieldChange: (path: string, value: string) => void;
   onCancel: () => void;
   onConfirm: () => void;
   isSuccess?: boolean;
-  createdDocumentId?: string;
 }
 
 export const DocumentReview = ({
@@ -46,23 +44,12 @@ export const DocumentReview = ({
   onCancel,
   onConfirm,
   isSuccess,
-  createdDocumentId,
 }: DocumentReviewProps) => {
-  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const errorRef = useRef<HTMLDivElement>(null);
-  const prevFieldErrorsRef = useRef<FieldErrors>({});
+  const prevFieldErrorsRef = useRef<Record<string, string>>({});
   const prevErrorRef = useRef<string | null | undefined>(undefined);
-
-  console.log("fields", fields);
-  console.log("fieldErrors", fieldErrors);
-
-  const handleSuccessClose = () => {
-    if (createdDocumentId) {
-      navigate(`/documents/${createdDocumentId}`);
-    }
-  };
 
   useEffect(() => {
     // Check if there are new errors by comparing with previous errors
@@ -179,8 +166,6 @@ export const DocumentReview = ({
 
       <Snackbar
         open={isSuccess}
-        autoHideDuration={2000}
-        onClose={handleSuccessClose}
         anchorOrigin={{
           vertical: isMobile ? "bottom" : "top",
           horizontal: "center",

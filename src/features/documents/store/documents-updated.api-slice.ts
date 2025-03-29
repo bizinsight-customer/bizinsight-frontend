@@ -39,7 +39,10 @@ export const documentsUpdatedApi = createApiSliceNonJsonApi({
       providesTags: ["Documents"],
     }),
 
-    createDocument: builder.mutation<Document, DocumentCreationPayload>({
+    createDocument: builder.mutation<
+      { data: { id: string } },
+      DocumentCreationPayload
+    >({
       query: (payload) => {
         const formData = new FormData();
         formData.append("file", payload.file);
@@ -48,9 +51,6 @@ export const documentsUpdatedApi = createApiSliceNonJsonApi({
         // Transform flattened fields into nested structure
         const nestedFields = unflattenDocumentFields(payload.fields);
         formData.append("fields", JSON.stringify(nestedFields));
-
-        console.log("UPDATED DOCUMENT API");
-        console.log("FORM DATA", formData);
 
         return {
           url: API_ENDPOINTS.DOCUMENTS.CREATE,

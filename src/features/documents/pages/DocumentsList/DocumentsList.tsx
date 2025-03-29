@@ -31,15 +31,11 @@ export const DocumentsList = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         const first = entries[0];
-        console.log("Intersecting", first.isIntersecting);
-        console.log("isFetching", isFetching);
-        console.log("documents", documents);
         if (
           first.isIntersecting &&
           !isFetching &&
           documents?.meta.current_page < documents?.meta.total_pages
         ) {
-          console.log("Setting page", page);
           setPage((prev) => prev + 1);
         }
       },

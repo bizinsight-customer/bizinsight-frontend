@@ -86,8 +86,10 @@ export const useDocumentRecognition = () => {
       };
 
       const response = await createDocument(payload).unwrap();
-      setCreatedDocumentId(response.id);
+      setCreatedDocumentId(response.data.id);
       setIsSuccess(true);
+      // Navigate immediately after successful creation
+      navigate(`/documents`);
     } catch (err) {
       console.error("Error creating document:", err);
       const errors = err?.data?.errors;

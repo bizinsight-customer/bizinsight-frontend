@@ -51,7 +51,6 @@ export const UserCompanyDataDialog: React.FC<UserCompanyDataDialogProps> = ({
     useUpdateUserCompanyDataMutation();
 
   const onSubmit = async (data: UserCompanyData) => {
-    console.log("onSubmit", data);
     try {
       await updateCompanyData(data).unwrap();
       onSuccess?.();

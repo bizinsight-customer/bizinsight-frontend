@@ -21,6 +21,16 @@ export const NestedFields = ({
   const formatFieldName = (name: string) =>
     name.charAt(0).toUpperCase() + name.slice(1).replace(/_/g, " ");
 
+  const getFieldError = (path: string[]): string | undefined => {
+    let current: FieldErrors | string = fieldErrors;
+    for (const part of path) {
+      if (typeof current === "string") return undefined;
+      current = current[part];
+      if (!current) return undefined;
+    }
+    return typeof current === "string" ? current : undefined;
+  };
+
   const renderField = (name: string, value: RecognizedValue, path: string) => {
     if (value === null || value === undefined) {
       return null;
@@ -56,7 +66,8 @@ export const NestedFields = ({
       );
     }
 
-    const error = fieldErrors[path];
+    const pathParts = path.split(".");
+    const error = getFieldError(pathParts);
 
     return (
       <TextField

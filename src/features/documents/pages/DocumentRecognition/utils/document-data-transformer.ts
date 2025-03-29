@@ -3,6 +3,7 @@ import {
   DocumentFields,
   RecognizedData,
   RecognizedValue,
+  RecognizedValuePrimitive,
 } from "../document-recognition.types";
 
 export const getInputDefaultValue = (fieldType: string): RecognizedValue => {
@@ -33,11 +34,8 @@ export const flattenRecognizedData = (
     if (value === null) {
       result[fullKey] = "";
     } else if (Array.isArray(value)) {
-      result[fullKey] = value.map((item) =>
-        typeof item === "object" && item !== null
-          ? flattenRecognizedData(item as RecognizedData, fullKey, true)
-          : String(item)
-      );
+      // For arrays, we'll store them as a single string with values joined by commas
+      result[fullKey] = value.join(", ");
     } else if (typeof value === "object") {
       const nestedFields = flattenRecognizedData(
         value as RecognizedData,
@@ -58,7 +56,8 @@ export const handleFieldValueChange = (
   path: string,
   value: string
 ): RecognizedData => {
-  const newData = { ...prevData };
+  // Create a deep copy of the data to avoid modifying read-only objects
+  const newData = JSON.parse(JSON.stringify(prevData));
   const currentValue = get(newData, path);
   let newValue: RecognizedValue = value;
 
@@ -67,6 +66,9 @@ export const handleFieldValueChange = (
     if (!isNaN(parsed)) {
       newValue = parsed;
     }
+  } else if (Array.isArray(currentValue)) {
+    // If the current value is an array, split the input by commas
+    newValue = value.split(",").map((item) => item.trim());
   }
 
   set(newData, path, newValue);
@@ -75,22 +77,22 @@ export const handleFieldValueChange = (
 
 export const unflattenDocumentFields = (
   fields: DocumentFields
-): Record<string, string | DocumentFields[]> => {
-  const result: Record<string, string | DocumentFields[]> = {};
+): RecognizedData => {
+  const result: RecognizedData = {};
 
   Object.entries(fields).forEach(([key, value]) => {
     const parts = key.split(".");
     if (parts.length === 1) {
       // Handle non-nested fields
-      result[key] = value;
+      result[key] = value as RecognizedValuePrimitive;
     } else {
       // Handle nested fields
       const [first, ...rest] = parts;
       if (!result[first]) {
         result[first] = {};
       }
-      const nested = result[first] as DocumentFields;
-      nested[rest.join(".")] = value;
+      const nested = result[first] as Record<string, RecognizedValuePrimitive>;
+      nested[rest.join(".")] = value as RecognizedValuePrimitive;
     }
   });
 

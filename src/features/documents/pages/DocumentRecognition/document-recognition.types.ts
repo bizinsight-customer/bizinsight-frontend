@@ -29,4 +29,6 @@ export interface ValidationErrorResponse {
   detail: ValidationError[];
 }
 
-export type FieldErrors = Record<string, string>;
+export type FieldErrors = {
+  [key: string]: string | FieldErrors;
+};

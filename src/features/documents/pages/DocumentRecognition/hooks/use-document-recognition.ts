@@ -1,4 +1,5 @@
 import { SelectChangeEvent } from "@mui/material";
+import { set } from "lodash";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useGetDocumentTypesQuery } from "../../../store/document-types.slice";
@@ -31,8 +32,6 @@ export const useDocumentRecognition = () => {
     error: documentTypesError,
   } = useGetDocumentTypesQuery();
 
-  console.log("DOCUMENT TYPES", documentTypes);
-
   const handleTypeChange = (event: SelectChangeEvent<string>) => {
     const selectedValue = event.target.value;
     const newType = documentTypes?.find((type) => type.value === selectedValue);
@@ -60,6 +59,7 @@ export const useDocumentRecognition = () => {
 
   const handleFieldChange = (path: string, value: string) => {
     // Clear error for the field being changed
+
     setFieldErrors((prev) => {
       const newErrors = { ...prev };
       delete newErrors[path];
@@ -86,21 +86,18 @@ export const useDocumentRecognition = () => {
       };
 
       const response = await createDocument(payload).unwrap();
-      console.log("response", response);
       setCreatedDocumentId(response.id);
       setIsSuccess(true);
     } catch (err) {
       console.error("Error creating document:", err);
       const errors = err?.data?.errors;
-      console.log("ERRORS", errors);
 
       // Handle validation errors
       if (errors && Array.isArray(errors) && errors.length > 0) {
         const newFieldErrors: FieldErrors = {};
         errors.forEach((validationError) => {
           if (validationError.loc && validationError.loc.length > 0) {
-            const fieldPath = validationError.loc[0];
-            newFieldErrors[fieldPath] = validationError.msg;
+            set(newFieldErrors, validationError.loc, validationError.msg);
           }
         });
         setFieldErrors(newFieldErrors);

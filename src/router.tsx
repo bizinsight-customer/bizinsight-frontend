@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, RouteObject } from "react-router";
 import App from "./App";
 import MainLayout from "./components/layouts/MainLayout/MainLayout";
+import { aiAnalyticsRoutes } from "./features/ai-analytics/routes/ai-analytics.routes";
 import { authRoutes } from "./features/auth/routes";
 import { dashboardRoutes } from "./features/dashboard/routes";
 import { documentsRoutes } from "./features/documents/routes";
@@ -21,6 +22,7 @@ const routes: AppRouteConfig[] = [
         element: <MainLayout />,
         children: [
           ...dashboardRoutes,
+          ...aiAnalyticsRoutes,
           ...documentsRoutes,
           {
             path: "/profile",

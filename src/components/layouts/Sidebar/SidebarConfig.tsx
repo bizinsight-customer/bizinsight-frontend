@@ -1,5 +1,6 @@
 import { AppRoutePath } from "@/types/routes.types";
 import {
+  Psychology as AiAnalyticsIcon,
   Dashboard as DashboardIcon,
   Description as DocumentsIcon,
   History as HistoryIcon,
@@ -13,6 +14,11 @@ export const menuItems = [
     path: "/dashboard" as AppRoutePath,
     label: "Dashboard",
     icon: <DashboardIcon />,
+  },
+  {
+    path: "/ai-analytics" as AppRoutePath,
+    label: "AI Analytics",
+    icon: <AiAnalyticsIcon />,
   },
   {
     path: "/documents" as AppRoutePath,

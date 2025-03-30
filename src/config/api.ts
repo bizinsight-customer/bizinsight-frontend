@@ -50,6 +50,9 @@ export const API_ENDPOINTS = {
     UNFORESEEN_EXPENSES: "/metrics/unforeseen-expenses",
     MARKETING: "/metrics/marketing",
   },
+  AI_ANALYTICS: {
+    REPORT: "/ai_analytics/report",
+  },
   USER_SETTINGS: {
     UPDATE: "/users/me/settings",
     STATUS: "/users/me/settings/status",

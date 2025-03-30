@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -10,7 +11,7 @@ import {
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   DATE_FORMAT,
   DateSelectionMode,
@@ -31,11 +32,11 @@ interface DateSelectionProps {
 }
 
 export const DateSelection: React.FC<DateSelectionProps> = ({
-  mode,
-  startDate,
-  endDate,
-  prevStartDate,
-  periodDays,
+  mode: initialMode,
+  startDate: initialStartDate,
+  endDate: initialEndDate,
+  prevStartDate: initialPrevStartDate,
+  periodDays: initialPeriodDays,
   includePreviousPeriod = true,
   onModeChange,
   onStartDateChange,
@@ -43,16 +44,51 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
   onPrevStartDateChange,
   onPeriodDaysChange,
 }) => {
+  // Local state for date values
+  const [localMode, setLocalMode] = useState<DateSelectionMode>(initialMode);
+  const [localStartDate, setLocalStartDate] = useState<Date | null>(
+    initialStartDate
+  );
+  const [localEndDate, setLocalEndDate] = useState<Date | null>(initialEndDate);
+  const [localPrevStartDate, setLocalPrevStartDate] = useState<Date | null>(
+    initialPrevStartDate
+  );
+  const [localPeriodDays, setLocalPeriodDays] =
+    useState<number>(initialPeriodDays);
+
+  // Update local state when props change
+  useEffect(() => {
+    setLocalMode(initialMode);
+    setLocalStartDate(initialStartDate);
+    setLocalEndDate(initialEndDate);
+    setLocalPrevStartDate(initialPrevStartDate);
+    setLocalPeriodDays(initialPeriodDays);
+  }, [
+    initialMode,
+    initialStartDate,
+    initialEndDate,
+    initialPrevStartDate,
+    initialPeriodDays,
+  ]);
+
   const handlePeriodDaysChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = parseInt(event.target.value);
     if (!isNaN(value) && value > 0) {
-      onPeriodDaysChange(value);
+      setLocalPeriodDays(value);
     }
   };
 
-  const effectiveMode = includePreviousPeriod ? mode : "auto";
+  const handleApply = () => {
+    onModeChange(localMode);
+    onStartDateChange(localStartDate);
+    onEndDateChange(localEndDate);
+    onPrevStartDateChange(localPrevStartDate);
+    onPeriodDaysChange(localPeriodDays);
+  };
+
+  const effectiveMode = includePreviousPeriod ? localMode : "auto";
 
   return (
     <Box sx={{ mb: 3, p: 4, bgcolor: "background.paper", borderRadius: 1 }}>
@@ -71,10 +107,10 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
           <FormControl size="small" sx={{ minWidth: 200 }}>
             <InputLabel>Period Selection Mode</InputLabel>
             <Select
-              value={mode}
+              value={localMode}
               label="Date Selection Mode"
               onChange={(e) =>
-                onModeChange(e.target.value as DateSelectionMode)
+                setLocalMode(e.target.value as DateSelectionMode)
               }
             >
               <MenuItem value="auto">Automatic Previous Period</MenuItem>
@@ -88,15 +124,15 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
             <Box sx={{ display: "flex", gap: 2 }}>
               <DatePicker
                 label="Current Period Start"
-                value={startDate}
-                onChange={onStartDateChange}
+                value={localStartDate}
+                onChange={setLocalStartDate}
                 format={DATE_FORMAT}
                 slotProps={{ textField: { size: "small" } }}
               />
               <DatePicker
                 label="Current Period End"
-                value={endDate}
-                onChange={onEndDateChange}
+                value={localEndDate}
+                onChange={setLocalEndDate}
                 format={DATE_FORMAT}
                 slotProps={{ textField: { size: "small" } }}
               />
@@ -108,15 +144,15 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <DatePicker
                   label="Current Period Start"
-                  value={startDate}
-                  onChange={onStartDateChange}
+                  value={localStartDate}
+                  onChange={setLocalStartDate}
                   format={DATE_FORMAT}
                   slotProps={{ textField: { size: "small" } }}
                 />
                 <DatePicker
                   label="Previous Period Start"
-                  value={prevStartDate}
-                  onChange={onPrevStartDateChange}
+                  value={localPrevStartDate}
+                  onChange={setLocalPrevStartDate}
                   format={DATE_FORMAT}
                   slotProps={{ textField: { size: "small" } }}
                 />
@@ -126,7 +162,7 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
                   label="Period Days"
                   type="number"
                   size="small"
-                  value={periodDays}
+                  value={localPeriodDays}
                   onChange={handlePeriodDaysChange}
                   inputProps={{ min: 1 }}
                   sx={{ width: 120 }}
@@ -135,6 +171,14 @@ export const DateSelection: React.FC<DateSelectionProps> = ({
             </Box>
           )}
         </LocalizationProvider>
+
+        <Button
+          variant="contained"
+          onClick={handleApply}
+          sx={{ mt: effectiveMode === "manual" ? "auto" : undefined }}
+        >
+          Apply
+        </Button>
       </Box>
     </Box>
   );

@@ -19,9 +19,9 @@ import { DocumentDataFields } from "../components/DocumentDataFields";
 import { DocumentHeader } from "../components/DocumentHeader";
 import {
   useDeleteDocumentMutation,
+  useDownloadDocumentMutation,
   useGetDocumentQuery,
-} from "../store/documents-api.slice";
-import { useDownloadDocumentMutation } from "../store/documents-updated.api-slice";
+} from "../store/documents-updated.api-slice";
 import { Document } from "../types/document.types";
 
 export const DocumentDetail = () => {
@@ -70,7 +70,7 @@ export const DocumentDetail = () => {
     return <ApiErrorDisplay error={error} />;
   }
 
-  if (!data) {
+  if (!data?.data) {
     return (
       <Box p={isMobile ? 2 : 3}>
         <Typography>No document data available</Typography>
@@ -78,7 +78,7 @@ export const DocumentDetail = () => {
     );
   }
 
-  const { attributes } = data as JsonApiResource<Document>;
+  const { attributes } = data.data as unknown as JsonApiResource<Document>;
 
   const handleDownload = async () => {
     if (!id || !attributes.file_path) return;

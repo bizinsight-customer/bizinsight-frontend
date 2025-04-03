@@ -10,7 +10,6 @@ import { stockProcurementApiSlice } from "@/features/dashboard/api-slices/stock-
 import { unforeseenExpensesApiSlice } from "@/features/dashboard/api-slices/unforeseen-expenses.api-slice";
 import { clientsMetricsApiSlice } from "@/features/dashboard/store/clients-metrics.api-slice";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
-import { documentsApi } from "@/features/documents/store/documents-api.slice";
 import { documentsHistoryApiSlice } from "@/features/documents/store/documents-history.api-slice";
 import { documentsUpdatedApi } from "@/features/documents/store/documents-updated.api-slice";
 import { userCompanyApiSlice } from "@/features/profile/store/user-company.api-slice";
@@ -25,7 +24,6 @@ import { userReducer } from "./global-slices/user/user.slice";
 
 const apiMiddleware = [
   documentTypesApi.middleware,
-  documentsApi.middleware,
   documentsUpdatedApi.middleware,
   documentsHistoryApiSlice.middleware,
   userCompanyApiSlice.middleware,
@@ -48,7 +46,6 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     [documentTypesApi.reducerPath]: documentTypesApi.reducer,
-    [documentsApi.reducerPath]: documentsApi.reducer,
     [documentsUpdatedApi.reducerPath]: documentsUpdatedApi.reducer,
     [documentsHistoryApiSlice.reducerPath]: documentsHistoryApiSlice.reducer,
     [userCompanyApiSlice.reducerPath]: userCompanyApiSlice.reducer,

@@ -3,8 +3,10 @@ import { set } from "lodash";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useGetDocumentTypesQuery } from "../../../store/document-types.slice";
-import { useRecognizeDocumentMutation } from "../../../store/documents-api.slice";
-import { useCreateDocumentMutation } from "../../../store/documents-updated.api-slice";
+import {
+  useCreateDocumentMutation,
+  useRecognizeDocumentMutation,
+} from "../../../store/documents-updated.api-slice";
 import { DocumentType } from "../../../types/document.types";
 import { FieldErrors, RecognizedData } from "../document-recognition.types";
 import {

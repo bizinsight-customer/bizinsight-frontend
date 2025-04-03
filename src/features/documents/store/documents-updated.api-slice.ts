@@ -2,7 +2,11 @@ import { API_ENDPOINTS } from "@/config/api";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
 import { PaginatedResponse, PaginationParams } from "@/types/api-updated.types";
 import { unflattenDocumentFields } from "../pages/DocumentRecognition/utils/document-data-transformer";
-import { Document, DocumentCreationPayload } from "../types/document.types";
+import {
+  Document,
+  DocumentCreationPayload,
+  DocumentRecognitionResponse,
+} from "../types/document.types";
 
 export const documentsUpdatedApi = createApiSliceNonJsonApi({
   reducerPath: "documentsUpdatedApi",
@@ -71,6 +75,36 @@ export const documentsUpdatedApi = createApiSliceNonJsonApi({
         responseType: "blob",
       }),
     }),
+
+    getDocument: builder.query<{ data: Document }, string>({
+      query: (id) => ({
+        url: API_ENDPOINTS.DOCUMENTS.GET(id),
+      }),
+      providesTags: (_result, _error, id) => [{ type: "Documents", id }],
+    }),
+
+    deleteDocument: builder.mutation<void, string>({
+      query: (id) => ({
+        url: API_ENDPOINTS.DOCUMENTS.DELETE(id),
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Documents"],
+    }),
+
+    recognizeDocument: builder.mutation<DocumentRecognitionResponse, File>({
+      query: (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        return {
+          url: API_ENDPOINTS.DOCUMENTS.RECOGNIZE,
+          method: "POST",
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -78,4 +112,7 @@ export const {
   useGetDocumentsQuery,
   useCreateDocumentMutation,
   useDownloadDocumentMutation,
+  useGetDocumentQuery,
+  useDeleteDocumentMutation,
+  useRecognizeDocumentMutation,
 } = documentsUpdatedApi;

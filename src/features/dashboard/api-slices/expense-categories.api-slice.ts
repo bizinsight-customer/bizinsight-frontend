@@ -1,4 +1,5 @@
 import { API_ENDPOINTS } from "@/config/api";
+import { DocumentInfo } from "@/types/api-updated.types";
 import { createApiSliceNonJsonApi } from "../../../store/create-api-slice";
 
 export interface ExpenseCategoryEntry {
@@ -9,6 +10,7 @@ export interface ExpenseCategoryEntry {
 export interface ExpenseCategoriesResponse {
   total_amount: number;
   categories: ExpenseCategoryEntry[];
+  documents: DocumentInfo[];
 }
 
 export interface GetExpenseCategoriesParams {

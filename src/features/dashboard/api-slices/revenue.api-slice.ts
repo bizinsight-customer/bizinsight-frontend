@@ -1,4 +1,5 @@
 import { API_ENDPOINTS } from "@/config/api";
+import { DocumentInfo } from "@/types/api-updated.types";
 import { createApiSliceNonJsonApi } from "../../../store/create-api-slice";
 
 export interface RevenueEntry {
@@ -14,6 +15,7 @@ export interface RevenuePeriodData {
 export interface RevenueResponse {
   current_period: RevenuePeriodData;
   previous_period: RevenuePeriodData;
+  documents: DocumentInfo[];
 }
 
 export interface GetRevenueParams {

@@ -1,5 +1,6 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
+import { DocumentInfo } from "@/types/api-updated.types";
 
 export interface SalesMetricPeriod {
   period_start: string;
@@ -9,6 +10,7 @@ export interface SalesMetricPeriod {
 
 export interface SalesMetricsResponse {
   periods: SalesMetricPeriod[];
+  documents: DocumentInfo[];
 }
 
 export const salesApi = createApiSliceNonJsonApi({

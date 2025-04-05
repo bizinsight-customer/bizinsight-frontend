@@ -24,6 +24,7 @@
     "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.5.1",
     "@types/lodash": "^4.17.15",
+    "ag-grid-react": "^33.2.1",
     "axios": "^1.7.9",
     "date-fns": "^2.30.0",
     "firebase": "^11.3.0",

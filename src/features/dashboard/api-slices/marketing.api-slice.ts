@@ -1,9 +1,11 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
+import { DocumentInfo } from "@/types/api-updated.types";
 
-interface MarketingMetricsResponse {
+export interface MarketingMetricsResponse {
   marketing_expenses: number;
   total_income: number;
+  documents: DocumentInfo[];
 }
 
 export const marketingApiSlice = createApiSliceNonJsonApi({

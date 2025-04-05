@@ -1,5 +1,6 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
+import { DocumentInfo } from "@/types/api-updated.types";
 
 export interface DailyAmount {
   date: string;
@@ -20,6 +21,7 @@ export interface FacilityChargesData {
 export interface FacilityChargesResponse {
   current_period: FacilityChargesData;
   previous_period: FacilityChargesData | null;
+  documents: DocumentInfo[];
 }
 
 export interface GetFacilityChargesParams {

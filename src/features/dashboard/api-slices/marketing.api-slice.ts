@@ -6,6 +6,7 @@ export interface MarketingMetricsResponse {
   marketing_expenses: number;
   total_income: number;
   documents: DocumentInfo[];
+  summary: string;
 }
 
 export const marketingApiSlice = createApiSliceNonJsonApi({

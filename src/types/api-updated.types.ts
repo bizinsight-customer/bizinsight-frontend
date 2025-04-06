@@ -46,6 +46,7 @@ export interface DocumentInfo {
   balance_change_type: BalanceChangeType;
   is_sale_document: boolean;
   description?: string;
+  original_file_name: string;
 }
 
 export interface DocumentsResponse<T> extends PaginatedResponse<T> {

@@ -1,3 +1,4 @@
+import { DATE_FORMAT } from "@/types/date.types";
 import {
   Box,
   Button,
@@ -12,10 +13,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import React, { useEffect, useState } from "react";
-import {
-  DATE_FORMAT,
-  DateSelectionMode,
-} from "./charts/RevenueChart/revenue-chart.types";
+import { DateSelectionMode } from "./charts/RevenueChart/revenue-chart.types";
 
 interface DateSelectionProps {
   mode: DateSelectionMode;

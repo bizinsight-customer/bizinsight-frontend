@@ -1,6 +1,7 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
+import { DATE_FORMAT } from "@/types/date.types";
 import { Box, Typography } from "@mui/material";
 import { addDays, differenceInDays, format, subDays } from "date-fns";
 import React from "react";
@@ -17,11 +18,7 @@ import { useGetProfitQuery } from "../../../api-slices/profit.api-slice";
 import { CustomTooltip } from "../CustomTooltip";
 import { NoDataMessage } from "../NoDataMessage";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
-import {
-  ChartEntry,
-  DATE_FORMAT,
-  DateSelectionMode,
-} from "./profit-chart.types";
+import { ChartEntry, DateSelectionMode } from "./profit-chart.types";
 
 interface ProfitChartProps {
   mode: DateSelectionMode;

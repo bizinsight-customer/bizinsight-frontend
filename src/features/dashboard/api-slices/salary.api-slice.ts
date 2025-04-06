@@ -6,6 +6,7 @@ export interface SalaryMetricsResponse {
   total_salary_sum: number;
   number_of_workers: number;
   documents: DocumentInfo[];
+  summary: string;
 }
 
 export const salaryApiSlice = createApiSliceNonJsonApi({

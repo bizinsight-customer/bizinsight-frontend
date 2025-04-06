@@ -9,6 +9,10 @@ import { SalaryMetrics } from "../components/charts/SalaryMetrics/SalaryMetrics"
 import { SalesChart } from "../components/charts/SalesChart/SalesChart";
 import { StockProcurementChart } from "../components/charts/StockProcurementChart/StockProcurementChart";
 import { UnforeseenExpensesChart } from "../components/charts/UnforeseenExpensesChart/UnforeseenExpensesChart";
+import {
+  ComparisonChartProps,
+  SimpleChartProps,
+} from "../components/charts/types/chart-props.types";
 
 export type ChartType =
   | "revenue"
@@ -23,7 +27,7 @@ export type ChartType =
   | "marketing";
 
 export interface ChartConfig {
-  component: FC;
+  component: FC<ComparisonChartProps | SimpleChartProps>;
   title: string;
   includePreviousPeriod: boolean;
 }

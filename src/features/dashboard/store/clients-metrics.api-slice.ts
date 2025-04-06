@@ -1,13 +1,17 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
+import { DocumentInfo } from "@/types/api-updated.types";
 
 interface ClientsMetricsResponse {
   total_clients: number;
+  documents: DocumentInfo[];
 }
 
 interface GetClientsMetricsArgs {
-  startDate: string | null;
-  endDate: string | null;
+  start_date: string;
+  end_date: string;
+  previous_start_date?: string;
+  previous_end_date?: string;
 }
 
 export const clientsMetricsApiSlice = createApiSliceNonJsonApi({
@@ -19,11 +23,18 @@ export const clientsMetricsApiSlice = createApiSliceNonJsonApi({
       ClientsMetricsResponse,
       GetClientsMetricsArgs
     >({
-      query: ({ startDate, endDate }) => ({
+      query: ({
+        start_date,
+        end_date,
+        previous_start_date,
+        previous_end_date,
+      }) => ({
         url: API_ENDPOINTS.METRICS.CLIENTS,
         params: {
-          start_date: startDate,
-          end_date: endDate,
+          start_date,
+          end_date,
+          ...(previous_start_date && { previous_start_date }),
+          ...(previous_end_date && { previous_end_date }),
         },
       }),
       providesTags: ["ClientsMetrics"],

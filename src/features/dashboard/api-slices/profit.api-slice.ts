@@ -18,6 +18,7 @@ export interface ProfitResponse {
   current_period: ProfitPeriodData;
   previous_period: ProfitPeriodData;
   documents: DocumentInfo[];
+  summary: string;
 }
 
 export interface GetProfitParams {

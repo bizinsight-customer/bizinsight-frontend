@@ -1,4 +1,4 @@
-import { addDays, subDays } from "date-fns";
+import { addDays, differenceInDays, subDays } from "date-fns";
 import { useEffect, useState } from "react";
 import { DateSelectionMode } from "../components/charts/RevenueChart/revenue-chart.types";
 
@@ -32,13 +32,15 @@ export const useDashboardDates = (): DashboardDates => {
 
   // Reset or set previous dates when switching modes or when startDate changes
   useEffect(() => {
-    if (mode === "auto") {
-      setPrevStartDate(null);
-      setPrevEndDate(null);
+    if (mode === "auto" && startDate && endDate) {
+      const diffInDays = differenceInDays(endDate, startDate);
+      const prevEnd = subDays(startDate, 1);
+      setPrevEndDate(prevEnd);
+      setPrevStartDate(subDays(prevEnd, diffInDays));
     } else if (mode === "manual" && startDate) {
       setPrevStartDate(subDays(startDate, periodDays));
     }
-  }, [mode, startDate, periodDays]);
+  }, [mode, startDate, endDate, periodDays]);
 
   // Calculate end dates based on period days in manual mode
   useEffect(() => {

@@ -11,6 +11,7 @@ export interface ExpenseCategoriesResponse {
   total_amount: number;
   categories: ExpenseCategoryEntry[];
   documents: DocumentInfo[];
+  summary: string;
 }
 
 export interface GetExpenseCategoriesParams {

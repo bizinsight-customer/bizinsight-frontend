@@ -22,6 +22,7 @@ export interface FacilityChargesResponse {
   current_period: FacilityChargesData;
   previous_period: FacilityChargesData | null;
   documents: DocumentInfo[];
+  summary: string;
 }
 
 export interface GetFacilityChargesParams {

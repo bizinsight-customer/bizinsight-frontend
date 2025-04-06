@@ -16,6 +16,7 @@ export interface RevenueResponse {
   current_period: RevenuePeriodData;
   previous_period: RevenuePeriodData;
   documents: DocumentInfo[];
+  summary: string;
 }
 
 export interface GetRevenueParams {

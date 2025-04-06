@@ -11,6 +11,7 @@ export interface SalesMetricPeriod {
 export interface SalesMetricsResponse {
   periods: SalesMetricPeriod[];
   documents: DocumentInfo[];
+  summary: string;
 }
 
 export const salesApi = createApiSliceNonJsonApi({

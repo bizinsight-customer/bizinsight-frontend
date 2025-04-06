@@ -8,6 +8,7 @@ export interface StockProcurementResponse {
   logistics: number;
   stock_procurement_other: number;
   documents: DocumentInfo[];
+  summary: string;
 }
 
 interface StockProcurementParams {

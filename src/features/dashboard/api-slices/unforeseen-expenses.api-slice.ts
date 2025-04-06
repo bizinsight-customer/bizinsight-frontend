@@ -6,6 +6,7 @@ export interface UnforeseenExpensesResponse {
   unforeseen_expenses: number;
   total_expenses: number;
   documents: DocumentInfo[];
+  summary: string;
 }
 
 export interface UnforeseenExpensesParams {

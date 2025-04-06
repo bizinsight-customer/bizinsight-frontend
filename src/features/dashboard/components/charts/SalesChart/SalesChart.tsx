@@ -1,5 +1,6 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
+import { DATE_FORMAT } from "@/types/date.types";
 import { Box, Paper, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
@@ -13,7 +14,6 @@ import {
 } from "recharts";
 import { useGetSalesQuery } from "../../../api-slices/sales.api-slice";
 import { NoDataMessage } from "../NoDataMessage";
-import { DATE_FORMAT } from "../RevenueChart/revenue-chart.types";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
 
 interface SalesChartProps {

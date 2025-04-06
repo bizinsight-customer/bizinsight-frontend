@@ -20,5 +20,3 @@ export interface DateSelectionProps {
   onPrevStartDateChange: (date: Date | null) => void;
   onPeriodDaysChange: (days: number) => void;
 }
-
-export const DATE_FORMAT = "dd.MM.yyyy";

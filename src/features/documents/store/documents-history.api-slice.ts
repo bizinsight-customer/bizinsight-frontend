@@ -1,36 +1,27 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
-
-export type DocumentType =
-  | "INVOICE"
-  | "SALARY"
-  | "FACILITY_CHARGES"
-  | "PAYMENT_CONFIRMATION"
-  | "TAX"
-  | "MARKETING"
-  | "LOGISTICS"
-  | "REFUND"
-  | "CUSTOMS"
-  | "UNFORESEEN_EXPENSE"
-  | "STOCK_PROCUREMENT"
-  | "STOCK_PROCUREMENT_OTHER";
+import {
+  BalanceChangeType,
+  Currency,
+  DocumentType,
+} from "@/types/api-updated.types";
 
 export interface DocumentHistoryItem {
-  created_at: string;
-  document_id: string;
+  id: string;
   document_type: DocumentType;
-  filename: string | null;
+  file_name: string | null;
   file_type: string | null;
+  amount: number;
+  currency: Currency;
+  converted_amount: number;
+  converted_currency: Currency;
+  document_date: string;
+  balance_change_type: BalanceChangeType;
+  is_sale_document: boolean;
+  description: string | null;
+  original_file_name: string | null;
+  created_at: string;
 }
-
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  per_page: number;
-}
-
-export type DocumentHistoryResponse = PaginatedResponse<DocumentHistoryItem>;
 
 const apiSlice = createApiSliceNonJsonApi({
   reducerPath: "documentsHistoryApi",
@@ -39,13 +30,13 @@ const apiSlice = createApiSliceNonJsonApi({
 export const documentsHistoryApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getDocumentsHistory: builder.query<
-      DocumentHistoryResponse,
-      { page?: number; per_page?: number }
+      DocumentHistoryItem[],
+      { impersonated_uid?: string }
     >({
-      query: ({ page = 1, per_page = 50 }) => ({
+      query: ({ impersonated_uid }) => ({
         url: API_ENDPOINTS.DOCUMENTS.HISTORY,
         method: "GET",
-        params: { page, per_page },
+        params: { impersonated_uid },
       }),
     }),
   }),

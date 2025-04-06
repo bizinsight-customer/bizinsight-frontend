@@ -1,18 +1,23 @@
 import { FC } from "react";
+import { AverageTicketChart } from "../components/charts/AverageTicketChart/AverageTicketChart";
 import { ClientsMetrics } from "../components/charts/ClientsMetrics/ClientsMetrics";
+import { CogsChart } from "../components/charts/CogsChart/CogsChart";
 import { ExpenseCategoriesChart } from "../components/charts/ExpenseCategoriesChart/ExpenseCategoriesChart";
 import { FacilityChargesChart } from "../components/charts/FacilityChargesChart/FacilityChargesChart";
 import { MarketingChart } from "../components/charts/MarketingChart/MarketingChart";
 import { ProfitChart } from "../components/charts/ProfitChart/ProfitChart";
+import { ReturnRateChart } from "../components/charts/ReturnRateChart/ReturnRateChart";
 import { RevenueChart } from "../components/charts/RevenueChart/RevenueChart";
+import { RevenueExpenseRatioChart } from "../components/charts/RevenueExpenseRatioChart/RevenueExpenseRatioChart";
+import { ROMIChart } from "../components/charts/ROMIChart/ROMIChart";
 import { SalaryMetrics } from "../components/charts/SalaryMetrics/SalaryMetrics";
 import { SalesChart } from "../components/charts/SalesChart/SalesChart";
 import { StockProcurementChart } from "../components/charts/StockProcurementChart/StockProcurementChart";
-import { UnforeseenExpensesChart } from "../components/charts/UnforeseenExpensesChart/UnforeseenExpensesChart";
 import {
   ComparisonChartProps,
   SimpleChartProps,
 } from "../components/charts/types/chart-props.types";
+import { UnforeseenExpensesChart } from "../components/charts/UnforeseenExpensesChart/UnforeseenExpensesChart";
 
 export type ChartType =
   | "revenue"
@@ -24,7 +29,12 @@ export type ChartType =
   | "clients"
   | "salary"
   | "unforeseen-expenses"
-  | "marketing";
+  | "marketing"
+  | "average-ticket"
+  | "cogs"
+  | "return-rate"
+  | "revenue-expense-ratio"
+  | "romi";
 
 export interface ChartConfig {
   component: FC<ComparisonChartProps | SimpleChartProps>;
@@ -81,6 +91,31 @@ export const CHART_CONFIGS: Record<ChartType, ChartConfig> = {
   marketing: {
     component: MarketingChart,
     title: "Marketing Metrics",
+    includePreviousPeriod: false,
+  },
+  "average-ticket": {
+    component: AverageTicketChart,
+    title: "Average Ticket Size",
+    includePreviousPeriod: false,
+  },
+  cogs: {
+    component: CogsChart,
+    title: "Cost of Goods Sold",
+    includePreviousPeriod: false,
+  },
+  "return-rate": {
+    component: ReturnRateChart,
+    title: "Return Rate",
+    includePreviousPeriod: false,
+  },
+  "revenue-expense-ratio": {
+    component: RevenueExpenseRatioChart,
+    title: "Revenue vs Expenses",
+    includePreviousPeriod: false,
+  },
+  romi: {
+    component: ROMIChart,
+    title: "Return on Marketing Investment",
     includePreviousPeriod: false,
   },
 };

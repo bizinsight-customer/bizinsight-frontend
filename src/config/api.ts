@@ -49,6 +49,11 @@ export const API_ENDPOINTS = {
     STOCK_PROCUREMENT: "/metrics/stock-procurement",
     UNFORESEEN_EXPENSES: "/metrics/unforeseen-expenses",
     MARKETING: "/metrics/marketing",
+    AVERAGE_TICKET: "/metrics/average-ticket",
+    COGS: "/metrics/cogs",
+    RETURN_RATE: "/metrics/return-rate",
+    REVENUE_EXPENSE_RATIO: "/metrics/revenue-expense-ratio",
+    ROMI: "/metrics/romi",
   },
   AI_ANALYTICS: {
     REPORT: "/ai_analytics/report",

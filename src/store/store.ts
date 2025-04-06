@@ -1,9 +1,14 @@
 import { aiAnalyticsApiSlice } from "@/features/ai-analytics/store/ai-analytics.api-slice";
+import { averageTicketApi } from "@/features/dashboard/api-slices/average-ticket.api-slice";
+import { cogsApi } from "@/features/dashboard/api-slices/cogs.api-slice";
 import { expenseCategoriesApi } from "@/features/dashboard/api-slices/expense-categories.api-slice";
 import { facilityApiSlice } from "@/features/dashboard/api-slices/facility.api-slice";
 import { marketingApiSlice } from "@/features/dashboard/api-slices/marketing.api-slice";
 import { profitApi } from "@/features/dashboard/api-slices/profit.api-slice";
+import { returnRateApi } from "@/features/dashboard/api-slices/return-rate.api-slice";
+import { revenueExpenseRatioApi } from "@/features/dashboard/api-slices/revenue-expense-ratio.api-slice";
 import { revenueApi } from "@/features/dashboard/api-slices/revenue.api-slice";
+import { romiApi } from "@/features/dashboard/api-slices/romi.api-slice";
 import { salaryApiSlice } from "@/features/dashboard/api-slices/salary.api-slice";
 import { salesApi } from "@/features/dashboard/api-slices/sales.api-slice";
 import { stockProcurementApiSlice } from "@/features/dashboard/api-slices/stock-procurement.api-slice";
@@ -40,6 +45,11 @@ const apiMiddleware = [
   unforeseenExpensesApiSlice.middleware,
   marketingApiSlice.middleware,
   aiAnalyticsApiSlice.middleware,
+  averageTicketApi.middleware,
+  cogsApi.middleware,
+  returnRateApi.middleware,
+  revenueExpenseRatioApi.middleware,
+  romiApi.middleware,
 ] as Middleware[];
 
 export const store = configureStore({
@@ -66,6 +76,11 @@ export const store = configureStore({
       unforeseenExpensesApiSlice.reducer,
     [marketingApiSlice.reducerPath]: marketingApiSlice.reducer,
     [aiAnalyticsApiSlice.reducerPath]: aiAnalyticsApiSlice.reducer,
+    [averageTicketApi.reducerPath]: averageTicketApi.reducer,
+    [cogsApi.reducerPath]: cogsApi.reducer,
+    [returnRateApi.reducerPath]: returnRateApi.reducer,
+    [revenueExpenseRatioApi.reducerPath]: revenueExpenseRatioApi.reducer,
+    [romiApi.reducerPath]: romiApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

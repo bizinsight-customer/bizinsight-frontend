@@ -49,10 +49,10 @@ export const SalesChart: React.FC<SalesChartProps> = ({
   const chartData = React.useMemo(() => {
     if (!salesData) return [];
 
-    return salesData.periods
+    const chartDataLocal = salesData.periods
       .map((period) => {
-        const startDate = parseDateSafely(period.period_start);
-        const endDate = parseDateSafely(period.period_end);
+        const startDate = parseDateSafely(period.start_date);
+        const endDate = parseDateSafely(period.end_date);
 
         if (!startDate || !endDate) return null;
 
@@ -60,12 +60,14 @@ export const SalesChart: React.FC<SalesChartProps> = ({
           displayDate: `${formatChartDate(startDate)} - ${formatChartDate(
             endDate
           )}`,
-          periodStart: period.period_start,
-          periodEnd: period.period_end,
-          sales: period.number_of_sales,
+          periodStart: period.start_date,
+          periodEnd: period.end_date,
+          sales: period.count,
         };
       })
       .filter((entry): entry is ChartEntry => entry !== null);
+
+    return chartDataLocal;
   }, [salesData]);
 
   const hasSales = React.useMemo(() => {

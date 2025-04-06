@@ -123,10 +123,11 @@ export const useDocumentRecognition = () => {
       setActiveStep(1);
       try {
         const response = await recognizeDocument(file).unwrap();
+        const { document_type, extracted_data } = response.data;
         setSelectedType(
-          documentTypes?.find((type) => type.value === response.document_type)
+          documentTypes?.find((type) => type.value === document_type)
         );
-        setRecognizedData(response.extracted_data);
+        setRecognizedData(extracted_data);
         setActiveStep(2);
       } catch (err) {
         console.error("Error recognizing document:", err);

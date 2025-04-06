@@ -10,6 +10,7 @@ import { stockProcurementApiSlice } from "@/features/dashboard/api-slices/stock-
 import { unforeseenExpensesApiSlice } from "@/features/dashboard/api-slices/unforeseen-expenses.api-slice";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
 import { PaginatedResponse, PaginationParams } from "@/types/api-updated.types";
+import { JsonApiResponse } from "@/types/json-api.types";
 import { unflattenDocumentFields } from "../pages/DocumentRecognition/utils/document-data-transformer";
 import {
   Document,
@@ -119,7 +120,10 @@ export const documentsUpdatedApi = createApiSliceNonJsonApi({
       },
     }),
 
-    recognizeDocument: builder.mutation<DocumentRecognitionResponse, File>({
+    recognizeDocument: builder.mutation<
+      JsonApiResponse<DocumentRecognitionResponse>,
+      File
+    >({
       query: (file) => {
         const formData = new FormData();
         formData.append("file", file);

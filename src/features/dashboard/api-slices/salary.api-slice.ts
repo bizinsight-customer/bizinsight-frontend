@@ -3,7 +3,7 @@ import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
 import { DocumentInfo } from "@/types/api-updated.types";
 
 export interface SalaryMetricsResponse {
-  total_salary_sum: number;
+  total_amount: number;
   number_of_workers: number;
   documents: DocumentInfo[];
   summary: string;

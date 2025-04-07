@@ -29,8 +29,8 @@ export const ClientsMetrics: React.FC<SimpleChartProps> = ({
   endDate,
 }) => {
   const { data, isLoading, error } = useGetClientsMetricsQuery({
-    startDate: formatDateForApi(startDate),
-    endDate: formatDateForApi(endDate),
+    start_date: formatDateForApi(startDate),
+    end_date: formatDateForApi(endDate),
   });
 
   return (

@@ -65,7 +65,7 @@ export const SalaryMetrics: React.FC<SalaryMetricsProps> = ({
                 sx={{ fontSize: 32, color: "primary.main" }}
               />
               <Typography variant="h4" component="div">
-                {formatCurrency(salaryData.total_salary_sum)}
+                {formatCurrency(salaryData.total_amount)}
               </Typography>
             </Box>
           </Box>

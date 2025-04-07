@@ -1,10 +1,24 @@
 import { API_ENDPOINTS } from "@/config/api";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
-import { DocumentInfo } from "@/types/api-updated.types";
+import { BalanceChangeType, Currency, DocumentType } from "@/types/api.types";
 
 export interface DailyAmount {
   date: string;
   amount: number;
+}
+
+export interface DocumentInfo {
+  id: string;
+  document_type: DocumentType;
+  amount: number;
+  currency: Currency;
+  converted_amount: number;
+  converted_currency: Currency;
+  document_date: string;
+  balance_change_type: BalanceChangeType;
+  is_sale_document: boolean;
+  description?: string | null;
+  original_file_name?: string | null;
 }
 
 export interface FacilityChargesData {

@@ -45,7 +45,7 @@ export const ChargeChart: React.FC<ChargeChartProps> = ({
   }, [data]);
 
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box sx={{ height: "200px" }}>
       <Box sx={{ mb: 2 }}>
         <Typography variant="subtitle1">{title}</Typography>
         {hasData && (

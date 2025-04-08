@@ -1,33 +1,19 @@
-export interface PaginationMeta {
-  count: number;
-  total_count: number;
-  total_pages: number;
-  current_page: number;
-  per_page: number;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  meta: PaginationMeta;
-}
-
-export interface PaginationParams {
-  page?: number;
-  per_page?: number;
-}
+import { PaginatedResponse } from "./api.types";
+import { Currency } from "./currency.types";
 
 export enum DocumentType {
   INVOICE = "INVOICE",
-  RECEIPT = "RECEIPT",
-  BILL = "BILL",
-  EXPENSE = "EXPENSE",
   SALARY = "SALARY",
-}
-
-export enum Currency {
-  USD = "USD",
-  EUR = "EUR",
-  GBP = "GBP",
+  FACILITY_CHARGES = "FACILITY_CHARGES",
+  PAYMENT_CONFIRMATION = "PAYMENT_CONFIRMATION",
+  TAX = "TAX",
+  MARKETING = "MARKETING",
+  LOGISTICS = "LOGISTICS",
+  REFUND = "REFUND",
+  CUSTOMS = "CUSTOMS",
+  UNFORESEEN_EXPENSE = "UNFORESEEN_EXPENSE",
+  STOCK_PROCUREMENT = "STOCK_PROCUREMENT",
+  STOCK_PROCUREMENT_OTHER = "STOCK_PROCUREMENT_OTHER",
 }
 
 export enum BalanceChangeType {

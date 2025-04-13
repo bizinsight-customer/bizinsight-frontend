@@ -1,7 +1,9 @@
 import { ErrorFallback } from "@/components/error-boundary/ErrorFallback";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { StartupProvider } from "@/features/startup/components/startup-provider";
+import { theme } from "@/lib/mui/theme";
 import { auth } from "@/services/firebase/auth";
+import { ThemeProvider } from "@mui/material/styles";
 import { onAuthStateChanged } from "firebase/auth";
 import { ErrorInfo, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -37,18 +39,20 @@ function App() {
   }
 
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback} onError={logError}>
-      <GlobalErrorHandler />
-      <AuthStateChangeHandler />
-      <ErrorPopup />
-      {isAuthenticated ? (
-        <StartupProvider>
+    <ThemeProvider theme={theme}>
+      <ErrorBoundary FallbackComponent={ErrorFallback} onError={logError}>
+        <GlobalErrorHandler />
+        <AuthStateChangeHandler />
+        <ErrorPopup />
+        {isAuthenticated ? (
+          <StartupProvider>
+            <Outlet />
+          </StartupProvider>
+        ) : (
           <Outlet />
-        </StartupProvider>
-      ) : (
-        <Outlet />
-      )}
-    </ErrorBoundary>
+        )}
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 

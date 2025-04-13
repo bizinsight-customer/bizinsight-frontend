@@ -1,14 +1,5 @@
-import { DocumentInfo } from "@/types/api-updated.types";
-import { useGetExpenseCategoriesQuery } from "../api-slices/expense-categories.api-slice";
-import { useGetFacilityChargesQuery } from "../api-slices/facility.api-slice";
-import { useGetMarketingMetricsQuery } from "../api-slices/marketing.api-slice";
-import { useGetProfitQuery } from "../api-slices/profit.api-slice";
-import { useGetRevenueQuery } from "../api-slices/revenue.api-slice";
-import { useGetSalaryMetricsQuery } from "../api-slices/salary.api-slice";
-import { useGetSalesQuery } from "../api-slices/sales.api-slice";
-import { useGetStockProcurementQuery } from "../api-slices/stock-procurement.api-slice";
-import { useGetUnforeseenExpensesQuery } from "../api-slices/unforeseen-expenses.api-slice";
-import { useGetClientsMetricsQuery } from "../store/clients-metrics.api-slice";
+import { DocumentInfo } from "@/types/document.types";
+import metricApi from "../api-slices";
 import { ChartType } from "./chart-types";
 
 interface ApiHookResult {
@@ -32,14 +23,19 @@ type ApiHook = (
 ) => ApiHookResult;
 
 export const CHART_API_HOOKS: Record<ChartType, ApiHook> = {
-  revenue: useGetRevenueQuery,
-  profit: useGetProfitQuery,
-  "expense-categories": useGetExpenseCategoriesQuery,
-  "stock-procurement": useGetStockProcurementQuery,
-  "facility-charges": useGetFacilityChargesQuery,
-  sales: useGetSalesQuery,
-  salary: useGetSalaryMetricsQuery,
-  "unforeseen-expenses": useGetUnforeseenExpensesQuery,
-  marketing: useGetMarketingMetricsQuery,
-  clients: useGetClientsMetricsQuery,
+  revenue: metricApi.revenue.useGetDataQuery,
+  profit: metricApi.profit.useGetDataQuery,
+  "expense-categories": metricApi.expenseCategories.useGetDataQuery,
+  "stock-procurement": metricApi.stockProcurement.useGetDataQuery,
+  "facility-charges": metricApi.facility.useGetDataQuery,
+  sales: metricApi.sales.useGetDataQuery,
+  salary: metricApi.salary.useGetDataQuery,
+  "unforeseen-expenses": metricApi.unforeseenExpenses.useGetDataQuery,
+  marketing: metricApi.marketing.useGetDataQuery,
+  clients: metricApi.clientsMetrics.useGetDataQuery,
+  "average-ticket": metricApi.averageTicket.useGetDataQuery,
+  cogs: metricApi.cogs.useGetDataQuery,
+  "return-rate": metricApi.returnRate.useGetDataQuery,
+  "revenue-expense-ratio": metricApi.revenueExpenseRatio.useGetDataQuery,
+  romi: metricApi.romi.useGetDataQuery,
 };

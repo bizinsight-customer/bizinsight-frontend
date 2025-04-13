@@ -1,32 +1,35 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
-import { DocumentInfo } from "@/types/api-updated.types";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
-export interface SalaryMetricsResponse {
+export interface SalaryMetricData extends BaseMetricData {
   total_amount: number;
   number_of_workers: number;
-  documents: DocumentInfo[];
-  summary: string;
 }
 
-export const salaryApiSlice = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<SalaryMetricData>({
   reducerPath: "salaryApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getSalaryMetrics: builder.query<
-      SalaryMetricsResponse,
-      { start_date: string; end_date: string }
-    >({
-      query: ({ start_date, end_date }) => ({
-        url: API_ENDPOINTS.METRICS.SALARY,
-        method: "GET",
-        params: {
-          start_date,
-          end_date,
-        },
-      }),
-    }),
-  }),
+  endpoint: "SALARY",
+  tagType: "Salary",
 });
 
-export const { useGetSalaryMetricsQuery } = salaryApiSlice;
+const hasNoData = (
+  response: BaseMetricResponse<SalaryMetricData> | undefined
+): boolean => {
+  if (!response?.metric_data) {
+    return true;
+  }
+  return (
+    response.metric_data.total_amount === 0 &&
+    response.metric_data.number_of_workers === 0
+  );
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const salary = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default salary;

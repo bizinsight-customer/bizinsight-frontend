@@ -1,37 +1,37 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
-import { DocumentInfo } from "@/types/api-updated.types";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
-export interface SalesPeriodEntry {
+export interface SalesPeriodEntry extends BaseMetricData {
   start_date: string;
   end_date: string;
   count: number;
 }
 
-export interface SalesMetricsResponse {
+export interface SalesMetricData extends BaseMetricData {
   periods: SalesPeriodEntry[];
-  documents: DocumentInfo[];
-  summary: string;
 }
 
-export const salesApi = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<SalesMetricData>({
   reducerPath: "salesApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getSales: builder.query<
-      SalesMetricsResponse,
-      { start_date: string; end_date: string }
-    >({
-      query: ({ start_date, end_date }) => ({
-        url: API_ENDPOINTS.METRICS.SALES,
-        method: "GET",
-        params: {
-          start_date,
-          end_date,
-        },
-      }),
-    }),
-  }),
+  endpoint: "SALES",
+  tagType: "Sales",
 });
 
-export const { useGetSalesQuery } = salesApi;
+const hasNoData = (
+  response: BaseMetricResponse<SalesMetricData> | undefined
+): boolean => {
+  if (!response?.metric_data) {
+    return true;
+  }
+  return response.metric_data.periods.every((period) => period.count === 0);
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const sales = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default sales;

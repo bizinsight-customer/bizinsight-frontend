@@ -1,13 +1,5 @@
 import { API_ENDPOINTS } from "@/config/api";
-import { expenseCategoriesApi } from "@/features/dashboard/api-slices/expense-categories.api-slice";
-import { facilityApiSlice } from "@/features/dashboard/api-slices/facility.api-slice";
-import { marketingApiSlice } from "@/features/dashboard/api-slices/marketing.api-slice";
-import { profitApi } from "@/features/dashboard/api-slices/profit.api-slice";
-import { revenueApi } from "@/features/dashboard/api-slices/revenue.api-slice";
-import { salaryApiSlice } from "@/features/dashboard/api-slices/salary.api-slice";
-import { salesApi } from "@/features/dashboard/api-slices/sales.api-slice";
-import { stockProcurementApiSlice } from "@/features/dashboard/api-slices/stock-procurement.api-slice";
-import { unforeseenExpensesApiSlice } from "@/features/dashboard/api-slices/unforeseen-expenses.api-slice";
+import metricApi from "@/features/dashboard/api-slices";
 import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
 import { PaginatedResponse, PaginationParams } from "@/types/api-updated.types";
 import { JsonApiResponse } from "@/types/json-api.types";
@@ -105,15 +97,9 @@ export const documentsUpdatedApi = createApiSliceNonJsonApi({
           dispatch(documentsUpdatedApi.util.invalidateTags(["Documents"]));
 
           // Invalidate all dashboard metrics that might contain document data
-          dispatch(marketingApiSlice.util.resetApiState());
-          dispatch(unforeseenExpensesApiSlice.util.resetApiState());
-          dispatch(expenseCategoriesApi.util.resetApiState());
-          dispatch(stockProcurementApiSlice.util.resetApiState());
-          dispatch(facilityApiSlice.util.resetApiState());
-          dispatch(salaryApiSlice.util.resetApiState());
-          dispatch(salesApi.util.resetApiState());
-          dispatch(profitApi.util.resetApiState());
-          dispatch(revenueApi.util.resetApiState());
+          Object.values(metricApi).forEach((apiSlice) => {
+            dispatch(apiSlice.apiSlice.util.resetApiState());
+          });
         } catch {
           // If the mutation fails, we don't need to invalidate cache
         }

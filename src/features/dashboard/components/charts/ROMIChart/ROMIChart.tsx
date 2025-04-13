@@ -1,7 +1,8 @@
-import { useGetROMIQuery } from "@/features/dashboard/api-slices/romi.api-slice";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
 import { DATE_FORMAT } from "@/types/date.types";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { format } from "date-fns";
 import {
   Bar,
@@ -13,42 +14,38 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import metricApi from "../../../api-slices";
 import { CustomTooltip } from "../CustomTooltip";
 import { NoDataMessage } from "../NoDataMessage";
 import { SimpleChartProps } from "../types/chart-props.types";
 
 export const ROMIChart = ({ startDate, endDate }: SimpleChartProps) => {
   const { format: formatCurrency } = useFormatCurrency();
-  const { data: romiData, isLoading } = useGetROMIQuery({
+  const { data, isLoading, error } = metricApi.romi.useGetDataQuery({
     start_date: startDate ? format(startDate, DATE_FORMAT) : "",
     end_date: endDate ? format(endDate, DATE_FORMAT) : "",
   });
 
   if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height={400}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
-  if (!romiData) {
+  if (error) {
+    return <ErrorMessage message="Error loading ROMI data" />;
+  }
+
+  if (!data?.metric_data) {
     return <NoDataMessage />;
   }
 
   const chartData = [
     {
       name: "Revenue",
-      value: romiData.data.revenue,
+      value: data.metric_data.revenue,
     },
     {
       name: "Marketing Budget",
-      value: romiData.data.marketing_budget,
+      value: data.metric_data.marketing_budget,
     },
   ];
 
@@ -56,10 +53,10 @@ export const ROMIChart = ({ startDate, endDate }: SimpleChartProps) => {
     <Box>
       <Box display="flex" justifyContent="space-between" mb={2}>
         <Typography variant="h6">
-          ROMI: {romiData.data.romi_percentage.toFixed(2)}%
+          ROMI: {data.metric_data.romi_percentage.toFixed(2)}%
         </Typography>
         <Typography variant="h6">
-          ROMI Ratio: {romiData.data.romi_ratio.toFixed(2)}
+          ROMI Ratio: {data.metric_data.romi_ratio.toFixed(2)}
         </Typography>
       </Box>
       <ResponsiveContainer width="100%" height={400}>

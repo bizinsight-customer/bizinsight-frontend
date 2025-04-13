@@ -1,8 +1,9 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
-import { BalanceChangeType, Currency, DocumentType } from "@/types/api.types";
+import { Currency } from "@/types/currency.types";
+import { BalanceChangeType, DocumentType } from "@/types/document.types";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
-export interface DailyAmount {
+export interface DailyAmount extends BaseMetricData {
   date: string;
   amount: number;
 }
@@ -21,7 +22,7 @@ export interface DocumentInfo {
   original_file_name?: string | null;
 }
 
-export interface FacilityChargesData {
+export interface FacilityChargesData extends BaseMetricData {
   water: DailyAmount[];
   electricity: DailyAmount[];
   rent: DailyAmount[];
@@ -32,44 +33,39 @@ export interface FacilityChargesData {
   total_other: number;
 }
 
-export interface FacilityChargesResponse {
+export interface FacilityMetricData extends BaseMetricData {
   current_period: FacilityChargesData;
   previous_period: FacilityChargesData | null;
-  documents: DocumentInfo[];
-  summary: string;
 }
 
-export interface GetFacilityChargesParams {
-  start_date: string;
-  end_date: string;
-  previous_start_date?: string;
-  previous_end_date?: string;
-}
+export type FacilityResponse = BaseMetricResponse<FacilityMetricData>;
 
-export const facilityApiSlice = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<FacilityMetricData>({
   reducerPath: "facilityApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getFacilityCharges: builder.query<
-      FacilityChargesResponse,
-      GetFacilityChargesParams
-    >({
-      query: (params) => ({
-        url: API_ENDPOINTS.METRICS.FACILITY,
-        method: "GET",
-        params: {
-          start_date: params.start_date,
-          end_date: params.end_date,
-          ...(params.previous_start_date && {
-            previous_start_date: params.previous_start_date,
-          }),
-          ...(params.previous_end_date && {
-            previous_end_date: params.previous_end_date,
-          }),
-        },
-      }),
-    }),
-  }),
+  endpoint: "FACILITY",
+  tagType: "Facility",
 });
 
-export const { useGetFacilityChargesQuery } = facilityApiSlice;
+const hasNoData = (response: FacilityResponse | undefined): boolean => {
+  if (!response?.metric_data?.current_period) {
+    return true;
+  }
+  const { total_water, total_electricity, total_rent, total_other } =
+    response.metric_data.current_period;
+  return (
+    total_water === 0 &&
+    total_electricity === 0 &&
+    total_rent === 0 &&
+    total_other === 0
+  );
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const facility = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default facility;

@@ -1,9 +1,10 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
+import { DATE_FORMAT } from "@/types/date.types";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { differenceInDays, format } from "date-fns";
 import React from "react";
-import { useGetFacilityChargesQuery } from "../../../api-slices/facility.api-slice";
+import metricApi from "../../../api-slices";
 import { NoDataMessage } from "../NoDataMessage";
 import { ComparisonChartProps } from "../types/chart-props.types";
 import { ChargeChart } from "./components/ChargeChart";
@@ -17,18 +18,14 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
   prevEndDate,
   periodDays,
 }) => {
-  const {
-    data: facilityData,
-    isLoading,
-    error,
-  } = useGetFacilityChargesQuery(
+  const { data, isLoading, error } = metricApi.facility.useGetDataQuery(
     {
-      start_date: startDate ? format(startDate, "dd.MM.yyyy") : "",
-      end_date: endDate ? format(endDate, "dd.MM.yyyy") : "",
+      start_date: startDate ? format(startDate, DATE_FORMAT) : "",
+      end_date: endDate ? format(endDate, DATE_FORMAT) : "",
       ...(mode === "manual" && prevStartDate && prevEndDate
         ? {
-            previous_start_date: format(prevStartDate, "dd.MM.yyyy"),
-            previous_end_date: format(prevEndDate, "dd.MM.yyyy"),
+            previous_start_date: format(prevStartDate, DATE_FORMAT),
+            previous_end_date: format(prevEndDate, DATE_FORMAT),
           }
         : {}),
     },
@@ -41,21 +38,21 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
   );
 
   const hasAnyCharges = React.useMemo(() => {
-    if (!facilityData) return false;
+    if (!data?.metric_data?.current_period) return false;
     const { total_water, total_electricity, total_rent, total_other } =
-      facilityData.current_period;
+      data.metric_data.current_period;
     return (
       total_water > 0 ||
       total_electricity > 0 ||
       total_rent > 0 ||
       total_other > 0
     );
-  }, [facilityData]);
+  }, [data]);
 
   if (isLoading) return <LoadingSpinner />;
   if (error)
     return <ErrorMessage message="Error loading facility charges data" />;
-  if (!facilityData || !startDate || !endDate) return <NoDataMessage />;
+  if (!data?.metric_data || !startDate || !endDate) return <NoDataMessage />;
   if (!hasAnyCharges)
     return (
       <Box sx={{ display: "flex", flexDirection: "column", height: "450px" }}>
@@ -69,32 +66,32 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
   const periodDuration = differenceInDays(endDate, startDate);
 
   const waterData = processChartData(
-    facilityData.current_period.water,
-    facilityData.previous_period?.water,
+    data.metric_data.current_period.water,
+    data.metric_data.previous_period?.water,
     periodDuration,
     mode,
     startDate,
     prevStartDate
   );
   const electricityData = processChartData(
-    facilityData.current_period.electricity,
-    facilityData.previous_period?.electricity,
+    data.metric_data.current_period.electricity,
+    data.metric_data.previous_period?.electricity,
     periodDuration,
     mode,
     startDate,
     prevStartDate
   );
   const rentData = processChartData(
-    facilityData.current_period.rent,
-    facilityData.previous_period?.rent,
+    data.metric_data.current_period.rent,
+    data.metric_data.previous_period?.rent,
     periodDuration,
     mode,
     startDate,
     prevStartDate
   );
   const otherData = processChartData(
-    facilityData.current_period.other,
-    facilityData.previous_period?.other,
+    data.metric_data.current_period.other,
+    data.metric_data.previous_period?.other,
     periodDuration,
     mode,
     startDate,
@@ -112,7 +109,7 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
             <ChargeChart
               data={waterData}
               title="Water Charges"
-              total={facilityData.current_period.total_water}
+              total={data.metric_data.current_period.total_water}
               mode={mode}
               startDate={startDate}
               endDate={endDate}
@@ -127,7 +124,7 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
             <ChargeChart
               data={electricityData}
               title="Electricity Charges"
-              total={facilityData.current_period.total_electricity}
+              total={data.metric_data.current_period.total_electricity}
               mode={mode}
               startDate={startDate}
               endDate={endDate}
@@ -142,7 +139,7 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
             <ChargeChart
               data={rentData}
               title="Rent Charges"
-              total={facilityData.current_period.total_rent}
+              total={data.metric_data.current_period.total_rent}
               mode={mode}
               startDate={startDate}
               endDate={endDate}
@@ -157,7 +154,7 @@ export const FacilityChargesChart: React.FC<ComparisonChartProps> = ({
             <ChargeChart
               data={otherData}
               title="Other Charges"
-              total={facilityData.current_period.total_other}
+              total={data.metric_data.current_period.total_other}
               mode={mode}
               startDate={startDate}
               endDate={endDate}

@@ -12,7 +12,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useGetSalesQuery } from "../../../api-slices/sales.api-slice";
+import metricApi from "../../../api-slices";
 import { NoDataMessage } from "../NoDataMessage";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
 
@@ -32,11 +32,7 @@ export const SalesChart: React.FC<SalesChartProps> = ({
   startDate,
   endDate,
 }) => {
-  const {
-    data: salesData,
-    isLoading,
-    error,
-  } = useGetSalesQuery(
+  const { data, isLoading, error } = metricApi.sales.useGetDataQuery(
     {
       start_date: startDate ? format(startDate, DATE_FORMAT) : "",
       end_date: endDate ? format(endDate, DATE_FORMAT) : "",
@@ -47,9 +43,9 @@ export const SalesChart: React.FC<SalesChartProps> = ({
   );
 
   const chartData = React.useMemo(() => {
-    if (!salesData) return [];
+    if (!data?.metric_data?.periods) return [];
 
-    const chartDataLocal = salesData.periods
+    const chartDataLocal = data.metric_data.periods
       .map((period) => {
         const startDate = parseDateSafely(period.start_date);
         const endDate = parseDateSafely(period.end_date);
@@ -68,7 +64,7 @@ export const SalesChart: React.FC<SalesChartProps> = ({
       .filter((entry): entry is ChartEntry => entry !== null);
 
     return chartDataLocal;
-  }, [salesData]);
+  }, [data]);
 
   const hasSales = React.useMemo(() => {
     return chartData.some((entry) => entry.sales > 0);

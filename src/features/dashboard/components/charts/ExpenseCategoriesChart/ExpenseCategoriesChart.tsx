@@ -1,11 +1,12 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
+import { DATE_FORMAT } from "@/types/date.types";
 import { Box, Grid, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { useGetExpenseCategoriesQuery } from "../../../api-slices/expense-categories.api-slice";
+import metricApi from "../../../api-slices";
 import { NoDataMessage } from "../NoDataMessage";
 import { SimpleChartProps } from "../types/chart-props.types";
 
@@ -34,10 +35,10 @@ export const ExpenseCategoriesChart: React.FC<SimpleChartProps> = ({
     data,
     isLoading: isDataLoading,
     error,
-  } = useGetExpenseCategoriesQuery(
+  } = metricApi.expenseCategories.useGetDataQuery(
     {
-      start_date: startDate ? format(startDate, "dd.MM.yyyy") : "",
-      end_date: endDate ? format(endDate, "dd.MM.yyyy") : "",
+      start_date: startDate ? format(startDate, DATE_FORMAT) : "",
+      end_date: endDate ? format(endDate, DATE_FORMAT) : "",
     },
     {
       skip: !startDate || !endDate,
@@ -46,10 +47,10 @@ export const ExpenseCategoriesChart: React.FC<SimpleChartProps> = ({
 
   // Transform data for the chart
   const chartData = React.useMemo(() => {
-    if (!data) return [];
-    return data.categories.map((entry, index) => ({
+    if (!data?.metric_data?.categories) return [];
+    return data.metric_data.categories.map((entry, index) => ({
       name: entry.category,
-      value: (entry.amount / data.total_amount) * 100,
+      value: (entry.amount / data.metric_data.total_amount) * 100,
       amount: entry.amount,
       color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
     }));
@@ -73,7 +74,7 @@ export const ExpenseCategoriesChart: React.FC<SimpleChartProps> = ({
         !error &&
         (!chartData || chartData.length === 0) && <NoDataMessage />}
 
-      {data && chartData && chartData.length > 0 && (
+      {data?.metric_data && chartData && chartData.length > 0 && (
         <Grid container sx={{ flex: 1 }}>
           <Grid item xs={12} md={6}>
             <Box
@@ -128,7 +129,7 @@ export const ExpenseCategoriesChart: React.FC<SimpleChartProps> = ({
                     lineHeight: 1.2,
                   }}
                 >
-                  {formatCurrency(data.total_amount)}
+                  {formatCurrency(data.metric_data.total_amount)}
                 </Typography>
                 <Typography
                   variant="subtitle1"

@@ -1,41 +1,37 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
-import { DocumentInfo } from "@/types/api-updated.types";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
-export interface ReturnRateResponse {
-  data: {
-    return_rate: number;
-    total_returns: number;
-    total_sales: number;
-    documents: DocumentInfo[];
-    summary: string;
-  };
-  meta: {
-    start_date: string;
-    end_date: string;
-  };
+export interface ReturnRateMetricData extends BaseMetricData {
+  return_rate: number;
+  total_returns: number;
+  total_sales: number;
 }
 
-export interface GetReturnRateParams {
-  start_date: string;
-  end_date: string;
-}
-
-export const returnRateApi = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<ReturnRateMetricData>({
   reducerPath: "returnRateApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getReturnRate: builder.query<ReturnRateResponse, GetReturnRateParams>({
-      query: ({ start_date, end_date }) => ({
-        url: API_ENDPOINTS.METRICS.RETURN_RATE,
-        method: "GET",
-        params: {
-          start_date,
-          end_date,
-        },
-      }),
-    }),
-  }),
+  endpoint: "RETURN_RATE",
+  tagType: "ReturnRate",
 });
 
-export const { useGetReturnRateQuery } = returnRateApi;
+const hasNoData = (
+  response: BaseMetricResponse<ReturnRateMetricData> | undefined
+): boolean => {
+  if (!response?.metric_data) {
+    return true;
+  }
+  return (
+    response.metric_data.return_rate === 0 &&
+    response.metric_data.total_returns === 0 &&
+    response.metric_data.total_sales === 0
+  );
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const returnRate = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default returnRate;

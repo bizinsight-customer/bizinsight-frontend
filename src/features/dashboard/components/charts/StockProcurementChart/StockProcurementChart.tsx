@@ -1,11 +1,12 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
+import { DATE_FORMAT } from "@/types/date.types";
 import { Box, Grid, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { useGetStockProcurementQuery } from "../../../api-slices/stock-procurement.api-slice";
+import metricApi from "../../../api-slices";
 import { NoDataMessage } from "../NoDataMessage";
 
 // Predefined colors for categories
@@ -39,10 +40,10 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
     data,
     isLoading: isDataLoading,
     error,
-  } = useGetStockProcurementQuery(
+  } = metricApi.stockProcurement.useGetDataQuery(
     {
-      start_date: startDate ? format(startDate, "dd.MM.yyyy") : "",
-      end_date: endDate ? format(endDate, "dd.MM.yyyy") : "",
+      start_date: startDate ? format(startDate, DATE_FORMAT) : "",
+      end_date: endDate ? format(endDate, DATE_FORMAT) : "",
     },
     {
       skip: !startDate || !endDate,
@@ -51,48 +52,52 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
 
   // Calculate total amount
   const totalAmount = React.useMemo(() => {
-    if (!data) return 0;
+    if (!data?.metric_data) return 0;
     return (
-      data.stock_procurement +
-      data.customs +
-      data.logistics +
-      data.stock_procurement_other
+      data.metric_data.stock_procurement +
+      data.metric_data.customs +
+      data.metric_data.logistics +
+      data.metric_data.stock_procurement_other
     );
   }, [data]);
 
   // Transform data for the chart
   const chartData = React.useMemo<ChartDataEntry[]>(() => {
-    if (!data) return [];
+    if (!data?.metric_data) return [];
 
     const total =
-      data.stock_procurement +
-      data.customs +
-      data.logistics +
-      data.stock_procurement_other;
+      data.metric_data.stock_procurement +
+      data.metric_data.customs +
+      data.metric_data.logistics +
+      data.metric_data.stock_procurement_other;
 
     return [
       {
         name: "Stock Procurement",
-        value: total > 0 ? (data.stock_procurement / total) * 100 : 0,
-        amount: data.stock_procurement,
+        value:
+          total > 0 ? (data.metric_data.stock_procurement / total) * 100 : 0,
+        amount: data.metric_data.stock_procurement,
         color: CATEGORY_COLORS[0],
       },
       {
         name: "Customs",
-        value: total > 0 ? (data.customs / total) * 100 : 0,
-        amount: data.customs,
+        value: total > 0 ? (data.metric_data.customs / total) * 100 : 0,
+        amount: data.metric_data.customs,
         color: CATEGORY_COLORS[1],
       },
       {
         name: "Logistics",
-        value: total > 0 ? (data.logistics / total) * 100 : 0,
-        amount: data.logistics,
+        value: total > 0 ? (data.metric_data.logistics / total) * 100 : 0,
+        amount: data.metric_data.logistics,
         color: CATEGORY_COLORS[2],
       },
       {
         name: "Other",
-        value: total > 0 ? (data.stock_procurement_other / total) * 100 : 0,
-        amount: data.stock_procurement_other,
+        value:
+          total > 0
+            ? (data.metric_data.stock_procurement_other / total) * 100
+            : 0,
+        amount: data.metric_data.stock_procurement_other,
         color: CATEGORY_COLORS[3],
       },
     ];
@@ -112,115 +117,118 @@ export const StockProcurementChart: React.FC<StockProcurementChartProps> = ({
       {!isDataLoading &&
         !isCurrencyLoading &&
         !error &&
-        (!data || totalAmount === 0) && <NoDataMessage />}
+        (!data?.metric_data || totalAmount === 0) && <NoDataMessage />}
 
-      {data && totalAmount > 0 && chartData && chartData.length > 0 && (
-        <Grid container sx={{ flex: 1 }}>
-          <Grid item xs={12} md={6}>
-            <Box
-              sx={{
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-              }}
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={100}
-                    outerRadius={160}
-                    paddingAngle={1}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value: number) => `${value.toFixed(1)}%`}
-                    contentStyle={{
-                      backgroundColor: "rgba(255, 255, 255, 0.9)",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+      {data?.metric_data &&
+        totalAmount > 0 &&
+        chartData &&
+        chartData.length > 0 && (
+          <Grid container sx={{ flex: 1 }}>
+            <Grid item xs={12} md={6}>
               <Box
                 sx={{
-                  position: "absolute",
-                  top: "52%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  textAlign: "center",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
                 }}
               >
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "text.primary",
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {formatCurrency(totalAmount)}
-                </Typography>
-                <Typography
-                  variant="subtitle1"
-                  sx={{
-                    color: "text.secondary",
-                    mt: 0.5,
-                  }}
-                >
-                  Total
-                </Typography>
-              </Box>
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box
-              sx={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-                overflowY: "auto",
-                pl: { xs: 0, md: 2 },
-              }}
-            >
-              {chartData.map((entry) => (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={100}
+                      outerRadius={160}
+                      paddingAngle={1}
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(value: number) => `${value.toFixed(1)}%`}
+                      contentStyle={{
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
                 <Box
-                  key={entry.name}
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
+                    position: "absolute",
+                    top: "52%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    textAlign: "center",
                   }}
                 >
-                  <Box
+                  <Typography
+                    variant="h4"
                     sx={{
-                      width: 16,
-                      height: 16,
-                      borderRadius: "50%",
-                      bgcolor: entry.color,
+                      fontWeight: "bold",
+                      color: "text.primary",
+                      lineHeight: 1.2,
                     }}
-                  />
-                  <Typography>
-                    {entry.name}: {entry.value.toFixed(1)}% (
-                    {formatCurrency(entry.amount)})
+                  >
+                    {formatCurrency(totalAmount)}
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      color: "text.secondary",
+                      mt: 0.5,
+                    }}
+                  >
+                    Total
                   </Typography>
                 </Box>
-              ))}
-            </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                  overflowY: "auto",
+                  pl: { xs: 0, md: 2 },
+                }}
+              >
+                {chartData.map((entry) => (
+                  <Box
+                    key={entry.name}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 16,
+                        height: 16,
+                        borderRadius: "50%",
+                        bgcolor: entry.color,
+                      }}
+                    />
+                    <Typography>
+                      {entry.name}: {entry.value.toFixed(1)}% (
+                      {formatCurrency(entry.amount)})
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      )}
+        )}
     </Box>
   );
 };

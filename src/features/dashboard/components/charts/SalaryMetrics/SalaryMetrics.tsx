@@ -7,7 +7,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
-import { useGetSalaryMetricsQuery } from "../../../api-slices/salary.api-slice";
+import metricApi from "../../../api-slices";
 
 interface SalaryMetricsProps {
   startDate: Date | null;
@@ -24,7 +24,7 @@ export const SalaryMetrics: React.FC<SalaryMetricsProps> = ({
     data: salaryData,
     isLoading,
     error,
-  } = useGetSalaryMetricsQuery(
+  } = metricApi.salary.useGetDataQuery(
     {
       start_date: startDate ? format(startDate, DATE_FORMAT) : "",
       end_date: endDate ? format(endDate, DATE_FORMAT) : "",
@@ -65,7 +65,7 @@ export const SalaryMetrics: React.FC<SalaryMetricsProps> = ({
                 sx={{ fontSize: 32, color: "primary.main" }}
               />
               <Typography variant="h4" component="div">
-                {formatCurrency(salaryData.total_amount)}
+                {formatCurrency(salaryData.metric_data.total_amount)}
               </Typography>
             </Box>
           </Box>
@@ -86,7 +86,7 @@ export const SalaryMetrics: React.FC<SalaryMetricsProps> = ({
             >
               <GroupIcon sx={{ fontSize: 32, color: "primary.main" }} />
               <Typography variant="h4" component="div">
-                {salaryData.number_of_workers}
+                {salaryData.metric_data.number_of_workers}
               </Typography>
             </Box>
           </Box>

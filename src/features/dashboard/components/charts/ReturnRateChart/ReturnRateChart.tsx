@@ -1,6 +1,7 @@
-import { useGetReturnRateQuery } from "@/features/dashboard/api-slices/return-rate.api-slice";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { LoadingSpinner } from "@/components/common/loading-spinner";
 import { DATE_FORMAT } from "@/types/date.types";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { format } from "date-fns";
 import {
   Bar,
@@ -12,48 +13,44 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import metricApi from "../../../api-slices";
 import { CustomTooltip } from "../CustomTooltip";
 import { NoDataMessage } from "../NoDataMessage";
 import { SimpleChartProps } from "../types/chart-props.types";
 
 export const ReturnRateChart = ({ startDate, endDate }: SimpleChartProps) => {
-  const { data: returnRateData, isLoading } = useGetReturnRateQuery({
+  const { data, isLoading, error } = metricApi.returnRate.useGetDataQuery({
     start_date: startDate ? format(startDate, DATE_FORMAT) : "",
     end_date: endDate ? format(endDate, DATE_FORMAT) : "",
   });
 
   if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height={400}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
-  if (!returnRateData) {
+  if (error) {
+    return <ErrorMessage message="Error loading return rate data" />;
+  }
+
+  if (!data?.metric_data) {
     return <NoDataMessage />;
   }
 
   const chartData = [
     {
       name: "Returns",
-      value: returnRateData.data.total_returns,
+      value: data.metric_data.total_returns,
     },
     {
       name: "Sales",
-      value: returnRateData.data.total_sales,
+      value: data.metric_data.total_sales,
     },
   ];
 
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Return Rate: {returnRateData.data.return_rate.toFixed(2)}%
+        Return Rate: {data.metric_data.return_rate.toFixed(2)}%
       </Typography>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={chartData}>

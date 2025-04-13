@@ -1,19 +1,5 @@
 import { aiAnalyticsApiSlice } from "@/features/ai-analytics/store/ai-analytics.api-slice";
-import { averageTicketApi } from "@/features/dashboard/api-slices/average-ticket.api-slice";
-import { cogsApi } from "@/features/dashboard/api-slices/cogs.api-slice";
-import { expenseCategoriesApi } from "@/features/dashboard/api-slices/expense-categories.api-slice";
-import { facilityApiSlice } from "@/features/dashboard/api-slices/facility.api-slice";
-import { marketingApiSlice } from "@/features/dashboard/api-slices/marketing.api-slice";
-import { profitApi } from "@/features/dashboard/api-slices/profit.api-slice";
-import { returnRateApi } from "@/features/dashboard/api-slices/return-rate.api-slice";
-import { revenueExpenseRatioApi } from "@/features/dashboard/api-slices/revenue-expense-ratio.api-slice";
-import { revenueApi } from "@/features/dashboard/api-slices/revenue.api-slice";
-import { romiApi } from "@/features/dashboard/api-slices/romi.api-slice";
-import { salaryApiSlice } from "@/features/dashboard/api-slices/salary.api-slice";
-import { salesApi } from "@/features/dashboard/api-slices/sales.api-slice";
-import { stockProcurementApiSlice } from "@/features/dashboard/api-slices/stock-procurement.api-slice";
-import { unforeseenExpensesApiSlice } from "@/features/dashboard/api-slices/unforeseen-expenses.api-slice";
-import { clientsMetricsApiSlice } from "@/features/dashboard/store/clients-metrics.api-slice";
+import metricApi from "@/features/dashboard/api-slices";
 import { documentTypesApi } from "@/features/documents/store/document-types.slice";
 import { documentsHistoryApiSlice } from "@/features/documents/store/documents-history.api-slice";
 import { documentsUpdatedApi } from "@/features/documents/store/documents-updated.api-slice";
@@ -27,30 +13,17 @@ import { globalUserSettingsApiSlice } from "./global-api-slices/global-user-sett
 import { errorPopupReducer } from "./global-slices/error-popup.slice";
 import { userReducer } from "./global-slices/user/user.slice";
 
-const apiMiddleware = [
-  documentTypesApi.middleware,
-  documentsUpdatedApi.middleware,
-  documentsHistoryApiSlice.middleware,
-  userCompanyApiSlice.middleware,
-  revenueApi.middleware,
-  profitApi.middleware,
-  expenseCategoriesApi.middleware,
-  userSettingsSlice.middleware,
+const apiMiddleware = Object.values(metricApi).map(
+  (api) => api.apiSlice.middleware
+) as Middleware[];
+apiMiddleware.push(
   globalUserSettingsApiSlice.middleware,
-  salesApi.middleware,
-  clientsMetricsApiSlice.middleware,
-  salaryApiSlice.middleware,
-  facilityApiSlice.middleware,
-  stockProcurementApiSlice.middleware,
-  unforeseenExpensesApiSlice.middleware,
-  marketingApiSlice.middleware,
-  aiAnalyticsApiSlice.middleware,
-  averageTicketApi.middleware,
-  cogsApi.middleware,
-  returnRateApi.middleware,
-  revenueExpenseRatioApi.middleware,
-  romiApi.middleware,
-] as Middleware[];
+  userSettingsSlice.middleware,
+  documentsHistoryApiSlice.middleware,
+  documentsUpdatedApi.middleware,
+  userCompanyApiSlice.middleware,
+  aiAnalyticsApiSlice.middleware
+);
 
 export const store = configureStore({
   reducer: {
@@ -59,28 +32,18 @@ export const store = configureStore({
     [documentsUpdatedApi.reducerPath]: documentsUpdatedApi.reducer,
     [documentsHistoryApiSlice.reducerPath]: documentsHistoryApiSlice.reducer,
     [userCompanyApiSlice.reducerPath]: userCompanyApiSlice.reducer,
-    [revenueApi.reducerPath]: revenueApi.reducer,
-    [profitApi.reducerPath]: profitApi.reducer,
-    [expenseCategoriesApi.reducerPath]: expenseCategoriesApi.reducer,
     [userSettingsSlice.reducerPath]: userSettingsSlice.reducer,
     [globalUserSettingsApiSlice.reducerPath]:
       globalUserSettingsApiSlice.reducer,
     errorPopup: errorPopupReducer,
     user: userReducer,
-    [salesApi.reducerPath]: salesApi.reducer,
-    [clientsMetricsApiSlice.reducerPath]: clientsMetricsApiSlice.reducer,
-    [salaryApiSlice.reducerPath]: salaryApiSlice.reducer,
-    [facilityApiSlice.reducerPath]: facilityApiSlice.reducer,
-    [stockProcurementApiSlice.reducerPath]: stockProcurementApiSlice.reducer,
-    [unforeseenExpensesApiSlice.reducerPath]:
-      unforeseenExpensesApiSlice.reducer,
-    [marketingApiSlice.reducerPath]: marketingApiSlice.reducer,
     [aiAnalyticsApiSlice.reducerPath]: aiAnalyticsApiSlice.reducer,
-    [averageTicketApi.reducerPath]: averageTicketApi.reducer,
-    [cogsApi.reducerPath]: cogsApi.reducer,
-    [returnRateApi.reducerPath]: returnRateApi.reducer,
-    [revenueExpenseRatioApi.reducerPath]: revenueExpenseRatioApi.reducer,
-    [romiApi.reducerPath]: romiApi.reducer,
+    ...Object.fromEntries(
+      Object.values(metricApi).map((api) => [
+        api.apiSlice.reducerPath,
+        api.apiSlice.reducer,
+      ])
+    ),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

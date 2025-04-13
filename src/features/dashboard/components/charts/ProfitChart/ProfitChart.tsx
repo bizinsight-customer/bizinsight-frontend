@@ -14,7 +14,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useGetProfitQuery } from "../../../api-slices/profit.api-slice";
+import metricApi from "../../../api-slices";
 import { CustomTooltip } from "../CustomTooltip";
 import { NoDataMessage } from "../NoDataMessage";
 import { formatChartDate, parseDateSafely } from "../utils/date-utils";
@@ -39,11 +39,7 @@ export const ProfitChart: React.FC<ProfitChartProps> = ({
 }) => {
   const { format: formatCurrency } = useFormatCurrency();
 
-  const {
-    data: profitData,
-    isLoading,
-    error,
-  } = useGetProfitQuery(
+  const { data, isLoading, error } = metricApi.profit.useGetDataQuery(
     {
       start_date: startDate ? format(startDate, DATE_FORMAT) : "",
       end_date: endDate ? format(endDate, DATE_FORMAT) : "",
@@ -63,13 +59,13 @@ export const ProfitChart: React.FC<ProfitChartProps> = ({
   );
 
   const chartData = React.useMemo(() => {
-    if (!profitData || !startDate || !endDate) return [];
+    if (!data?.metric_data?.current_period || !startDate || !endDate) return [];
 
     const periodDuration = differenceInDays(endDate, startDate);
     const entriesByDate = new Map<string, ChartEntry>();
 
     // Process current period entries
-    profitData.current_period.entries.forEach((entry) => {
+    data.metric_data.current_period.entries.forEach((entry) => {
       const date = parseDateSafely(entry.date);
       if (!date) return;
 
@@ -81,7 +77,7 @@ export const ProfitChart: React.FC<ProfitChartProps> = ({
     });
 
     // Process and align previous period entries
-    profitData.previous_period.entries.forEach((entry) => {
+    data.metric_data.previous_period.entries.forEach((entry) => {
       const entryDate = parseDateSafely(entry.date);
       if (!entryDate || (mode === "manual" && !prevStartDate)) return;
 
@@ -104,7 +100,7 @@ export const ProfitChart: React.FC<ProfitChartProps> = ({
       const dateB = new Date(b.displayDate);
       return dateA.getTime() - dateB.getTime();
     });
-  }, [profitData, startDate, endDate, mode, prevStartDate]);
+  }, [data, startDate, endDate, mode, prevStartDate]);
 
   return (
     <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>

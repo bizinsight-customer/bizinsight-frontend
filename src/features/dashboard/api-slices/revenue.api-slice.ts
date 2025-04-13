@@ -1,53 +1,42 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { DocumentInfo } from "@/types/api-updated.types";
-import { createApiSliceNonJsonApi } from "../../../store/create-api-slice";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
-export interface RevenueEntry {
+export interface RevenueEntry extends BaseMetricData {
   date: string;
   amount: number;
 }
 
-export interface RevenuePeriodData {
-  total: number;
+export interface RevenuePeriodData extends BaseMetricData {
+  total_revenue: number;
   entries: RevenueEntry[];
 }
 
-export interface RevenueResponse {
+export interface RevenueMetricData extends BaseMetricData {
   current_period: RevenuePeriodData;
   previous_period: RevenuePeriodData;
-  documents: DocumentInfo[];
-  summary: string;
 }
 
-export interface GetRevenueParams {
-  start_date: string;
-  end_date: string;
-  previous_start_date?: string;
-  previous_end_date?: string;
-}
-
-export const revenueApi = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<RevenueMetricData>({
   reducerPath: "revenueApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getRevenue: builder.query<RevenueResponse, GetRevenueParams>({
-      query: ({
-        start_date,
-        end_date,
-        previous_start_date,
-        previous_end_date,
-      }) => ({
-        url: API_ENDPOINTS.METRICS.REVENUE,
-        method: "GET",
-        params: {
-          start_date,
-          end_date,
-          ...(previous_start_date && { previous_start_date }),
-          ...(previous_end_date && { previous_end_date }),
-        },
-      }),
-    }),
-  }),
+  endpoint: "REVENUE",
+  tagType: "Revenue",
 });
 
-export const { useGetRevenueQuery } = revenueApi;
+const hasNoData = (
+  response: BaseMetricResponse<RevenueMetricData> | undefined
+): boolean => {
+  if (!response?.metric_data?.current_period) {
+    return true;
+  }
+  return response.metric_data.current_period.total_revenue === 0;
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const revenue = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default revenue;

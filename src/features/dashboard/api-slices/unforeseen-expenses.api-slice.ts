@@ -1,34 +1,35 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
-import { DocumentInfo } from "@/types/api-updated.types";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
-export interface UnforeseenExpensesResponse {
+export interface UnforeseenExpensesMetricData extends BaseMetricData {
   unforeseen_expenses: number;
   total_expenses: number;
-  documents: DocumentInfo[];
-  summary: string;
 }
 
-export interface UnforeseenExpensesParams {
-  start_date: string;
-  end_date: string;
-}
-
-export const unforeseenExpensesApiSlice = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<UnforeseenExpensesMetricData>({
   reducerPath: "unforeseenExpensesApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getUnforeseenExpenses: builder.query<
-      UnforeseenExpensesResponse,
-      UnforeseenExpensesParams
-    >({
-      query: (params) => ({
-        url: API_ENDPOINTS.METRICS.UNFORESEEN_EXPENSES,
-        method: "GET",
-        params,
-      }),
-    }),
-  }),
+  endpoint: "UNFORESEEN_EXPENSES",
+  tagType: "UnforeseenExpenses",
 });
 
-export const { useGetUnforeseenExpensesQuery } = unforeseenExpensesApiSlice;
+const hasNoData = (
+  response: BaseMetricResponse<UnforeseenExpensesMetricData> | undefined
+): boolean => {
+  if (!response?.metric_data) {
+    return true;
+  }
+  return (
+    response.metric_data.unforeseen_expenses === 0 &&
+    response.metric_data.total_expenses === 0
+  );
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const unforeseenExpenses = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default unforeseenExpenses;

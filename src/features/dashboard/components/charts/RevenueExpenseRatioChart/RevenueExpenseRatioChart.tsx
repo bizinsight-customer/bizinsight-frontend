@@ -1,7 +1,8 @@
-import { useGetRevenueExpenseRatioQuery } from "@/features/dashboard/api-slices/revenue-expense-ratio.api-slice";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
 import { DATE_FORMAT } from "@/types/date.types";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { format } from "date-fns";
 import {
   Cell,
@@ -11,6 +12,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import metricApi from "../../../api-slices";
 import { CustomTooltip } from "../CustomTooltip";
 import { NoDataMessage } from "../NoDataMessage";
 import { SimpleChartProps } from "../types/chart-props.types";
@@ -22,38 +24,34 @@ export const RevenueExpenseRatioChart = ({
   endDate,
 }: SimpleChartProps) => {
   const { format: formatCurrency } = useFormatCurrency();
-  const { data: ratioData, isLoading } = useGetRevenueExpenseRatioQuery({
-    start_date: startDate ? format(startDate, DATE_FORMAT) : "",
-    end_date: endDate ? format(endDate, DATE_FORMAT) : "",
-  });
+  const { data, isLoading, error } =
+    metricApi.revenueExpenseRatio.useGetDataQuery({
+      start_date: startDate ? format(startDate, DATE_FORMAT) : "",
+      end_date: endDate ? format(endDate, DATE_FORMAT) : "",
+    });
 
   if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height={400}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
-  if (!ratioData) {
+  if (error) {
+    return <ErrorMessage message="Error loading revenue expense ratio data" />;
+  }
+
+  if (!data?.metric_data) {
     return <NoDataMessage />;
   }
 
   const chartData = [
     {
       name: "Revenue",
-      value: ratioData.data.revenue_percent,
-      amount: ratioData.data.revenue,
+      value: data.metric_data.revenue_percent,
+      amount: data.metric_data.revenue,
     },
     {
       name: "Expenses",
-      value: ratioData.data.expenses_percent,
-      amount: ratioData.data.expenses,
+      value: data.metric_data.expenses_percent,
+      amount: data.metric_data.expenses,
     },
   ];
 
@@ -61,10 +59,10 @@ export const RevenueExpenseRatioChart = ({
     <Box>
       <Box display="flex" justifyContent="space-between" mb={2}>
         <Typography variant="h6">
-          Revenue: {formatCurrency(ratioData.data.revenue)}
+          Revenue: {formatCurrency(data.metric_data.revenue)}
         </Typography>
         <Typography variant="h6">
-          Expenses: {formatCurrency(ratioData.data.expenses)}
+          Expenses: {formatCurrency(data.metric_data.expenses)}
         </Typography>
       </Box>
       <ResponsiveContainer width="100%" height={400}>

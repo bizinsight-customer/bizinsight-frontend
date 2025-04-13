@@ -1,55 +1,50 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { DocumentInfo } from "@/types/api-updated.types";
-import { createApiSliceNonJsonApi } from "../../../store/create-api-slice";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
-export interface ProfitEntry {
+export interface ProfitEntry extends BaseMetricData {
   date: string;
   revenue: number;
   expenses: number;
   profit: number;
 }
 
-export interface ProfitPeriodData {
-  total: number;
+export interface ProfitPeriodData extends BaseMetricData {
+  total_revenue: number;
+  total_expenses: number;
+  total_profit: number;
   entries: ProfitEntry[];
 }
 
-export interface ProfitResponse {
+export interface ProfitMetricData extends BaseMetricData {
   current_period: ProfitPeriodData;
   previous_period: ProfitPeriodData;
-  documents: DocumentInfo[];
-  summary: string;
 }
 
-export interface GetProfitParams {
-  start_date: string;
-  end_date: string;
-  previous_start_date?: string;
-  previous_end_date?: string;
-}
-
-export const profitApi = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<ProfitMetricData>({
   reducerPath: "profitApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getProfit: builder.query<ProfitResponse, GetProfitParams>({
-      query: ({
-        start_date,
-        end_date,
-        previous_start_date,
-        previous_end_date,
-      }) => ({
-        url: API_ENDPOINTS.METRICS.PROFIT,
-        method: "GET",
-        params: {
-          start_date,
-          end_date,
-          ...(previous_start_date && { previous_start_date }),
-          ...(previous_end_date && { previous_end_date }),
-        },
-      }),
-    }),
-  }),
+  endpoint: "PROFIT",
+  tagType: "Profit",
 });
 
-export const { useGetProfitQuery } = profitApi;
+const hasNoData = (
+  response: BaseMetricResponse<ProfitMetricData> | undefined
+): boolean => {
+  if (!response?.metric_data?.current_period) {
+    return true;
+  }
+  return (
+    response.metric_data.current_period.total_revenue === 0 &&
+    response.metric_data.current_period.total_expenses === 0 &&
+    response.metric_data.current_period.total_profit === 0
+  );
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const profit = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default profit;

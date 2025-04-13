@@ -1,42 +1,37 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { DocumentInfo } from "@/types/api-updated.types";
-import { createApiSliceNonJsonApi } from "../../../store/create-api-slice";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
 export interface ExpenseCategoryEntry {
   category: string;
   amount: number;
 }
 
-export interface ExpenseCategoriesResponse {
+export interface ExpenseCategoriesMetricData extends BaseMetricData {
   total_amount: number;
   categories: ExpenseCategoryEntry[];
-  documents: DocumentInfo[];
-  summary: string;
 }
 
-export interface GetExpenseCategoriesParams {
-  start_date: string;
-  end_date: string;
-}
-
-export const expenseCategoriesApi = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<ExpenseCategoriesMetricData>({
   reducerPath: "expenseCategoriesApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getExpenseCategories: builder.query<
-      ExpenseCategoriesResponse,
-      GetExpenseCategoriesParams
-    >({
-      query: ({ start_date, end_date }) => ({
-        url: API_ENDPOINTS.METRICS.EXPENSE_CATEGORIES,
-        method: "GET",
-        params: {
-          start_date,
-          end_date,
-        },
-      }),
-    }),
-  }),
+  endpoint: "EXPENSE_CATEGORIES",
+  tagType: "ExpenseCategories",
 });
 
-export const { useGetExpenseCategoriesQuery } = expenseCategoriesApi;
+const hasNoData = (
+  response: BaseMetricResponse<ExpenseCategoriesMetricData> | undefined
+): boolean => {
+  if (!response?.metric_data) {
+    return true;
+  }
+  return response.metric_data.categories.length === 0;
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const expenseCategories = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default expenseCategories;

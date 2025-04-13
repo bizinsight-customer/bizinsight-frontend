@@ -1,11 +1,12 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
+import { DATE_FORMAT } from "@/types/date.types";
 import { Box, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
-import { useGetUnforeseenExpensesQuery } from "../../../api-slices/unforeseen-expenses.api-slice";
+import metricApi from "../../../api-slices";
 import { NoDataMessage } from "../NoDataMessage";
 
 interface UnforeseenExpensesChartProps {
@@ -18,15 +19,18 @@ export const UnforeseenExpensesChart: React.FC<
 > = ({ startDate, endDate }) => {
   const { format: formatCurrency } = useFormatCurrency();
 
-  const { data, isLoading, error } = useGetUnforeseenExpensesQuery({
-    start_date: format(startDate, "dd.MM.yyyy"),
-    end_date: format(endDate, "dd.MM.yyyy"),
-  });
+  const { data, isLoading, error } =
+    metricApi.unforeseenExpenses.useGetDataQuery({
+      start_date: format(startDate, DATE_FORMAT),
+      end_date: format(endDate, DATE_FORMAT),
+    });
 
   const chartData = React.useMemo(() => {
-    if (!data) return [];
+    if (!data?.metric_data) return [];
 
-    const percentage = (data.unforeseen_expenses / data.total_expenses) * 100;
+    const percentage =
+      (data.metric_data.unforeseen_expenses / data.metric_data.total_expenses) *
+      100;
     const remaining = 100 - percentage;
 
     return [
@@ -48,11 +52,13 @@ export const UnforeseenExpensesChart: React.FC<
         <ErrorMessage message="Error loading unforeseen expenses data" />
       )}
 
-      {!isLoading && !error && (!data || data.unforeseen_expenses === 0) && (
-        <NoDataMessage />
-      )}
+      {!isLoading &&
+        !error &&
+        (!data?.metric_data || data.metric_data.unforeseen_expenses === 0) && (
+          <NoDataMessage />
+        )}
 
-      {data && data.unforeseen_expenses > 0 && (
+      {data?.metric_data && data.metric_data.unforeseen_expenses > 0 && (
         <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -83,10 +89,10 @@ export const UnforeseenExpensesChart: React.FC<
             }}
           >
             <Typography variant="h4" color="primary" sx={{ mb: 1 }}>
-              {formatCurrency(data.unforeseen_expenses)}
+              {formatCurrency(data.metric_data.unforeseen_expenses)}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              of {formatCurrency(data.total_expenses)} total
+              of {formatCurrency(data.metric_data.total_expenses)} total
             </Typography>
           </Box>
         </Box>

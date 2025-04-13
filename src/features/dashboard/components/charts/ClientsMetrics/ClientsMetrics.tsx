@@ -1,37 +1,27 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/loading-spinner";
+import { DATE_FORMAT } from "@/types/date.types";
 import { People as PeopleIcon } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
-import { SerializedError } from "@reduxjs/toolkit";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { format } from "date-fns";
 import React from "react";
-import { useGetClientsMetricsQuery } from "../../../store/clients-metrics.api-slice";
+import metricApi from "../../../api-slices";
+import { NoDataMessage } from "../NoDataMessage";
 import { SimpleChartProps } from "../types/chart-props.types";
-
-const getErrorMessage = (
-  error: FetchBaseQueryError | SerializedError
-): string => {
-  if ("status" in error) {
-    return "error" in error
-      ? String(error.error)
-      : "An error occurred while fetching data";
-  }
-  return error.message ?? "Failed to load clients data";
-};
-
-const formatDateForApi = (date: Date | null): string | null => {
-  return date ? format(date, "dd.MM.yyyy") : null;
-};
 
 export const ClientsMetrics: React.FC<SimpleChartProps> = ({
   startDate,
   endDate,
 }) => {
-  const { data, isLoading, error } = useGetClientsMetricsQuery({
-    start_date: formatDateForApi(startDate),
-    end_date: formatDateForApi(endDate),
-  });
+  const { data, isLoading, error } = metricApi.clientsMetrics.useGetDataQuery(
+    {
+      start_date: startDate ? format(startDate, DATE_FORMAT) : "",
+      end_date: endDate ? format(endDate, DATE_FORMAT) : "",
+    },
+    {
+      skip: !startDate || !endDate,
+    }
+  );
 
   return (
     <Box sx={{ height: "450px", display: "flex", flexDirection: "column" }}>
@@ -42,9 +32,15 @@ export const ClientsMetrics: React.FC<SimpleChartProps> = ({
       </Box>
 
       {isLoading && <LoadingSpinner />}
-      {error && <ErrorMessage message={getErrorMessage(error)} />}
+      {error && <ErrorMessage message="Error loading clients data" />}
 
-      {data && (
+      {!isLoading &&
+        !error &&
+        (!data?.metric_data || data.metric_data.total_clients === 0) && (
+          <NoDataMessage />
+        )}
+
+      {data?.metric_data && data.metric_data.total_clients > 0 && (
         <Box
           sx={{
             flex: 1,
@@ -84,7 +80,7 @@ export const ClientsMetrics: React.FC<SimpleChartProps> = ({
                   fontWeight: "bold",
                 }}
               >
-                {data?.total_clients || 0}
+                {data.metric_data.total_clients}
               </Typography>
             </Box>
           </Box>

@@ -1,7 +1,7 @@
-import { useGetAverageTicketQuery } from "@/features/dashboard/api-slices/average-ticket.api-slice";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { LoadingSpinner } from "@/components/common/loading-spinner";
 import useFormatCurrency from "@/hooks/useFormatCurrency";
 import { DATE_FORMAT } from "@/types/date.types";
-import { Box, CircularProgress } from "@mui/material";
 import { format } from "date-fns";
 import {
   CartesianGrid,
@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import metricApi from "../../../api-slices";
 import { CustomTooltip } from "../CustomTooltip";
 import { NoDataMessage } from "../NoDataMessage";
 import { ComparisonChartProps } from "../types/chart-props.types";
@@ -22,29 +23,24 @@ export const AverageTicketChart = ({
   endDate,
 }: ComparisonChartProps) => {
   const { format: formatCurrency } = useFormatCurrency();
-  const { data: averageTicket, isLoading } = useGetAverageTicketQuery({
+  const { data, isLoading, error } = metricApi.averageTicket.useGetDataQuery({
     start_date: startDate ? format(startDate, DATE_FORMAT) : "",
     end_date: endDate ? format(endDate, DATE_FORMAT) : "",
   });
 
   if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height={400}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
-  if (!averageTicket?.data.periods.length) {
+  if (error) {
+    return <ErrorMessage message="Error loading average ticket data" />;
+  }
+
+  if (!data?.metric_data.periods.length) {
     return <NoDataMessage />;
   }
 
-  const chartData = averageTicket.data.periods.map((period) => ({
+  const chartData = data.metric_data.periods.map((period) => ({
     date: format(new Date(period.start_date), DATE_FORMAT),
     average: period.average_ticket,
   }));

@@ -1,8 +1,7 @@
-import { API_ENDPOINTS } from "@/config/api";
-import { createApiSliceNonJsonApi } from "@/store/create-api-slice";
-import { DocumentInfo } from "@/types/api-updated.types";
+import { BaseMetricData, BaseMetricResponse } from "@/types/metrics.types";
+import { createMetricApiSlice } from "../utils/create-metric-api-slice";
 
-export interface AverageTicketEntry {
+export interface AverageTicketEntry extends BaseMetricData {
   start_date: string;
   end_date: string;
   revenue: number;
@@ -10,41 +9,33 @@ export interface AverageTicketEntry {
   average_ticket: number;
 }
 
-export interface AverageTicketResponse {
-  data: {
-    periods: AverageTicketEntry[];
-    documents: DocumentInfo[];
-    summary: string;
-  };
-  meta: {
-    start_date: string;
-    end_date: string;
-  };
+export interface AverageTicketMetricData extends BaseMetricData {
+  periods: AverageTicketEntry[];
 }
 
-export interface GetAverageTicketParams {
-  start_date: string;
-  end_date: string;
-}
-
-export const averageTicketApi = createApiSliceNonJsonApi({
+const apiSlice = createMetricApiSlice<AverageTicketMetricData>({
   reducerPath: "averageTicketApi",
-}).injectEndpoints({
-  endpoints: (builder) => ({
-    getAverageTicket: builder.query<
-      AverageTicketResponse,
-      GetAverageTicketParams
-    >({
-      query: ({ start_date, end_date }) => ({
-        url: API_ENDPOINTS.METRICS.AVERAGE_TICKET,
-        method: "GET",
-        params: {
-          start_date,
-          end_date,
-        },
-      }),
-    }),
-  }),
+  endpoint: "AVERAGE_TICKET",
+  tagType: "AverageTicket",
 });
 
-export const { useGetAverageTicketQuery } = averageTicketApi;
+const hasNoData = (
+  response: BaseMetricResponse<AverageTicketMetricData> | undefined
+): boolean => {
+  if (!response?.metric_data) {
+    return true;
+  }
+  return response.metric_data.periods.every(
+    (period) => period.revenue === 0 && period.document_count === 0
+  );
+};
+
+const { useGetDataQuery } = apiSlice;
+
+const averageTicket = {
+  apiSlice,
+  hasNoData,
+  useGetDataQuery,
+};
+
+export default averageTicket;

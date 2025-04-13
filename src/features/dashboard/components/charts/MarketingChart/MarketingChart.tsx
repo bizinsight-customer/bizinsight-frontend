@@ -5,7 +5,7 @@ import { Box, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
-import { useGetMarketingMetricsQuery } from "../../../api-slices/marketing.api-slice";
+import metricApi from "../../../api-slices";
 import { NoDataMessage } from "../NoDataMessage";
 import { BaseDateProps } from "../types/chart-props.types";
 
@@ -17,7 +17,7 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
 }) => {
   const { format: formatCurrency } = useFormatCurrency();
 
-  const { data, isLoading, error } = useGetMarketingMetricsQuery({
+  const { data, isLoading, error } = metricApi.marketing.useGetDataQuery({
     start_date: format(startDate, "dd.MM.yyyy"),
     end_date: format(endDate, "dd.MM.yyyy"),
   });
@@ -25,8 +25,8 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
   const chartData = React.useMemo(() => {
     if (!data) return [];
 
-    const marketingAmount = data.marketing_expenses;
-    const percentage = (marketingAmount / data.total_income) * 100;
+    const marketingAmount = data.metric_data.marketing_expenses;
+    const percentage = (marketingAmount / data.metric_data.total_income) * 100;
     const remaining = 100 - percentage;
 
     return [
@@ -36,8 +36,8 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
   }, [data]);
 
   const roas = React.useMemo(() => {
-    if (!data || data.marketing_expenses === 0) return 0;
-    return data.total_income / data.marketing_expenses;
+    if (!data || data.metric_data.marketing_expenses === 0) return 0;
+    return data.metric_data.total_income / data.metric_data.marketing_expenses;
   }, [data]);
 
   return (
@@ -53,11 +53,13 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
         <ErrorMessage message="Error loading marketing expenses data" />
       )}
 
-      {!isLoading && !error && (!data || data.marketing_expenses === 0) && (
-        <NoDataMessage />
-      )}
+      {!isLoading &&
+        !error &&
+        (!data || data.metric_data.marketing_expenses === 0) && (
+          <NoDataMessage />
+        )}
 
-      {data && data.marketing_expenses > 0 && (
+      {data && data.metric_data.marketing_expenses > 0 && (
         <Box sx={{ flex: 1, minHeight: 0, position: "relative" }}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -96,7 +98,7 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
                 fontWeight: 500,
               }}
             >
-              {formatCurrency(data.marketing_expenses)}
+              {formatCurrency(data.metric_data.marketing_expenses)}
             </Typography>
             <Typography
               variant="caption"
@@ -109,7 +111,7 @@ export const MarketingChart: React.FC<MarketingChartProps> = ({
               ROAS - {roas.toFixed(2)}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              of {formatCurrency(data.total_income)} total income
+              of {formatCurrency(data.metric_data.total_income)} total income
             </Typography>
           </Box>
         </Box>

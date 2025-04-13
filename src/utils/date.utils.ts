@@ -1,23 +1,6 @@
-import { ENV } from "@/config/env";
 import { format, isValid, parse } from "date-fns";
 
-/**
- * Converts format from ENV.DATE_TIME_FORMAT to date-fns format
- * @param envFormat - Format string from ENV.DATE_TIME_FORMAT
- * @returns date-fns compatible format string
- */
-const convertToDateFnsFormat = (envFormat: string): string => {
-  return envFormat
-    .replace(/YYYY/g, "yyyy")
-    .replace(/MM/g, "MM")
-    .replace(/DD/g, "dd")
-    .replace(/HH/g, "HH")
-    .replace(/mm/g, "mm")
-    .replace(/ss/g, "ss");
-};
-
-// Convert ENV format to date-fns format once
-const DATE_FNS_FORMAT = convertToDateFnsFormat(ENV.DATE_TIME_FORMAT);
+const DATE_FNS_FORMAT = "dd.MM.yyyy";
 
 /**
  * Parses a date string according to the format specified in ENV.DATE_TIME_FORMAT

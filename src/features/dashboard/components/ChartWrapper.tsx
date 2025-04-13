@@ -1,20 +1,19 @@
-import { useTypedNavigate } from "@/hooks/useTypedNavigate";
 import { Paper } from "@mui/material";
 import { ChartType } from "../config/chart-types";
 
 interface ChartWrapperProps {
   chartType: ChartType;
   children: React.ReactNode;
+  onChartClick: (chartType: ChartType) => void;
 }
 
 export const ChartWrapper: React.FC<ChartWrapperProps> = ({
   chartType,
   children,
+  onChartClick,
 }) => {
-  const navigate = useTypedNavigate();
-
   const handleClick = () => {
-    navigate.navigateTo("/dashboard/chart/:chartType", { chartType });
+    onChartClick(chartType);
   };
 
   return (

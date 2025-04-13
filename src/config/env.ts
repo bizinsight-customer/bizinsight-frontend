@@ -9,8 +9,7 @@ interface EnvironmentConfig {
 export const ENV: EnvironmentConfig = {
   USE_MOCK_API: import.meta.env.VITE_USE_MOCK_API === "true",
   ENV: (import.meta.env.VITE_ENV || "development") as EnvironmentConfig["ENV"],
-  DATE_TIME_FORMAT:
-    import.meta.env.VITE_DATE_TIME_FORMAT || "YYYY-MM-DD HH:mm:ss",
+  DATE_TIME_FORMAT: import.meta.env.VITE_DATE_TIME_FORMAT || "dd.MM.yyyy",
 };
 
 // Validate required environment variables

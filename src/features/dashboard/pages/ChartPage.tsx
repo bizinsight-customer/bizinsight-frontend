@@ -1,7 +1,8 @@
 import { DocumentsGrid } from "@/components/common/DocumentsGrid/DocumentsGrid";
 import { Box, Container, Paper, Typography } from "@mui/material";
-import { format } from "date-fns";
-import { useParams } from "react-router";
+import { format, parse } from "date-fns";
+import { useParams, useSearchParams } from "react-router";
+import { DateSelectionMode } from "../components/charts/RevenueChart/revenue-chart.types";
 import { DateSelection } from "../components/DateSelection";
 import { CHART_API_HOOKS } from "../config/chart-api-hooks";
 import { CHART_CONFIGS, ChartType } from "../config/chart-types";
@@ -11,6 +12,7 @@ const useNoopHook = () => ({ data: undefined });
 
 export const ChartPage = () => {
   const { chartType } = useParams<{ chartType: ChartType }>();
+  const [searchParams] = useSearchParams();
   const {
     mode,
     startDate,
@@ -23,7 +25,21 @@ export const ChartPage = () => {
     setEndDate,
     setPrevStartDate,
     setPeriodDays,
-  } = useDashboardDates();
+  } = useDashboardDates({
+    initialMode: (searchParams.get("mode") as DateSelectionMode) || "auto",
+    initialStartDate: searchParams.get("startDate")
+      ? parse(searchParams.get("startDate")!, "dd-MM-yyyy", new Date())
+      : null,
+    initialEndDate: searchParams.get("endDate")
+      ? parse(searchParams.get("endDate")!, "dd-MM-yyyy", new Date())
+      : null,
+    initialPrevStartDate: searchParams.get("prevStartDate")
+      ? parse(searchParams.get("prevStartDate")!, "dd-MM-yyyy", new Date())
+      : null,
+    initialPeriodDays: searchParams.get("periodDays")
+      ? parseInt(searchParams.get("periodDays")!)
+      : 7,
+  });
 
   const config = chartType ? CHART_CONFIGS[chartType] : null;
   const useChartApiHook = chartType ? CHART_API_HOOKS[chartType] : useNoopHook;

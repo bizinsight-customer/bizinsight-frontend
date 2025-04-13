@@ -2,6 +2,11 @@ import { AppRouteParams } from "@/types/routes.types";
 import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router";
 
+interface NavigateOptions {
+  replace?: boolean;
+  state?: Record<string, unknown>;
+}
+
 export function useTypedNavigate() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -10,7 +15,7 @@ export function useTypedNavigate() {
     <T extends keyof AppRouteParams>(
       route: T,
       params?: AppRouteParams[T],
-      options?: { replace?: boolean }
+      options?: NavigateOptions
     ) => {
       console.log("NAVIGATE TO", route, params, options);
       let path = route as string;
@@ -19,7 +24,7 @@ export function useTypedNavigate() {
           path = path.replace(`:${key}`, value.toString());
         });
       }
-      navigate(path, { replace: options?.replace });
+      navigate(path, { replace: options?.replace, state: options?.state });
     },
     [navigate]
   );

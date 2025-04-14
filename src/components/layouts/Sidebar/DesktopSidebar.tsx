@@ -2,11 +2,10 @@ import { Drawer } from "@mui/material";
 import { DRAWER_WIDTH } from "./SidebarConfig";
 
 interface DesktopSidebarProps {
-  isOpen: boolean;
   children: React.ReactNode;
 }
 
-export const DesktopSidebar = ({ isOpen, children }: DesktopSidebarProps) => {
+export const DesktopSidebar = ({ children }: DesktopSidebarProps) => {
   return (
     <Drawer
       variant="permanent"
@@ -14,16 +13,11 @@ export const DesktopSidebar = ({ isOpen, children }: DesktopSidebarProps) => {
         display: { xs: "none", md: "block" },
         "& .MuiDrawer-paper": {
           boxSizing: "border-box",
-          width: isOpen ? DRAWER_WIDTH : 73,
+          width: DRAWER_WIDTH,
           overflowX: "hidden",
-          transition: (theme) =>
-            theme.transitions.create("width", {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
         },
       }}
-      open={isOpen}
+      open
     >
       {children}
     </Drawer>

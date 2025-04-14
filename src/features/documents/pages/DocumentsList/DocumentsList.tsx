@@ -4,7 +4,6 @@ import { Box, CircularProgress, useMediaQuery, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useGetDocumentsQuery } from "../../store/documents-updated.api-slice";
 import { DocumentsGrid } from "./components/DocumentsGrid";
-import { DocumentsHeader } from "./components/DocumentsHeader";
 import { EmptyDocumentsList } from "./components/EmptyDocumentsList";
 
 const ITEMS_PER_PAGE = 40;
@@ -73,8 +72,6 @@ export const DocumentsList = () => {
 
   return (
     <Box p={isMobile ? 2 : 3}>
-      <DocumentsHeader />
-
       {!documents?.data?.length ? (
         <EmptyDocumentsList />
       ) : (

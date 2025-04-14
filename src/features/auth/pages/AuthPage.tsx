@@ -1,3 +1,4 @@
+import { companyLogo, loginPagePlate } from "@/assets/images";
 import { COLORS } from "@/constants/colors";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import AppleIcon from "@mui/icons-material/Apple";
@@ -6,7 +7,6 @@ import WindowIcon from "@mui/icons-material/Window";
 import {
   Alert,
   Box,
-  Container,
   Divider,
   IconButton,
   Paper,
@@ -43,28 +43,32 @@ const AuthPage = () => {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Left side - Auth form */}
       <Box
         sx={{
-          marginTop: 4,
-          marginBottom: 4,
+          flex: 1,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          pt: 4,
+          pb: 4,
+          px: 4,
         }}
       >
         {/* Logo */}
         <Box sx={{ mb: 4, display: "flex", alignItems: "center" }}>
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{
-              fontWeight: "bold",
-              "& span": { color: COLORS.PRIMARY.MAIN },
-            }}
-          >
-            <span>AI</span> THING
-          </Typography>
+          <Box
+            component="img"
+            src={companyLogo}
+            alt="AI Thing Logo"
+            sx={{ width: 130 }}
+          />
         </Box>
 
         <Paper
@@ -72,6 +76,7 @@ const AuthPage = () => {
           sx={{
             p: 4,
             width: "100%",
+            maxWidth: "sm",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -138,13 +143,13 @@ const AuthPage = () => {
                   border: `1px solid ${COLORS.COMMON.GREY[300]}`,
                   borderRadius: 2,
                   p: 2.5,
-                  color: COLORS.COMMON.GREY[700],
                   bgcolor: "white",
                   "&:hover": {
                     bgcolor: COLORS.COMMON.GREY[50],
                   },
                   "& .MuiSvgIcon-root": {
                     fontSize: 28,
+                    color: "#4285F4",
                   },
                 }}
               >
@@ -156,13 +161,13 @@ const AuthPage = () => {
                   border: `1px solid ${COLORS.COMMON.GREY[300]}`,
                   borderRadius: 2,
                   p: 2.5,
-                  color: COLORS.COMMON.GREY[700],
                   bgcolor: "white",
                   "&:hover": {
                     bgcolor: COLORS.COMMON.GREY[50],
                   },
                   "& .MuiSvgIcon-root": {
                     fontSize: 28,
+                    color: "#000000",
                   },
                 }}
               >
@@ -174,13 +179,13 @@ const AuthPage = () => {
                   border: `1px solid ${COLORS.COMMON.GREY[300]}`,
                   borderRadius: 2,
                   p: 2.5,
-                  color: COLORS.COMMON.GREY[700],
                   bgcolor: "white",
                   "&:hover": {
                     bgcolor: COLORS.COMMON.GREY[50],
                   },
                   "& .MuiSvgIcon-root": {
                     fontSize: 28,
+                    color: "#00A4EF",
                   },
                 }}
               >
@@ -190,7 +195,21 @@ const AuthPage = () => {
           </Box>
         </Paper>
       </Box>
-    </Container>
+
+      {/* Right side - Image */}
+      <Box
+        sx={{
+          flex: 1,
+          display: { xs: "none", md: "block" },
+          bgcolor: COLORS.PRIMARY.MAIN,
+          backgroundImage: `url(${loginPagePlate})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          borderRadius: "20px",
+          m: 3,
+        }}
+      />
+    </Box>
   );
 };
 

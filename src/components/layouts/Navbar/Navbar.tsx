@@ -6,7 +6,6 @@ import {
 } from "@mui/icons-material";
 import {
   AppBar,
-  Box,
   IconButton,
   Toolbar,
   Typography,
@@ -43,9 +42,9 @@ export const Navbar = ({ onSidebarToggle }: NavbarProps) => {
     <AppBar
       position="sticky"
       sx={{
-        bgcolor: "background.paper",
+        bgcolor: "transparent",
         color: "text.primary",
-        boxShadow: 1,
+        boxShadow: 0,
       }}
     >
       <Toolbar>
@@ -70,11 +69,17 @@ export const Navbar = ({ onSidebarToggle }: NavbarProps) => {
             <ArrowBackIcon />
           </IconButton>
         )}
-        <Typography variant="h6" noWrap component="div">
+        <Typography
+          variant={isMobile ? "h5" : "h4"}
+          component="h1"
+          fontWeight={"bold"}
+          sx={{
+            fontSize: isMobile ? "1.5rem" : undefined,
+            textAlign: isMobile ? "center" : "left",
+          }}
+        >
           {pageTitle}
         </Typography>
-        <Box sx={{ flexGrow: 1 }} />
-        {/* Add user menu or other navbar items here */}
       </Toolbar>
     </AppBar>
   );

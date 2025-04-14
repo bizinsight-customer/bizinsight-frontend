@@ -22,7 +22,8 @@ apiMiddleware.push(
   documentsHistoryApiSlice.middleware,
   documentsUpdatedApi.middleware,
   userCompanyApiSlice.middleware,
-  aiAnalyticsApiSlice.middleware
+  aiAnalyticsApiSlice.middleware,
+  documentTypesApi.middleware
 );
 
 export const store = configureStore({

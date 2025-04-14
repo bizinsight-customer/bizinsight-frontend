@@ -1,29 +1,46 @@
-import { Description as DescriptionIcon } from "@mui/icons-material";
+import { JsonApiResource } from "@/types/json-api.types";
+import {
+  Delete as DeleteIcon,
+  Description as DescriptionIcon,
+  Visibility as VisibilityIcon,
+} from "@mui/icons-material";
 import {
   Box,
   Card,
   CardContent,
-  Chip,
+  IconButton,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
+import { useDeleteDocumentMutation } from "../../../store/documents-updated.api-slice";
 import { Document } from "../../../types/document.types";
 
 interface DocumentCardProps {
-  document: Document;
+  document: JsonApiResource<Document>;
 }
 
 export const DocumentCard = ({ document }: DocumentCardProps) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [deleteDocument, { isLoading: isDeleting }] =
+    useDeleteDocumentMutation();
 
   const { document_type, description, updated_at, amount, currency } =
     document.attributes;
   const { id } = document;
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking delete button
+    try {
+      await deleteDocument(id).unwrap();
+    } catch {
+      // Error will be handled by useApiErrorDisplay
+    }
+  };
 
   return (
     <Card
@@ -32,6 +49,12 @@ export const DocumentCard = ({ document }: DocumentCardProps) => {
         height: "100%",
         display: "flex",
         flexDirection: "column",
+        borderRadius: "10px",
+        boxShadow: "none",
+        border: "1px solid",
+        borderColor: "white",
+        position: "relative", // For absolute positioning of delete button
+        bgcolor: "white", // White background
       }}
       onClick={() => navigate(`/documents/${id}`)}
     >
@@ -67,16 +90,42 @@ export const DocumentCard = ({ document }: DocumentCardProps) => {
           <Typography variant="body2" color="text.secondary">
             {format(new Date(updated_at), "MMM d, yyyy")}
           </Typography>
-          <Chip
-            label={`${amount.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })} ${currency}`}
-            size={isMobile ? "small" : "medium"}
-            color="primary"
-            variant="outlined"
-          />
         </Box>
+        <IconButton
+          onClick={() => navigate(`/documents/${id}`)}
+          size="small"
+          sx={{
+            position: "absolute",
+            right: 40,
+            bottom: 8,
+            transition: "all 0.2s",
+            color: "primary.main",
+            "&:hover": {
+              opacity: "1 !important",
+            },
+          }}
+        >
+          <VisibilityIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          onClick={handleDelete}
+          disabled={isDeleting}
+          size="small"
+          sx={{
+            position: "absolute",
+            right: 8,
+            bottom: 8,
+            opacity: 0.5,
+            transition: "all 0.2s",
+            color: "text.secondary",
+            "&:hover": {
+              opacity: "1 !important",
+              color: "error.main",
+            },
+          }}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
       </CardContent>
     </Card>
   );

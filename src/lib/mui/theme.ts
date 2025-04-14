@@ -50,6 +50,62 @@ export const theme = createTheme({
         },
       },
     },
+    // Add white background to all input fields
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: COLORS.COMMON.WHITE,
+          borderRadius: 8,
+          "&:hover": {
+            backgroundColor: COLORS.COMMON.WHITE,
+          },
+          "&.Mui-focused": {
+            backgroundColor: COLORS.COMMON.WHITE,
+          },
+        },
+      },
+    },
+    // Style for filled variant
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: COLORS.COMMON.WHITE,
+          "&:hover": {
+            backgroundColor: COLORS.COMMON.WHITE,
+          },
+          "&.Mui-focused": {
+            backgroundColor: COLORS.COMMON.WHITE,
+          },
+        },
+      },
+    },
+    // Style for standard variant
+    MuiInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: COLORS.COMMON.WHITE,
+          "&:hover": {
+            backgroundColor: COLORS.COMMON.WHITE,
+          },
+          "&.Mui-focused": {
+            backgroundColor: COLORS.COMMON.WHITE,
+          },
+        },
+      },
+    },
+    // Style for TextField component
+    MuiTextField: {
+      defaultProps: {
+        variant: "outlined",
+      },
+      styleOverrides: {
+        root: {
+          "& .MuiInputBase-root": {
+            backgroundColor: COLORS.COMMON.WHITE,
+          },
+        },
+      },
+    },
   },
 });
 

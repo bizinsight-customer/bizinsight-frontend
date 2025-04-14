@@ -17,7 +17,7 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
     <Box
       component="nav"
       sx={{
-        width: { md: isOpen ? DRAWER_WIDTH : 73 },
+        width: { md: DRAWER_WIDTH },
         flexShrink: 0,
       }}
     >
@@ -26,7 +26,7 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
           <SidebarContent isOpen={isOpen} onToggle={onToggle} />
         </MobileSidebar>
       ) : (
-        <DesktopSidebar isOpen={isOpen}>
+        <DesktopSidebar>
           <SidebarContent isOpen={isOpen} onToggle={onToggle} />
         </DesktopSidebar>
       )}

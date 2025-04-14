@@ -1,5 +1,4 @@
 import { AppRouteConfig } from "@/types/routes.types";
-import AuthLayout from "./layouts/AuthLayout";
 import AuthPage from "./pages/AuthPage";
 import { SignUpSuccessPage } from "./pages/SignUpSuccessPage";
 
@@ -13,31 +12,26 @@ export const AUTH_ROUTES = {
 
 export const authRoutes: AppRouteConfig[] = [
   {
-    element: <AuthLayout />,
-    children: [
-      {
-        path: AUTH_ROUTES.SIGN_IN,
-        element: <AuthPage />,
-      },
-      {
-        path: AUTH_ROUTES.SIGN_UP,
-        element: <AuthPage />,
-      },
-      {
-        path: AUTH_ROUTES.SIGN_UP_SUCCESS,
-        element: <SignUpSuccessPage />,
-      },
-      {
-        path: AUTH_ROUTES.RESET_PASSWORD,
-        element: <AuthPage />,
-      },
-    ],
+    path: AUTH_ROUTES.SIGN_IN,
+    element: <AuthPage />,
+  },
+  {
+    path: AUTH_ROUTES.SIGN_UP,
+    element: <AuthPage />,
+  },
+  {
+    path: AUTH_ROUTES.SIGN_UP_SUCCESS,
+    element: <SignUpSuccessPage />,
+  },
+  {
+    path: AUTH_ROUTES.RESET_PASSWORD,
+    element: <AuthPage />,
   },
 ];
 
 // Derive route paths from authRoutes definition
-type AuthRoutesType = (typeof authRoutes)[0]["children"];
-export type AuthRoutePath = NonNullable<AuthRoutesType>[number]["path"];
+type AuthRoutesType = typeof authRoutes;
+export type AuthRoutePath = AuthRoutesType[number]["path"];
 
 // Define route parameters based on paths
 export type AuthRouteParams = {
